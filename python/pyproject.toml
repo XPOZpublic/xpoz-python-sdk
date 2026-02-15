@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "xpoz"
+version = "0.1.0"
+description = "Python SDK for the Xpoz social media intelligence platform"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "Xpoz", email = "support@xpoz.com" },
+]
+keywords = ["xpoz", "social-media", "twitter", "instagram", "reddit", "mcp", "sdk"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = [
+    "mcp>=1.9.0",
+    "pydantic>=2.0",
+    "anyio>=4.0",
+    "httpx>=0.27",
+    "httpx-sse>=0.4",
+]
+
+[project.urls]
+Homepage = "https://xpoz.com"
+Documentation = "https://docs.xpoz.com"
+Repository = "https://github.com/xpoz-ai/xpoz-sdk"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/xpoz"]
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
