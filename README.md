@@ -1,6 +1,6 @@
 # Xpoz SDK
 
-Official SDK for the [Xpoz](https://xpoz.com) social media intelligence platform. Query Twitter/X, Instagram, and Reddit data through simple, idiomatic interfaces.
+Official SDK for the [Xpoz](https://xpoz.ai) social media intelligence platform. Query Twitter/X, Instagram, and Reddit data through simple, idiomatic interfaces.
 
 ## Languages
 
