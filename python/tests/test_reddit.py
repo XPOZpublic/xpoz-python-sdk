@@ -20,9 +20,8 @@ def reddit_search_result(client):
 
 
 @pytest.fixture(scope="module")
-def reddit_post_id(reddit_search_result):
-    assert len(reddit_search_result.data) > 0
-    return reddit_search_result.data[0].id
+def reddit_post_id():
+    return "1l4da15"
 
 
 class TestRedditUsers:
@@ -33,7 +32,6 @@ class TestRedditUsers:
             pytest.skip(f"Server error: {user.error}")
         assert user.username == "spez"
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_search_users(self, client):
         users = client.reddit.search_users("spez")
         assert isinstance(users, list)
@@ -41,7 +39,6 @@ class TestRedditUsers:
         for u in users:
             assert isinstance(u, RedditUser)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_users_by_keywords(self, client):
         result = client.reddit.get_users_by_keywords("programming")
         assert isinstance(result, PaginatedResult)
@@ -75,14 +72,12 @@ class TestRedditPosts:
         assert isinstance(page2, PaginatedResult)
         assert len(page2.data) > 0
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_post_with_comments(self, client, reddit_post_id):
         result = client.reddit.get_post_with_comments(reddit_post_id)
         assert isinstance(result, RedditPostWithComments)
         assert isinstance(result.post, RedditPost)
         assert isinstance(result.comments, list)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_search_comments(self, client):
         result = client.reddit.search_comments("python")
         assert isinstance(result, PaginatedResult)
@@ -107,7 +102,6 @@ class TestRedditSubreddits:
         assert result.subreddit.display_name is not None
         assert isinstance(result.posts, list)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_subreddits_by_keywords(self, client):
         result = client.reddit.get_subreddits_by_keywords("programming")
         assert isinstance(result, PaginatedResult)

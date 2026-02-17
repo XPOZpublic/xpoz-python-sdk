@@ -38,6 +38,14 @@ def parse_response_text(text: str) -> dict[str, Any]:
             i += _count_indented(lines, i, 2)
             continue
 
+        yaml_list_match = re.match(r"^data\[(\d+)\]:", line)
+        if yaml_list_match:
+            i += 1
+            rows = _parse_yaml_list(lines, i, indent=2)
+            result["results"] = rows
+            i += _count_indented(lines, i, 2)
+            continue
+
         if line == "data:":
             i += 1
             data, consumed = _parse_data_block(lines, i)
@@ -97,6 +105,15 @@ def _parse_block(
             i += _count_indented(lines, i, indent + 2)
             continue
 
+        yaml_list_match = re.match(r"^(\w+)\[(\d+)\]:", stripped)
+        if yaml_list_match:
+            key = yaml_list_match.group(1)
+            i += 1
+            rows = _parse_yaml_list(lines, i, indent=indent + 2)
+            result[key] = rows
+            i += _count_indented(lines, i, indent + 2)
+            continue
+
         kv_match = re.match(r"^(\S+?):\s*(.*)", stripped)
         if kv_match:
             key, val = kv_match.group(1), kv_match.group(2)
@@ -118,6 +135,45 @@ def _parse_block(
         i += 1
 
     return result, i - start
+
+
+def _parse_yaml_list(
+    lines: list[str], start: int, indent: int
+) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    prefix = " " * indent
+    item_prefix = prefix + "- "
+    continuation_prefix = prefix + "  "
+    i = start
+    while i < len(lines):
+        line = lines[i]
+        if not line.startswith(prefix):
+            break
+        if not line.strip():
+            i += 1
+            continue
+        if line.startswith(item_prefix):
+            row: dict[str, Any] = {}
+            first_kv = line[len(item_prefix):]
+            m = re.match(r"^(\S+?):\s*(.*)", first_kv)
+            if m:
+                row[m.group(1)] = _coerce(m.group(2))
+            i += 1
+            while i < len(lines):
+                cline = lines[i]
+                if not cline.startswith(continuation_prefix):
+                    break
+                if cline.startswith(item_prefix):
+                    break
+                stripped = cline[len(continuation_prefix):]
+                cm = re.match(r"^(\S+?):\s*(.*)", stripped)
+                if cm:
+                    row[cm.group(1)] = _coerce(cm.group(2))
+                i += 1
+            rows.append(row)
+        else:
+            i += 1
+    return rows
 
 
 def _parse_csv_rows(

@@ -10,7 +10,7 @@ from xpoz.namespaces.twitter import AsyncTwitterNamespace
 from xpoz.namespaces.instagram import AsyncInstagramNamespace
 from xpoz.namespaces.reddit import AsyncRedditNamespace
 
-DEFAULT_SERVER_URL = "https://mcp.xpoz.com/mcp"
+DEFAULT_SERVER_URL = "https://mcp.xpoz.ai/mcp"
 ENV_API_KEY = "XPOZ_API_KEY"
 ENV_SERVER_URL = "XPOZ_SERVER_URL"
 

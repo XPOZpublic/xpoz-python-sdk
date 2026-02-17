@@ -570,6 +570,16 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `XPOZ_API_KEY` | API key for authentication | — |
 | `XPOZ_SERVER_URL` | MCP server URL | `https://mcp.xpoz.com/mcp` |
 
+## Testing
+
+Tests hit the live Xpoz API and require a valid API key:
+
+```bash
+XPOZ_API_KEY=your-api-key pytest tests/ -v
+```
+
+Tests must run sequentially in a single process to avoid API rate limiting. Do not run multiple pytest processes in parallel.
+
 ## License
 
 MIT

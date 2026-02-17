@@ -39,7 +39,10 @@ class McpTransport:
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
 
-        http_client = httpx.AsyncClient(headers=headers)
+        http_client = httpx.AsyncClient(
+            headers=headers,
+            timeout=httpx.Timeout(30, read=None),
+        )
         ctx = streamable_http_client(self._server_url, http_client=http_client)
         streams = await ctx.__aenter__()
         self._context_stack.append(ctx)
@@ -95,7 +98,10 @@ class SyncTransport:
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
 
-        http_client = httpx.AsyncClient(headers=headers)
+        http_client = httpx.AsyncClient(
+            headers=headers,
+            timeout=httpx.Timeout(30, read=None),
+        )
         async with streamable_http_client(self._server_url, http_client=http_client) as streams:
             read_stream, write_stream, _ = streams
             async with ClientSession(read_stream, write_stream) as session:

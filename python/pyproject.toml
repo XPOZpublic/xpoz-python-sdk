@@ -50,6 +50,7 @@ warn_return_any = true
 warn_unused_configs = true
 
 [tool.pytest.ini_options]
+timeout = 660
 markers = [
     "slow: marks tests that depend on long-running server operations (deselect with '-m \"not slow\"')",
 ]

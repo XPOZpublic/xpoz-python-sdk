@@ -56,6 +56,18 @@ mypy src/xpoz/ --ignore-missing-imports
 python3 -c "from xpoz import XpozClient, AsyncXpozClient; print('OK')"
 ```
 
+## Testing
+
+All commands run from `python/` directory.
+
+```bash
+XPOZ_API_KEY=... pytest tests/ -v
+```
+
+Tests hit the live Xpoz API and must run in a **single sequential process** — do not run multiple pytest processes in parallel. The Xpoz API rate-limits concurrent connections, causing operations to queue beyond the timeout and cascade failures through the module-scoped client.
+
+The pytest timeout (660s in `pyproject.toml`) is intentionally higher than the client polling timeout (600s in `conftest.py`) so the SDK raises a clean `OperationTimeoutError` instead of pytest killing the process via signal (which breaks the shared client and cascades failures to all subsequent tests).
+
 ## Architecture
 
 ### Transport Layer (`_transport.py`)

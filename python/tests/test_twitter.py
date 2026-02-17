@@ -15,9 +15,8 @@ def twitter_search_result(client):
 
 
 @pytest.fixture(scope="module")
-def twitter_post_id(twitter_search_result):
-    assert len(twitter_search_result.data) > 0
-    return twitter_search_result.data[0].id
+def twitter_post_id():
+    return "1874266108200673750"
 
 
 class TestTwitterUsers:
@@ -48,7 +47,6 @@ class TestTwitterUsers:
             assert isinstance(u, TwitterUser)
             assert u.username is not None
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_user_connections(self, client):
         result = client.twitter.get_user_connections("elonmusk", "followers")
         assert isinstance(result, PaginatedResult)
@@ -58,7 +56,6 @@ class TestTwitterUsers:
         for u in result.data:
             assert isinstance(u, TwitterUser)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_users_by_keywords(self, client):
         result = client.twitter.get_users_by_keywords("artificial intelligence")
         assert isinstance(result, PaginatedResult)
@@ -68,7 +65,6 @@ class TestTwitterUsers:
 
 
 class TestTwitterPosts:
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_posts_by_author(self, client):
         result = client.twitter.get_posts_by_author(
             "elonmusk", fields=["id", "text", "like_count"]
@@ -94,22 +90,18 @@ class TestTwitterPosts:
         assert isinstance(page2, PaginatedResult)
         assert len(page2.data) > 0
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_retweets(self, client, twitter_post_id):
         result = client.twitter.get_retweets(twitter_post_id)
         assert isinstance(result, PaginatedResult)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_quotes(self, client, twitter_post_id):
         result = client.twitter.get_quotes(twitter_post_id)
         assert isinstance(result, PaginatedResult)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_comments(self, client, twitter_post_id):
         result = client.twitter.get_comments(twitter_post_id)
         assert isinstance(result, PaginatedResult)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_post_interacting_users(self, client, twitter_post_id):
         result = client.twitter.get_post_interacting_users(
             twitter_post_id, "commenters"

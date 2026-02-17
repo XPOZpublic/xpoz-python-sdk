@@ -13,9 +13,8 @@ def instagram_posts_result(client):
 
 
 @pytest.fixture(scope="module")
-def instagram_post_id(instagram_posts_result):
-    assert len(instagram_posts_result.data) > 0
-    return instagram_posts_result.data[0].id
+def instagram_post_id():
+    return "3650461835687763021_8763092944"
 
 
 class TestInstagramUsers:
@@ -33,7 +32,6 @@ class TestInstagramUsers:
         assert user.username is not None
         assert user.follower_count is not None
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_search_users(self, client):
         users = client.instagram.search_users("nike")
         assert isinstance(users, list)
@@ -41,7 +39,6 @@ class TestInstagramUsers:
         for u in users:
             assert isinstance(u, InstagramUser)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_user_connections(self, client):
         result = client.instagram.get_user_connections("instagram", "followers")
         assert isinstance(result, PaginatedResult)
@@ -50,7 +47,6 @@ class TestInstagramUsers:
         for u in result.data:
             assert isinstance(u, InstagramUser)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_users_by_keywords(self, client):
         result = client.instagram.get_users_by_keywords("fashion")
         assert isinstance(result, PaginatedResult)
@@ -67,7 +63,6 @@ class TestInstagramPosts:
         for post in result.data:
             assert isinstance(post, InstagramPost)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_search_posts(self, client):
         result = client.instagram.search_posts(
             "travel", fields=["id", "caption", "like_count"]
@@ -82,12 +77,10 @@ class TestInstagramPosts:
         assert len(posts) == 1
         assert isinstance(posts[0], InstagramPost)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_comments(self, client, instagram_post_id):
         result = client.instagram.get_comments(instagram_post_id)
         assert isinstance(result, PaginatedResult)
 
-    @pytest.mark.skip(reason="Server operation takes >5 minutes")
     def test_get_post_interacting_users(self, client, instagram_post_id):
         result = client.instagram.get_post_interacting_users(
             instagram_post_id, "commenters"
