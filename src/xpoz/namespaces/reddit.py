@@ -21,6 +21,7 @@ from xpoz.types.reddit import (
     SubredditWithPosts,
 )
 from xpoz.types.common import PaginationInfo
+from xpoz import _tools
 
 
 class RedditNamespace(BaseNamespace):
@@ -46,9 +47,9 @@ class RedditNamespace(BaseNamespace):
             subreddit=subreddit,
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getRedditPostsByKeywords", args)
+        result = self._call_and_maybe_poll(_tools.SEARCH_REDDIT_POSTS, args)
         return self._build_paginated_result(
-            result, RedditPost, "getRedditPostsByKeywords", args
+            result, RedditPost, _tools.SEARCH_REDDIT_POSTS, args
         )
 
     def get_post_with_comments(
@@ -65,7 +66,7 @@ class RedditNamespace(BaseNamespace):
             commentFields=self._convert_fields(comment_fields),
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getRedditPostWithCommentsById", args)
+        result = self._call_and_maybe_poll(_tools.GET_REDDIT_POST_WITH_COMMENTS, args)
         return self._parse_post_with_comments(result)
 
     def search_comments(
@@ -84,9 +85,9 @@ class RedditNamespace(BaseNamespace):
             endDate=end_date,
             subreddit=subreddit,
         )
-        result = self._call_and_maybe_poll("getRedditCommentsByKeywords", args)
+        result = self._call_and_maybe_poll(_tools.SEARCH_REDDIT_COMMENTS, args)
         return self._build_paginated_result(
-            result, RedditComment, "getRedditCommentsByKeywords", args
+            result, RedditComment, _tools.SEARCH_REDDIT_COMMENTS, args
         )
 
     def get_user(
@@ -99,7 +100,7 @@ class RedditNamespace(BaseNamespace):
             username=username,
             fields=self._convert_fields(fields),
         )
-        result = self._call_and_maybe_poll("getRedditUser", args)
+        result = self._call_and_maybe_poll(_tools.GET_REDDIT_USER, args)
         results = result.get("results", [])
         if isinstance(results, list) and len(results) > 0:
             return _parse_item(RedditUser, results[0])
@@ -117,7 +118,7 @@ class RedditNamespace(BaseNamespace):
             limit=limit,
             fields=self._convert_fields(fields),
         )
-        result = self._call_and_maybe_poll("searchRedditUsers", args)
+        result = self._call_and_maybe_poll(_tools.SEARCH_REDDIT_USERS, args)
         return _parse_items(RedditUser, result.get("results", []))
 
     def get_users_by_keywords(
@@ -138,9 +139,9 @@ class RedditNamespace(BaseNamespace):
             subreddit=subreddit,
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getRedditUsersByKeywords", args)
+        result = self._call_and_maybe_poll(_tools.GET_REDDIT_USERS_BY_KEYWORDS, args)
         return self._build_paginated_result(
-            result, RedditUser, "getRedditUsersByKeywords", args
+            result, RedditUser, _tools.GET_REDDIT_USERS_BY_KEYWORDS, args
         )
 
     def search_subreddits(
@@ -155,7 +156,7 @@ class RedditNamespace(BaseNamespace):
             limit=limit,
             fields=self._convert_fields(fields),
         )
-        result = self._call_and_maybe_poll("searchRedditSubreddits", args)
+        result = self._call_and_maybe_poll(_tools.SEARCH_REDDIT_SUBREDDITS, args)
         return _parse_items(RedditSubreddit, result.get("results", []))
 
     def get_subreddit_with_posts(
@@ -172,7 +173,7 @@ class RedditNamespace(BaseNamespace):
             postFields=self._convert_fields(post_fields),
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getRedditSubredditWithPostsByName", args)
+        result = self._call_and_maybe_poll(_tools.GET_REDDIT_SUBREDDIT_WITH_POSTS, args)
         return self._parse_subreddit_with_posts(result)
 
     def get_subreddits_by_keywords(
@@ -191,9 +192,9 @@ class RedditNamespace(BaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getRedditSubredditsByKeywords", args)
+        result = self._call_and_maybe_poll(_tools.GET_REDDIT_SUBREDDITS_BY_KEYWORDS, args)
         return self._build_paginated_result(
-            result, RedditSubreddit, "getRedditSubredditsByKeywords", args
+            result, RedditSubreddit, _tools.GET_REDDIT_SUBREDDITS_BY_KEYWORDS, args
         )
 
     def _parse_post_with_comments(self, raw: dict[str, Any]) -> RedditPostWithComments:
@@ -252,9 +253,9 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             subreddit=subreddit,
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getRedditPostsByKeywords", args)
+        result = await self._call_and_maybe_poll(_tools.SEARCH_REDDIT_POSTS, args)
         return await self._build_paginated_result(
-            result, RedditPost, "getRedditPostsByKeywords", args
+            result, RedditPost, _tools.SEARCH_REDDIT_POSTS, args
         )
 
     async def get_post_with_comments(
@@ -271,7 +272,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             commentFields=self._convert_fields(comment_fields),
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getRedditPostWithCommentsById", args)
+        result = await self._call_and_maybe_poll(_tools.GET_REDDIT_POST_WITH_COMMENTS, args)
         return self._parse_post_with_comments(result)
 
     async def search_comments(
@@ -290,9 +291,9 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             endDate=end_date,
             subreddit=subreddit,
         )
-        result = await self._call_and_maybe_poll("getRedditCommentsByKeywords", args)
+        result = await self._call_and_maybe_poll(_tools.SEARCH_REDDIT_COMMENTS, args)
         return await self._build_paginated_result(
-            result, RedditComment, "getRedditCommentsByKeywords", args
+            result, RedditComment, _tools.SEARCH_REDDIT_COMMENTS, args
         )
 
     async def get_user(
@@ -305,7 +306,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             username=username,
             fields=self._convert_fields(fields),
         )
-        result = await self._call_and_maybe_poll("getRedditUser", args)
+        result = await self._call_and_maybe_poll(_tools.GET_REDDIT_USER, args)
         results = result.get("results", [])
         if isinstance(results, list) and len(results) > 0:
             return _parse_item(RedditUser, results[0])
@@ -323,7 +324,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             limit=limit,
             fields=self._convert_fields(fields),
         )
-        result = await self._call_and_maybe_poll("searchRedditUsers", args)
+        result = await self._call_and_maybe_poll(_tools.SEARCH_REDDIT_USERS, args)
         return _parse_items(RedditUser, result.get("results", []))
 
     async def get_users_by_keywords(
@@ -344,9 +345,9 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             subreddit=subreddit,
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getRedditUsersByKeywords", args)
+        result = await self._call_and_maybe_poll(_tools.GET_REDDIT_USERS_BY_KEYWORDS, args)
         return await self._build_paginated_result(
-            result, RedditUser, "getRedditUsersByKeywords", args
+            result, RedditUser, _tools.GET_REDDIT_USERS_BY_KEYWORDS, args
         )
 
     async def search_subreddits(
@@ -361,7 +362,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             limit=limit,
             fields=self._convert_fields(fields),
         )
-        result = await self._call_and_maybe_poll("searchRedditSubreddits", args)
+        result = await self._call_and_maybe_poll(_tools.SEARCH_REDDIT_SUBREDDITS, args)
         return _parse_items(RedditSubreddit, result.get("results", []))
 
     async def get_subreddit_with_posts(
@@ -378,9 +379,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             postFields=self._convert_fields(post_fields),
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll(
-            "getRedditSubredditWithPostsByName", args
-        )
+        result = await self._call_and_maybe_poll(_tools.GET_REDDIT_SUBREDDIT_WITH_POSTS, args)
         return self._parse_subreddit_with_posts(result)
 
     async def get_subreddits_by_keywords(
@@ -399,9 +398,9 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getRedditSubredditsByKeywords", args)
+        result = await self._call_and_maybe_poll(_tools.GET_REDDIT_SUBREDDITS_BY_KEYWORDS, args)
         return await self._build_paginated_result(
-            result, RedditSubreddit, "getRedditSubredditsByKeywords", args
+            result, RedditSubreddit, _tools.GET_REDDIT_SUBREDDITS_BY_KEYWORDS, args
         )
 
     def _parse_post_with_comments(self, raw: dict[str, Any]) -> RedditPostWithComments:

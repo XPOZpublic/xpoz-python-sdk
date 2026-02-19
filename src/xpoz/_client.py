@@ -26,7 +26,8 @@ class XpozClient:
         self._api_key = api_key or os.environ.get(ENV_API_KEY)
         if not self._api_key:
             raise AuthenticationError(
-                f"API key required. Pass api_key= or set {ENV_API_KEY} environment variable."
+                f"API key required. Get your token at http://xpoz.ai/get-token?utm_source=python_sdk&utm_medium=sdk "
+                f"(login → copy token), then pass it as api_key= or set the {ENV_API_KEY} environment variable."
             )
 
         self._server_url = server_url or os.environ.get(ENV_SERVER_URL) or DEFAULT_SERVER_URL

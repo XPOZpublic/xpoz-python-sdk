@@ -5,6 +5,7 @@ from typing import Any
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
+from xpoz import _tools
 
 
 class InstagramNamespace(BaseNamespace):
@@ -20,7 +21,7 @@ class InstagramNamespace(BaseNamespace):
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getInstagramPostsByIds", args)
+        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POSTS_BY_IDS, args)
         return _parse_items(InstagramPost, result.get("results", []))
 
     def get_posts_by_user(
@@ -41,9 +42,9 @@ class InstagramNamespace(BaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getInstagramPostsByUser", args)
+        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POSTS_BY_USER, args)
         return self._build_paginated_result(
-            result, InstagramPost, "getInstagramPostsByUser", args
+            result, InstagramPost, _tools.GET_INSTAGRAM_POSTS_BY_USER, args
         )
 
     def search_posts(
@@ -62,9 +63,9 @@ class InstagramNamespace(BaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getInstagramPostsByKeywords", args)
+        result = self._call_and_maybe_poll(_tools.SEARCH_INSTAGRAM_POSTS, args)
         return self._build_paginated_result(
-            result, InstagramPost, "getInstagramPostsByKeywords", args
+            result, InstagramPost, _tools.SEARCH_INSTAGRAM_POSTS, args
         )
 
     def get_comments(
@@ -83,9 +84,9 @@ class InstagramNamespace(BaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getInstagramCommentsByPostId", args)
+        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_COMMENTS, args)
         return self._build_paginated_result(
-            result, InstagramComment, "getInstagramCommentsByPostId", args
+            result, InstagramComment, _tools.GET_INSTAGRAM_COMMENTS, args
         )
 
     def get_user(
@@ -100,7 +101,7 @@ class InstagramNamespace(BaseNamespace):
             identifierType=identifier_type,
             fields=self._convert_fields(fields),
         )
-        result = self._call_and_maybe_poll("getInstagramUser", args)
+        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER, args)
         results = result.get("results", [])
         if isinstance(results, list) and len(results) > 0:
             return _parse_item(InstagramUser, results[0])
@@ -118,7 +119,7 @@ class InstagramNamespace(BaseNamespace):
             limit=limit,
             fields=self._convert_fields(fields),
         )
-        result = self._call_and_maybe_poll("searchInstagramUsers", args)
+        result = self._call_and_maybe_poll(_tools.SEARCH_INSTAGRAM_USERS, args)
         return _parse_items(InstagramUser, result.get("results", []))
 
     def get_user_connections(
@@ -135,9 +136,9 @@ class InstagramNamespace(BaseNamespace):
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getInstagramUserConnections", args)
+        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER_CONNECTIONS, args)
         return self._build_paginated_result(
-            result, InstagramUser, "getInstagramUserConnections", args
+            result, InstagramUser, _tools.GET_INSTAGRAM_USER_CONNECTIONS, args
         )
 
     def get_post_interacting_users(
@@ -154,9 +155,9 @@ class InstagramNamespace(BaseNamespace):
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getInstagramPostInteractingUsers", args)
+        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args)
         return self._build_paginated_result(
-            result, InstagramUser, "getInstagramPostInteractingUsers", args
+            result, InstagramUser, _tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args
         )
 
     def get_users_by_keywords(
@@ -175,9 +176,9 @@ class InstagramNamespace(BaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = self._call_and_maybe_poll("getInstagramUsersByKeywords", args)
+        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USERS_BY_KEYWORDS, args)
         return self._build_paginated_result(
-            result, InstagramUser, "getInstagramUsersByKeywords", args
+            result, InstagramUser, _tools.GET_INSTAGRAM_USERS_BY_KEYWORDS, args
         )
 
 
@@ -194,7 +195,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getInstagramPostsByIds", args)
+        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POSTS_BY_IDS, args)
         return _parse_items(InstagramPost, result.get("results", []))
 
     async def get_posts_by_user(
@@ -215,9 +216,9 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getInstagramPostsByUser", args)
+        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POSTS_BY_USER, args)
         return await self._build_paginated_result(
-            result, InstagramPost, "getInstagramPostsByUser", args
+            result, InstagramPost, _tools.GET_INSTAGRAM_POSTS_BY_USER, args
         )
 
     async def search_posts(
@@ -236,9 +237,9 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getInstagramPostsByKeywords", args)
+        result = await self._call_and_maybe_poll(_tools.SEARCH_INSTAGRAM_POSTS, args)
         return await self._build_paginated_result(
-            result, InstagramPost, "getInstagramPostsByKeywords", args
+            result, InstagramPost, _tools.SEARCH_INSTAGRAM_POSTS, args
         )
 
     async def get_comments(
@@ -257,9 +258,9 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getInstagramCommentsByPostId", args)
+        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_COMMENTS, args)
         return await self._build_paginated_result(
-            result, InstagramComment, "getInstagramCommentsByPostId", args
+            result, InstagramComment, _tools.GET_INSTAGRAM_COMMENTS, args
         )
 
     async def get_user(
@@ -274,7 +275,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             identifierType=identifier_type,
             fields=self._convert_fields(fields),
         )
-        result = await self._call_and_maybe_poll("getInstagramUser", args)
+        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER, args)
         results = result.get("results", [])
         if isinstance(results, list) and len(results) > 0:
             return _parse_item(InstagramUser, results[0])
@@ -292,7 +293,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             limit=limit,
             fields=self._convert_fields(fields),
         )
-        result = await self._call_and_maybe_poll("searchInstagramUsers", args)
+        result = await self._call_and_maybe_poll(_tools.SEARCH_INSTAGRAM_USERS, args)
         return _parse_items(InstagramUser, result.get("results", []))
 
     async def get_user_connections(
@@ -309,9 +310,9 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getInstagramUserConnections", args)
+        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER_CONNECTIONS, args)
         return await self._build_paginated_result(
-            result, InstagramUser, "getInstagramUserConnections", args
+            result, InstagramUser, _tools.GET_INSTAGRAM_USER_CONNECTIONS, args
         )
 
     async def get_post_interacting_users(
@@ -328,9 +329,9 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getInstagramPostInteractingUsers", args)
+        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args)
         return await self._build_paginated_result(
-            result, InstagramUser, "getInstagramPostInteractingUsers", args
+            result, InstagramUser, _tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args
         )
 
     async def get_users_by_keywords(
@@ -349,7 +350,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             endDate=end_date,
             forceLatest=force_latest,
         )
-        result = await self._call_and_maybe_poll("getInstagramUsersByKeywords", args)
+        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USERS_BY_KEYWORDS, args)
         return await self._build_paginated_result(
-            result, InstagramUser, "getInstagramUsersByKeywords", args
+            result, InstagramUser, _tools.GET_INSTAGRAM_USERS_BY_KEYWORDS, args
         )

@@ -4,43 +4,41 @@ This file provides guidance to Claude Code when working with the xpoz-sdk reposi
 
 ## Project Overview
 
-Monorepo for Xpoz SDK — client libraries that wrap the xpoz-mcp server (MCP protocol) into simple, idiomatic APIs. Currently contains a Python SDK; TypeScript is planned.
+Python SDK for the Xpoz social media intelligence platform — wraps the xpoz-mcp server (MCP protocol) into a simple, idiomatic Python API.
 
 ## Repository Structure
 
 ```
 xpoz-sdk/
-├── python/                     # Python SDK (PyPI: xpoz)
-│   ├── pyproject.toml          # Package config (hatchling build system)
-│   ├── README.md               # Python-specific documentation
-│   └── src/xpoz/               # Package source
-│       ├── __init__.py          # Public exports
-│       ├── _version.py          # Version string
-│       ├── _client.py           # XpozClient (sync)
-│       ├── _async_client.py     # AsyncXpozClient (async)
-│       ├── _transport.py        # MCP Streamable HTTP transport wrapper
-│       ├── _polling.py          # Operation polling (5s interval, configurable timeout)
-│       ├── _pagination.py       # PaginatedResult[T] + AsyncPaginatedResult[T]
-│       ├── _field_mapping.py    # snake_case <-> camelCase bidirectional mapping
-│       ├── _exceptions.py       # Error hierarchy
-│       ├── types/               # Pydantic v2 models
-│       │   ├── __init__.py
-│       │   ├── common.py        # PaginationInfo
-│       │   ├── twitter.py       # Tweet, TwitterUser
-│       │   ├── instagram.py     # InstagramPost, InstagramUser, InstagramComment
-│       │   └── reddit.py        # RedditPost, RedditUser, RedditComment, RedditSubreddit, composites
-│       └── namespaces/          # Platform method groups (sync + async variants)
-│           ├── __init__.py
-│           ├── _base.py         # BaseNamespace, AsyncBaseNamespace (shared logic)
-│           ├── twitter.py       # TwitterNamespace (12 methods)
-│           ├── instagram.py     # InstagramNamespace (9 methods)
-│           └── reddit.py        # RedditNamespace (9 methods)
-└── typescript/                  # Planned TypeScript SDK
+├── pyproject.toml          # Package config (hatchling build system)
+├── README.md               # Documentation
+└── src/xpoz/               # Package source
+    ├── __init__.py          # Public exports
+    ├── _version.py          # Version string
+    ├── _client.py           # XpozClient (sync)
+    ├── _async_client.py     # AsyncXpozClient (async)
+    ├── _transport.py        # MCP Streamable HTTP transport wrapper
+    ├── _polling.py          # Operation polling (5s interval, configurable timeout)
+    ├── _pagination.py       # PaginatedResult[T] + AsyncPaginatedResult[T]
+    ├── _field_mapping.py    # snake_case <-> camelCase bidirectional mapping
+    ├── _exceptions.py       # Error hierarchy
+    ├── types/               # Pydantic v2 models
+    │   ├── __init__.py
+    │   ├── common.py        # PaginationInfo
+    │   ├── twitter.py       # Tweet, TwitterUser
+    │   ├── instagram.py     # InstagramPost, InstagramUser, InstagramComment
+    │   └── reddit.py        # RedditPost, RedditUser, RedditComment, RedditSubreddit, composites
+    └── namespaces/          # Platform method groups (sync + async variants)
+        ├── __init__.py
+        ├── _base.py         # BaseNamespace, AsyncBaseNamespace (shared logic)
+        ├── twitter.py       # TwitterNamespace (12 methods)
+        ├── instagram.py     # InstagramNamespace (9 methods)
+        └── reddit.py        # RedditNamespace (9 methods)
 ```
 
 ## Development Commands
 
-All commands run from `python/` directory. Requires a Python 3.10+ venv.
+All commands run from the repo root. Requires a Python 3.10+ venv.
 
 ```bash
 # Create venv and install in editable mode
@@ -58,7 +56,7 @@ python3 -c "from xpoz import XpozClient, AsyncXpozClient; print('OK')"
 
 ## Testing
 
-All commands run from `python/` directory.
+All commands run from the repo root.
 
 ```bash
 XPOZ_API_KEY=... pytest tests/ -v
