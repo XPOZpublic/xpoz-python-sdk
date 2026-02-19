@@ -10,7 +10,7 @@ readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
 authors = [
-    { name = "Xpoz", email = "support@xpoz.com" },
+    { name = "Xpoz", email = "support@xpoz.ai" },
 ]
 keywords = ["xpoz", "social-media", "twitter", "instagram", "reddit", "mcp", "sdk"]
 classifiers = [
@@ -36,9 +36,9 @@ dependencies = [
 dev = ["pytest>=8.0"]
 
 [project.urls]
-Homepage = "https://xpoz.com"
-Documentation = "https://docs.xpoz.com"
-Repository = "https://github.com/xpoz-ai/xpoz-sdk"
+Homepage = "https://xpoz.ai"
+Documentation = "https://help.xpoz.ai"
+Repository = "https://github.com/hossenco/xpoz-sdk"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/xpoz"]

@@ -9,6 +9,9 @@ from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
 from xpoz._response_parser import parse_response_text
+from xpoz._version import __version__
+
+_USER_AGENT = f"xpoz-python-sdk/{__version__}"
 
 
 def _parse_tool_result(tool_name: str, result: Any) -> dict[str, Any]:
@@ -35,7 +38,7 @@ class McpTransport:
         self._context_stack: list[Any] = []
 
     async def connect(self) -> None:
-        headers: dict[str, str] = {}
+        headers: dict[str, str] = {"User-Agent": _USER_AGENT}
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
 
@@ -94,7 +97,7 @@ class SyncTransport:
         ready: anyio.Event,
         shutdown: anyio.Event,
     ) -> None:
-        headers: dict[str, str] = {}
+        headers: dict[str, str] = {"User-Agent": _USER_AGENT}
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
 

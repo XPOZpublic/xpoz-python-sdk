@@ -1,6 +1,6 @@
 # Xpoz Python SDK
 
-Python SDK for the [Xpoz](https://xpoz.com) social media intelligence platform. Query Twitter/X, Instagram, and Reddit data through a simple, Pythonic interface.
+Python SDK for the [Xpoz](https://xpoz.ai) social media intelligence platform. Query Twitter/X, Instagram, and Reddit data through a simple, Pythonic interface.
 
 ## Installation
 
@@ -39,7 +39,7 @@ os.environ["XPOZ_API_KEY"] = "your-api-key"
 client = XpozClient()
 
 # Custom server URL (also reads XPOZ_SERVER_URL env var)
-client = XpozClient("your-api-key", server_url="https://custom.server/mcp")
+client = XpozClient("your-api-key", server_url="https://xpoz.ai/mcp")
 
 # Custom operation timeout (default: 300 seconds)
 client = XpozClient("your-api-key", timeout=600)
@@ -398,165 +398,167 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 
 ### Tweet
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | Tweet ID |
-| `text` | `str` | Tweet text content |
-| `author_id` | `str` | Author's user ID |
-| `author_username` | `str` | Author's username |
-| `like_count` | `int` | Number of likes |
-| `retweet_count` | `int` | Number of retweets |
-| `reply_count` | `int` | Number of replies |
-| `quote_count` | `int` | Number of quotes |
-| `impression_count` | `int` | Number of impressions |
-| `bookmark_count` | `int` | Number of bookmarks |
-| `lang` | `str` | Language code |
-| `hashtags` | `list[str]` | Hashtags in tweet |
-| `mentions` | `list[str]` | Mentioned usernames |
-| `media_urls` | `list[str]` | Media attachment URLs |
-| `urls` | `list[str]` | URLs in tweet |
-| `country` | `str` | Country (if geo-tagged) |
-| `created_at` | `str` | Creation timestamp |
-| `created_at_date` | `str` | Creation date (YYYY-MM-DD) |
-| `conversation_id` | `str` | Thread conversation ID |
-| `quoted_tweet_id` | `str` | ID of quoted tweet |
-| `reply_to_tweet_id` | `str` | ID of parent tweet |
-| `is_retweet` | `bool` | Whether this is a retweet |
-| `possibly_sensitive` | `bool` | Sensitive content flag |
+| Field                | Type        | Description                |
+| -------------------- | ----------- | -------------------------- |
+| `id`                 | `str`       | Tweet ID                   |
+| `text`               | `str`       | Tweet text content         |
+| `author_id`          | `str`       | Author's user ID           |
+| `author_username`    | `str`       | Author's username          |
+| `like_count`         | `int`       | Number of likes            |
+| `retweet_count`      | `int`       | Number of retweets         |
+| `reply_count`        | `int`       | Number of replies          |
+| `quote_count`        | `int`       | Number of quotes           |
+| `impression_count`   | `int`       | Number of impressions      |
+| `bookmark_count`     | `int`       | Number of bookmarks        |
+| `lang`               | `str`       | Language code              |
+| `hashtags`           | `list[str]` | Hashtags in tweet          |
+| `mentions`           | `list[str]` | Mentioned usernames        |
+| `media_urls`         | `list[str]` | Media attachment URLs      |
+| `urls`               | `list[str]` | URLs in tweet              |
+| `country`            | `str`       | Country (if geo-tagged)    |
+| `created_at`         | `str`       | Creation timestamp         |
+| `created_at_date`    | `str`       | Creation date (YYYY-MM-DD) |
+| `conversation_id`    | `str`       | Thread conversation ID     |
+| `quoted_tweet_id`    | `str`       | ID of quoted tweet         |
+| `reply_to_tweet_id`  | `str`       | ID of parent tweet         |
+| `is_retweet`         | `bool`      | Whether this is a retweet  |
+| `possibly_sensitive` | `bool`      | Sensitive content flag     |
 
 ### TwitterUser
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | User ID |
-| `username` | `str` | Username (handle) |
-| `name` | `str` | Display name |
-| `description` | `str` | Bio text |
-| `location` | `str` | Location string |
-| `verified` | `bool` | Verification status |
-| `verified_type` | `str` | Verification type |
-| `followers_count` | `int` | Number of followers |
-| `following_count` | `int` | Number of following |
-| `tweet_count` | `int` | Total tweets |
-| `likes_count` | `int` | Total likes |
-| `profile_image_url` | `str` | Profile picture URL |
-| `created_at` | `str` | Account creation timestamp |
-| `account_based_in` | `str` | Account location |
-| `is_inauthentic` | `bool` | Inauthenticity flag |
-| `is_inauthentic_prob_score` | `float` | Inauthenticity probability |
-| `avg_tweets_per_day_last_month` | `float` | Tweeting frequency |
+| Field                           | Type    | Description                |
+| ------------------------------- | ------- | -------------------------- |
+| `id`                            | `str`   | User ID                    |
+| `username`                      | `str`   | Username (handle)          |
+| `name`                          | `str`   | Display name               |
+| `description`                   | `str`   | Bio text                   |
+| `location`                      | `str`   | Location string            |
+| `verified`                      | `bool`  | Verification status        |
+| `verified_type`                 | `str`   | Verification type          |
+| `followers_count`               | `int`   | Number of followers        |
+| `following_count`               | `int`   | Number of following        |
+| `tweet_count`                   | `int`   | Total tweets               |
+| `likes_count`                   | `int`   | Total likes                |
+| `profile_image_url`             | `str`   | Profile picture URL        |
+| `created_at`                    | `str`   | Account creation timestamp |
+| `account_based_in`              | `str`   | Account location           |
+| `is_inauthentic`                | `bool`  | Inauthenticity flag        |
+| `is_inauthentic_prob_score`     | `float` | Inauthenticity probability |
+| `avg_tweets_per_day_last_month` | `float` | Tweeting frequency         |
 
 ### InstagramPost
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | Post ID (strong_id format) |
-| `caption` | `str` | Post caption |
-| `username` | `str` | Author username |
-| `full_name` | `str` | Author display name |
-| `like_count` | `int` | Number of likes |
-| `comment_count` | `int` | Number of comments |
-| `reshare_count` | `int` | Number of reshares |
-| `video_play_count` | `int` | Video play count |
-| `media_type` | `str` | Media type |
-| `image_url` | `str` | Image URL |
-| `video_url` | `str` | Video URL |
-| `created_at_date` | `str` | Creation date |
+| Field              | Type  | Description                |
+| ------------------ | ----- | -------------------------- |
+| `id`               | `str` | Post ID (strong_id format) |
+| `caption`          | `str` | Post caption               |
+| `username`         | `str` | Author username            |
+| `full_name`        | `str` | Author display name        |
+| `like_count`       | `int` | Number of likes            |
+| `comment_count`    | `int` | Number of comments         |
+| `reshare_count`    | `int` | Number of reshares         |
+| `video_play_count` | `int` | Video play count           |
+| `media_type`       | `str` | Media type                 |
+| `image_url`        | `str` | Image URL                  |
+| `video_url`        | `str` | Video URL                  |
+| `created_at_date`  | `str` | Creation date              |
 
 ### InstagramUser
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | User ID |
-| `username` | `str` | Username |
-| `full_name` | `str` | Display name |
-| `biography` | `str` | Bio text |
-| `is_private` | `bool` | Private account |
-| `is_verified` | `bool` | Verified status |
-| `follower_count` | `int` | Followers |
-| `following_count` | `int` | Following |
-| `media_count` | `int` | Total posts |
-| `profile_pic_url` | `str` | Profile picture URL |
+| Field             | Type   | Description         |
+| ----------------- | ------ | ------------------- |
+| `id`              | `str`  | User ID             |
+| `username`        | `str`  | Username            |
+| `full_name`       | `str`  | Display name        |
+| `biography`       | `str`  | Bio text            |
+| `is_private`      | `bool` | Private account     |
+| `is_verified`     | `bool` | Verified status     |
+| `follower_count`  | `int`  | Followers           |
+| `following_count` | `int`  | Following           |
+| `media_count`     | `int`  | Total posts         |
+| `profile_pic_url` | `str`  | Profile picture URL |
 
 ### InstagramComment
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | Comment ID |
-| `text` | `str` | Comment text |
-| `username` | `str` | Author username |
-| `parent_post_id` | `str` | Parent post ID |
-| `like_count` | `int` | Number of likes |
-| `child_comment_count` | `int` | Reply count |
-| `created_at_date` | `str` | Creation date |
+| Field                 | Type  | Description     |
+| --------------------- | ----- | --------------- |
+| `id`                  | `str` | Comment ID      |
+| `text`                | `str` | Comment text    |
+| `username`            | `str` | Author username |
+| `parent_post_id`      | `str` | Parent post ID  |
+| `like_count`          | `int` | Number of likes |
+| `child_comment_count` | `int` | Reply count     |
+| `created_at_date`     | `str` | Creation date   |
 
 ### RedditPost
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | Post ID |
-| `title` | `str` | Post title |
-| `selftext` | `str` | Post body text |
-| `author_username` | `str` | Author username |
-| `subreddit_name` | `str` | Subreddit name |
-| `score` | `int` | Net score |
-| `upvotes` | `int` | Upvote count |
-| `comments_count` | `int` | Comment count |
-| `url` | `str` | Post URL |
-| `permalink` | `str` | Reddit permalink |
-| `is_self` | `bool` | Self post (text only) |
-| `over18` | `bool` | NSFW flag |
-| `created_at_date` | `str` | Creation date |
+| Field             | Type   | Description           |
+| ----------------- | ------ | --------------------- |
+| `id`              | `str`  | Post ID               |
+| `title`           | `str`  | Post title            |
+| `selftext`        | `str`  | Post body text        |
+| `author_username` | `str`  | Author username       |
+| `subreddit_name`  | `str`  | Subreddit name        |
+| `score`           | `int`  | Net score             |
+| `upvotes`         | `int`  | Upvote count          |
+| `comments_count`  | `int`  | Comment count         |
+| `url`             | `str`  | Post URL              |
+| `permalink`       | `str`  | Reddit permalink      |
+| `is_self`         | `bool` | Self post (text only) |
+| `over18`          | `bool` | NSFW flag             |
+| `created_at_date` | `str`  | Creation date         |
 
 ### RedditUser
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | User ID |
-| `username` | `str` | Username |
-| `total_karma` | `int` | Total karma |
-| `link_karma` | `int` | Link karma |
-| `comment_karma` | `int` | Comment karma |
-| `is_gold` | `bool` | Reddit Gold status |
-| `is_mod` | `bool` | Moderator status |
-| `profile_description` | `str` | Profile bio |
-| `created_at_date` | `str` | Account creation date |
+| Field                 | Type   | Description           |
+| --------------------- | ------ | --------------------- |
+| `id`                  | `str`  | User ID               |
+| `username`            | `str`  | Username              |
+| `total_karma`         | `int`  | Total karma           |
+| `link_karma`          | `int`  | Link karma            |
+| `comment_karma`       | `int`  | Comment karma         |
+| `is_gold`             | `bool` | Reddit Gold status    |
+| `is_mod`              | `bool` | Moderator status      |
+| `profile_description` | `str`  | Profile bio           |
+| `created_at_date`     | `str`  | Account creation date |
 
 ### RedditComment
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | Comment ID |
-| `body` | `str` | Comment text |
-| `author_username` | `str` | Author username |
-| `parent_post_id` | `str` | Parent post ID |
-| `score` | `int` | Net score |
-| `depth` | `int` | Nesting depth |
-| `is_submitter` | `bool` | Is OP |
-| `created_at_date` | `str` | Creation date |
+| Field             | Type   | Description     |
+| ----------------- | ------ | --------------- |
+| `id`              | `str`  | Comment ID      |
+| `body`            | `str`  | Comment text    |
+| `author_username` | `str`  | Author username |
+| `parent_post_id`  | `str`  | Parent post ID  |
+| `score`           | `int`  | Net score       |
+| `depth`           | `int`  | Nesting depth   |
+| `is_submitter`    | `bool` | Is OP           |
+| `created_at_date` | `str`  | Creation date   |
 
 ### RedditSubreddit
 
-| Field | Type | Description |
-|---|---|---|
-| `id` | `str` | Subreddit ID |
-| `display_name` | `str` | Subreddit name |
-| `title` | `str` | Subreddit title |
-| `public_description` | `str` | Short description |
-| `description` | `str` | Full description |
-| `subscribers_count` | `int` | Subscriber count |
-| `active_user_count` | `int` | Active users |
-| `over18` | `bool` | NSFW flag |
-| `created_at_date` | `str` | Creation date |
+| Field                | Type   | Description       |
+| -------------------- | ------ | ----------------- |
+| `id`                 | `str`  | Subreddit ID      |
+| `display_name`       | `str`  | Subreddit name    |
+| `title`              | `str`  | Subreddit title   |
+| `public_description` | `str`  | Short description |
+| `description`        | `str`  | Full description  |
+| `subscribers_count`  | `int`  | Subscriber count  |
+| `active_user_count`  | `int`  | Active users      |
+| `over18`             | `bool` | NSFW flag         |
+| `created_at_date`    | `str`  | Creation date     |
 
 ### Composite Types
 
 **`RedditPostWithComments`** — returned by `get_post_with_comments()`:
+
 - `post: RedditPost`
 - `comments: list[RedditComment]`
 - `comments_pagination: PaginationInfo | None`
 
 **`SubredditWithPosts`** — returned by `get_subreddit_with_posts()`:
+
 - `subreddit: RedditSubreddit`
 - `posts: list[RedditPost]`
 - `posts_pagination: PaginationInfo | None`
@@ -565,10 +567,10 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 
 ## Environment Variables
 
-| Variable | Description | Default |
-|---|---|---|
-| `XPOZ_API_KEY` | API key for authentication | — |
-| `XPOZ_SERVER_URL` | MCP server URL | `https://mcp.xpoz.com/mcp` |
+| Variable          | Description                | Default                   |
+| ----------------- | -------------------------- | ------------------------- |
+| `XPOZ_API_KEY`    | API key for authentication | —                         |
+| `XPOZ_SERVER_URL` | MCP server URL             | `https://mcp.xpoz.ai/mcp` |
 
 ## Testing
 
