@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class Tweet(BaseModel, extra="allow"):
@@ -58,6 +58,13 @@ class Tweet(BaseModel, extra="allow"):
 class TwitterUser(BaseModel, extra="allow"):
     id: str | None = None
     username: str | None = None
+
+    @field_validator("username", mode="before")
+    @classmethod
+    def coerce_username(cls, v: Any) -> Any:
+        if v is not None and not isinstance(v, str):
+            return str(v)
+        return v
     name: str | None = None
     description: str | None = None
     location: str | None = None

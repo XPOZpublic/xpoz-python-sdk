@@ -10,6 +10,16 @@ pip install xpoz
 
 Requires Python 3.10+.
 
+## Get an API Key
+
+Sign up and get your token at **https://xpoz.ai/get-token**.
+
+Once you have it, pass it directly or set the `XPOZ_API_KEY` environment variable:
+
+```bash
+export XPOZ_API_KEY=your-token-here
+```
+
 ## What is Xpoz?
 
 Xpoz provides unified access to social media data across Twitter/X, Instagram, and Reddit. The platform indexes billions of posts, user profiles, and engagement metrics — making it possible to search, analyze, and export social media data at scale.
@@ -45,6 +55,8 @@ client.close()
 ```
 
 ## Authentication
+
+Get your API key at https://xpoz.ai/get-token, then use it as follows:
 
 ```python
 # Pass API key directly
