@@ -162,7 +162,9 @@ class TwitterNamespace(BaseNamespace):
         )
         result = self._call_and_maybe_poll(_tools.COUNT_TWEETS, args)
         count = result.get("results", result.get("count", 0))
-        if isinstance(count, list) and len(count) > 0:
+        if isinstance(count, list):
+            if len(count) == 0:
+                return 0
             first = count[0]
             if isinstance(first, dict):
                 return int(next(iter(first.values())))
@@ -411,7 +413,9 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         )
         result = await self._call_and_maybe_poll(_tools.COUNT_TWEETS, args)
         count = result.get("results", result.get("count", 0))
-        if isinstance(count, list) and len(count) > 0:
+        if isinstance(count, list):
+            if len(count) == 0:
+                return 0
             first = count[0]
             if isinstance(first, dict):
                 return int(next(iter(first.values())))

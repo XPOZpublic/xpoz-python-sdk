@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-class PaginationInfo(BaseModel):
+class PaginationInfo(BaseModel, extra="allow"):
     table_name: str | None = None
     total_rows: int = 0
     total_pages: int = 0

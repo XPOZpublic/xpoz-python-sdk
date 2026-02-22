@@ -29,7 +29,7 @@ class PaginatedResult(Generic[T]):
 
     def next_page(self) -> PaginatedResult[T]:
         if not self.has_next_page():
-            raise StopIteration("No more pages available")
+            raise IndexError("No more pages available")
         return self._fetch_page_result(self.pagination.page_number + 1)
 
     def get_page(self, page_number: int) -> PaginatedResult[T]:
@@ -86,7 +86,7 @@ class AsyncPaginatedResult(Generic[T]):
 
     async def next_page(self) -> AsyncPaginatedResult[T]:
         if not self.has_next_page():
-            raise StopIteration("No more pages available")
+            raise IndexError("No more pages available")
         return await self._fetch_page_result(self.pagination.page_number + 1)
 
     async def get_page(self, page_number: int) -> AsyncPaginatedResult[T]:

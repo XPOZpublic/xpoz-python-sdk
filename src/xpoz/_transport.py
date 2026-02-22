@@ -82,6 +82,7 @@ class SyncTransport:
         self._portal_cm: Any = None
         self._portal: BlockingPortal | None = None
         self._shutdown_event: anyio.Event | None = None
+        self._connect_error: BaseException | None = None
 
     def connect(self) -> None:
         self._portal_cm = start_blocking_portal()
@@ -92,27 +93,36 @@ class SyncTransport:
         self._portal.start_task_soon(self._lifecycle, ready_event, self._shutdown_event)
         self._portal.call(ready_event.wait)
 
+        if self._connect_error is not None:
+            raise self._connect_error
+
     async def _lifecycle(
         self,
         ready: anyio.Event,
         shutdown: anyio.Event,
     ) -> None:
-        headers: dict[str, str] = {"User-Agent": _USER_AGENT}
-        if self._api_key:
-            headers["Authorization"] = f"Bearer {self._api_key}"
+        try:
+            headers: dict[str, str] = {"User-Agent": _USER_AGENT}
+            if self._api_key:
+                headers["Authorization"] = f"Bearer {self._api_key}"
 
-        http_client = httpx.AsyncClient(
-            headers=headers,
-            timeout=httpx.Timeout(30, read=None),
-        )
-        async with streamable_http_client(self._server_url, http_client=http_client) as streams:
-            read_stream, write_stream, _ = streams
-            async with ClientSession(read_stream, write_stream) as session:
-                await session.initialize()
-                self._session = session
-                ready.set()
-                await shutdown.wait()
-        self._session = None
+            http_client = httpx.AsyncClient(
+                headers=headers,
+                timeout=httpx.Timeout(30, read=None),
+            )
+            async with streamable_http_client(self._server_url, http_client=http_client) as streams:
+                read_stream, write_stream, _ = streams
+                async with ClientSession(read_stream, write_stream) as session:
+                    await session.initialize()
+                    self._session = session
+                    ready.set()
+                    await shutdown.wait()
+        except BaseException as exc:
+            self._connect_error = exc
+            ready.set()
+            raise
+        finally:
+            self._session = None
 
     def close(self) -> None:
         if self._portal and self._shutdown_event:

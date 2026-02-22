@@ -3,14 +3,14 @@ from xpoz._async_client import AsyncXpozClient
 from xpoz._exceptions import (
     XpozError,
     AuthenticationError,
-    ConnectionError,
+    XpozConnectionError,
     OperationTimeoutError,
     OperationFailedError,
     OperationCancelledError,
     NotFoundError,
     ValidationError,
 )
-from xpoz._pagination import PaginatedResult
+from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz._version import __version__
 
 __all__ = [
@@ -18,12 +18,13 @@ __all__ = [
     "AsyncXpozClient",
     "XpozError",
     "AuthenticationError",
-    "ConnectionError",
+    "XpozConnectionError",
     "OperationTimeoutError",
     "OperationFailedError",
     "OperationCancelledError",
     "NotFoundError",
     "ValidationError",
     "PaginatedResult",
+    "AsyncPaginatedResult",
     "__version__",
 ]

@@ -27,15 +27,15 @@ async def wait_for_result(
         )
         status = result.get("status")
 
-        if status == "completed" or "results" in result or "downloadUrl" in result:
-            return result
-
         if status == "failed":
             error = result.get("error", "Unknown error")
             raise OperationFailedError(operation_id, str(error))
 
         if status == "cancelled":
             raise OperationCancelledError(operation_id)
+
+        if status == "completed" or "results" in result or "downloadUrl" in result:
+            return result
 
         elapsed = anyio.current_time() - start
         if elapsed >= timeout:
@@ -56,15 +56,15 @@ def wait_for_result_sync(
         )
         status = result.get("status")
 
-        if status == "completed" or "results" in result or "downloadUrl" in result:
-            return result
-
         if status == "failed":
             error = result.get("error", "Unknown error")
             raise OperationFailedError(operation_id, str(error))
 
         if status == "cancelled":
             raise OperationCancelledError(operation_id)
+
+        if status == "completed" or "results" in result or "downloadUrl" in result:
+            return result
 
         elapsed = time.monotonic() - start
         if elapsed >= timeout:

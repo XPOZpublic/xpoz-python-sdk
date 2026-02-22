@@ -157,15 +157,15 @@ class RedditSubreddit(BaseModel, extra="allow"):
     relevant_posts_comments_count_sum: int | None = None
 
 
-class RedditPostWithComments(BaseModel):
-    post: RedditPost
-    comments: list[RedditComment] = []
+class RedditPostWithComments(BaseModel, extra="allow"):
+    post: RedditPost | None = None
+    comments: list[RedditComment] | None = None
     comments_pagination: PaginationInfo | None = None
     comments_table_name: str | None = None
 
 
-class SubredditWithPosts(BaseModel):
-    subreddit: RedditSubreddit
-    posts: list[RedditPost] = []
+class SubredditWithPosts(BaseModel, extra="allow"):
+    subreddit: RedditSubreddit | None = None
+    posts: list[RedditPost] | None = None
     posts_pagination: PaginationInfo | None = None
     posts_table_name: str | None = None

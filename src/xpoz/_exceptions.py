@@ -6,7 +6,7 @@ class AuthenticationError(XpozError):
     pass
 
 
-class ConnectionError(XpozError):
+class XpozConnectionError(XpozError):
     pass
 
 

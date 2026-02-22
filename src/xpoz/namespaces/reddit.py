@@ -203,7 +203,7 @@ class RedditNamespace(BaseNamespace):
             results = results[0] if results else {}
 
         post_data = results.get("post", results)
-        comments_data = results.get("comments", [])
+        comments_data = results.get("comments") or []
         pagination = _extract_pagination(raw)
 
         return RedditPostWithComments(
@@ -219,7 +219,7 @@ class RedditNamespace(BaseNamespace):
             results = results[0] if results else {}
 
         subreddit_data = results.get("subreddit", results)
-        posts_data = results.get("posts", [])
+        posts_data = results.get("posts") or []
         pagination = _extract_pagination(raw)
 
         return SubredditWithPosts(
@@ -409,7 +409,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             results = results[0] if results else {}
 
         post_data = results.get("post", results)
-        comments_data = results.get("comments", [])
+        comments_data = results.get("comments") or []
         pagination = _extract_pagination(raw)
 
         return RedditPostWithComments(
@@ -425,7 +425,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             results = results[0] if results else {}
 
         subreddit_data = results.get("subreddit", results)
-        posts_data = results.get("posts", [])
+        posts_data = results.get("posts") or []
         pagination = _extract_pagination(raw)
 
         return SubredditWithPosts(

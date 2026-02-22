@@ -21,7 +21,7 @@ def _parse_items(model: Type[T], raw_list: list[dict[str, Any]]) -> list[T]:
 
 
 def _extract_pagination(raw: dict[str, Any]) -> PaginationInfo:
-    pag: dict[str, Any] = raw.get("pagination", {})
+    pag: dict[str, Any] = raw.get("pagination") or {}
     return PaginationInfo(
         table_name=pag.get("tableName"),
         total_rows=pag.get("totalRows", 0),

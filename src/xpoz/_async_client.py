@@ -6,13 +6,10 @@ from typing import Any
 from xpoz._transport import McpTransport
 from xpoz._polling import DEFAULT_TIMEOUT_SECONDS
 from xpoz._exceptions import AuthenticationError
+from xpoz._constants import DEFAULT_SERVER_URL, ENV_API_KEY, ENV_SERVER_URL
 from xpoz.namespaces.twitter import AsyncTwitterNamespace
 from xpoz.namespaces.instagram import AsyncInstagramNamespace
 from xpoz.namespaces.reddit import AsyncRedditNamespace
-
-DEFAULT_SERVER_URL = "https://mcp.xpoz.ai/mcp"
-ENV_API_KEY = "XPOZ_API_KEY"
-ENV_SERVER_URL = "XPOZ_SERVER_URL"
 
 
 class AsyncXpozClient:
@@ -34,6 +31,14 @@ class AsyncXpozClient:
         self._timeout = timeout
         self._transport = McpTransport(self._server_url, self._api_key)
         self._connected = False
+
+    def __getattr__(self, name: str) -> object:
+        if name in ("twitter", "instagram", "reddit"):
+            raise RuntimeError(
+                f"AsyncXpozClient.{name} is not available. "
+                "Call 'await client.connect()' or use 'async with client' first."
+            )
+        raise AttributeError(name)
 
     async def connect(self) -> None:
         if not self._connected:
