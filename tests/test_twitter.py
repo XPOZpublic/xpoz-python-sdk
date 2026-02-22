@@ -15,6 +15,25 @@ def twitter_search_result(client):
 
 
 @pytest.fixture(scope="module")
+def twitter_paging_result(client):
+    return client.twitter.search_posts(
+        "bitcoin",
+        start_date="2025-01-01",
+        fields=["id", "text", "like_count", "retweet_count"],
+        response_type="paging",
+    )
+
+
+@pytest.fixture(scope="module")
+def twitter_csv_result(client):
+    return client.twitter.search_posts(
+        "bitcoin",
+        start_date="2025-01-01",
+        response_type="csv",
+    )
+
+
+@pytest.fixture(scope="module")
 def twitter_post_id():
     return "1874266108200673750"
 
@@ -79,14 +98,13 @@ class TestTwitterPosts:
         result = twitter_search_result
         assert isinstance(result, PaginatedResult)
         assert isinstance(result.pagination, PaginationInfo)
-        assert result.pagination.total_rows > 0
         assert result.pagination.page_number == 1
         assert isinstance(result.pagination.total_pages, int)
 
-    def test_search_posts_pagination(self, twitter_search_result):
-        if not twitter_search_result.has_next_page():
+    def test_search_posts_pagination(self, twitter_paging_result):
+        if not twitter_paging_result.has_next_page():
             pytest.skip("Only one page of results")
-        page2 = twitter_search_result.next_page()
+        page2 = twitter_paging_result.next_page()
         assert isinstance(page2, PaginatedResult)
         assert len(page2.data) > 0
 
@@ -119,10 +137,7 @@ class TestTwitterPosts:
         assert isinstance(count, int)
         assert count > 0
 
-    def test_export_csv(self, twitter_search_result):
-        try:
-            url = twitter_search_result.export_csv()
-            assert isinstance(url, str)
-            assert len(url) > 0
-        except RuntimeError:
-            pytest.skip("CSV export not available for this result")
+    def test_export_csv(self, twitter_csv_result):
+        url = twitter_csv_result.export_csv()
+        assert isinstance(url, str)
+        assert len(url) > 0

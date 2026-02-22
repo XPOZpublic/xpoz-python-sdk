@@ -56,6 +56,7 @@ class TwitterNamespace(BaseNamespace):
         author_id: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
     ) -> PaginatedResult[Tweet]:
         args = self._build_args(
             query=query,
@@ -66,7 +67,16 @@ class TwitterNamespace(BaseNamespace):
             authorId=author_id,
             language=language,
             forceLatest=force_latest,
+            responseType=response_type,
         )
+        if response_type == "csv":
+            raw = self._call_tool(_tools.SEARCH_TWITTER_POSTS, args)
+            export_op_id = raw.get("operationId") or raw.get("dataDumpExportOperationId")
+            csv_raw: dict[str, Any] = {
+                "results": [],
+                "dataDumpExportOperationId": export_op_id,
+            }
+            return self._build_paginated_result(csv_raw, Tweet, _tools.SEARCH_TWITTER_POSTS, args)
         result = self._call_and_maybe_poll(_tools.SEARCH_TWITTER_POSTS, args)
         return self._build_paginated_result(result, Tweet, _tools.SEARCH_TWITTER_POSTS, args)
 
@@ -285,6 +295,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         author_id: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
     ) -> AsyncPaginatedResult[Tweet]:
         args = self._build_args(
             query=query,
@@ -295,7 +306,18 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
             authorId=author_id,
             language=language,
             forceLatest=force_latest,
+            responseType=response_type,
         )
+        if response_type == "csv":
+            raw = await self._call_tool(_tools.SEARCH_TWITTER_POSTS, args)
+            export_op_id = raw.get("operationId") or raw.get("dataDumpExportOperationId")
+            csv_raw: dict[str, Any] = {
+                "results": [],
+                "dataDumpExportOperationId": export_op_id,
+            }
+            return await self._build_paginated_result(
+                csv_raw, Tweet, _tools.SEARCH_TWITTER_POSTS, args
+            )
         result = await self._call_and_maybe_poll(_tools.SEARCH_TWITTER_POSTS, args)
         return await self._build_paginated_result(
             result, Tweet, _tools.SEARCH_TWITTER_POSTS, args
