@@ -38,7 +38,7 @@ dev = ["pytest>=8.0"]
 [project.urls]
 Homepage = "https://xpoz.ai"
 Documentation = "https://help.xpoz.ai"
-Repository = "https://github.com/hossenco/xpoz-sdk"
+Repository = "https://github.com/XPOZpublic/xpoz-python-sdk"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/xpoz"]

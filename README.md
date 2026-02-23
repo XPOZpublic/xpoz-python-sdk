@@ -31,7 +31,7 @@ The SDK wraps Xpoz's [MCP](https://modelcontextprotocol.io) server, abstracting 
 - **30 data methods** across Twitter, Instagram, and Reddit
 - **Sync and async clients** — `XpozClient` and `AsyncXpozClient`
 - **Automatic operation polling** — long-running queries are abstracted away
-- **Server-side pagination** — `PaginatedResult` with `next_page()`, `get_page(n)`, `get_all_pages()`
+- **Server-side pagination** — `PaginatedResult` with `next_page()`, `get_page(n)`
 - **CSV export** — `export_csv()` on any paginated result
 - **Field selection** — request only the fields you need in Pythonic snake_case
 - **Pydantic v2 models** — fully typed results with autocomplete support
@@ -112,9 +112,6 @@ results.has_next_page()            # bool
 # Navigate pages
 page2 = results.next_page()        # fetch next page
 page5 = results.get_page(5)        # jump to specific page
-
-# Fetch everything
-all_tweets = results.get_all_pages()  # flat list[TwitterPost] of all pages
 
 # Export to CSV
 csv_url = results.export_csv()     # returns download URL

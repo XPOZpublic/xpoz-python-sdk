@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code when working with the xpoz-sdk repository.
+This file provides guidance to Claude Code when working with the xpoz-python-sdk repository.
 
 ## Project Overview
 
@@ -9,7 +9,7 @@ Python SDK for the Xpoz social media intelligence platform — wraps the xpoz-mc
 ## Repository Structure
 
 ```
-xpoz-sdk/
+xpoz-python-sdk/
 ├── pyproject.toml          # Package config (hatchling build system)
 ├── README.md               # Documentation
 └── src/xpoz/               # Package source
@@ -94,7 +94,7 @@ Many xpoz-mcp tools return an `operationId` instead of immediate results (long-r
 
 - `PaginatedResult[T]` (sync) and `AsyncPaginatedResult[T]` (async)
 - Wraps first-page data + `PaginationInfo` + a stored `fetch_page` callback
-- `next_page()`, `get_page(n)`, `get_all_pages()` fetch subsequent pages using `tableName` from first response
+- `next_page()`, `get_page(n)` fetch subsequent pages using `tableName` from first response
 - `export_csv()` polls the export operation and returns a download URL
 
 ### Field Mapping (`_field_mapping.py`)

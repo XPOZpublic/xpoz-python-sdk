@@ -39,15 +39,6 @@ class PaginatedResult(Generic[T]):
             )
         return self._fetch_page_result(page_number)
 
-    def get_all_pages(self) -> list[T]:
-        all_data = list(self.data)
-        current_page = self.pagination.page_number
-        while current_page < self.pagination.total_pages:
-            current_page += 1
-            result = self._fetch_page_result(current_page)
-            all_data.extend(result.data)
-        return all_data
-
     def export_csv(self) -> str:
         if self._fetch_export is None or self._export_operation_id is None:
             raise RuntimeError("CSV export not available for this result")
@@ -95,15 +86,6 @@ class AsyncPaginatedResult(Generic[T]):
                 f"Page {page_number} out of range (1-{self.pagination.total_pages})"
             )
         return await self._fetch_page_result(page_number)
-
-    async def get_all_pages(self) -> list[T]:
-        all_data = list(self.data)
-        current_page = self.pagination.page_number
-        while current_page < self.pagination.total_pages:
-            current_page += 1
-            result = await self._fetch_page_result(current_page)
-            all_data.extend(result.data)
-        return all_data
 
     async def export_csv(self) -> str:
         if self._fetch_export is None or self._export_operation_id is None:
