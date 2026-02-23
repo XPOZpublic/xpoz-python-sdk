@@ -1,5 +1,5 @@
 from xpoz.types.common import PaginationInfo
-from xpoz.types.twitter import Tweet, TwitterUser
+from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
 from xpoz.types.reddit import (
     RedditPost,
@@ -12,7 +12,7 @@ from xpoz.types.reddit import (
 
 __all__ = [
     "PaginationInfo",
-    "Tweet",
+    "TwitterPost",
     "TwitterUser",
     "InstagramPost",
     "InstagramUser",

@@ -8,7 +8,7 @@ from anyio.from_thread import BlockingPortal, start_blocking_portal
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
-from xpoz._response_parser import parse_response_text
+from xpoz._transform._response_parser import parse_response_text
 from xpoz._version import __version__
 
 _USER_AGENT = f"xpoz-python-sdk/{__version__}"

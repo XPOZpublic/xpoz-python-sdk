@@ -4,8 +4,8 @@ from typing import TypeVar, Any, Callable, Awaitable, Type
 
 from pydantic import BaseModel
 
-from xpoz._field_mapping import map_fields_to_camel, map_dict_keys_to_snake
-from xpoz._polling import wait_for_result, wait_for_result_sync
+from xpoz._transform._field_mapping import map_fields_to_camel, map_dict_keys_to_snake
+from xpoz._mcp._polling import wait_for_result, wait_for_result_sync
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz.types.common import PaginationInfo
 

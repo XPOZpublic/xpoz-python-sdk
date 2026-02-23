@@ -11,7 +11,7 @@ from xpoz.namespaces._base import (
     _extract_results,
 )
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
-from xpoz._polling import wait_for_result_sync, wait_for_result
+from xpoz._mcp._polling import wait_for_result_sync, wait_for_result
 from xpoz.types.reddit import (
     RedditPost,
     RedditUser,
@@ -21,7 +21,7 @@ from xpoz.types.reddit import (
     SubredditWithPosts,
 )
 from xpoz.types.common import PaginationInfo
-from xpoz import _tools
+from xpoz._config import _tools
 
 
 class RedditNamespace(BaseNamespace):

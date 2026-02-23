@@ -5,7 +5,7 @@ from typing import Any
 from pydantic import BaseModel, field_validator
 
 
-class Tweet(BaseModel, extra="allow"):
+class TwitterPost(BaseModel, extra="allow"):
     id: str | None = None
     text: str | None = None
     author_id: str | None = None
