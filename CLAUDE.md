@@ -17,15 +17,24 @@ xpoz-sdk/
     ├── _version.py          # Version string
     ├── _client.py           # XpozClient (sync)
     ├── _async_client.py     # AsyncXpozClient (async)
-    ├── _transport.py        # MCP Streamable HTTP transport wrapper
-    ├── _polling.py          # Operation polling (5s interval, configurable timeout)
     ├── _pagination.py       # PaginatedResult[T] + AsyncPaginatedResult[T]
-    ├── _field_mapping.py    # snake_case <-> camelCase bidirectional mapping
     ├── _exceptions.py       # Error hierarchy
+    ├── _mcp/                # MCP protocol layer
+    │   ├── __init__.py
+    │   ├── _transport.py    # MCP Streamable HTTP transport wrapper
+    │   └── _polling.py      # Operation polling (5s interval, configurable timeout)
+    ├── _transform/          # Data translation
+    │   ├── __init__.py
+    │   ├── _field_mapping.py# snake_case <-> camelCase bidirectional mapping
+    │   └── _response_parser.py # MCP response text parsing
+    ├── _config/             # Static config/constants
+    │   ├── __init__.py
+    │   ├── _constants.py    # Server URL, env var names
+    │   └── _tools.py        # MCP tool name constants
     ├── types/               # Pydantic v2 models
     │   ├── __init__.py
     │   ├── common.py        # PaginationInfo
-    │   ├── twitter.py       # Tweet, TwitterUser
+    │   ├── twitter.py       # TwitterPost, TwitterUser
     │   ├── instagram.py     # InstagramPost, InstagramUser, InstagramComment
     │   └── reddit.py        # RedditPost, RedditUser, RedditComment, RedditSubreddit, composites
     └── namespaces/          # Platform method groups (sync + async variants)

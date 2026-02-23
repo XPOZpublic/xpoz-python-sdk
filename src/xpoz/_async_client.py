@@ -3,10 +3,10 @@ from __future__ import annotations
 import os
 from typing import Any
 
-from xpoz._transport import McpTransport
-from xpoz._polling import DEFAULT_TIMEOUT_SECONDS
+from xpoz._mcp._transport import McpTransport
+from xpoz._mcp._polling import DEFAULT_TIMEOUT_SECONDS
 from xpoz._exceptions import AuthenticationError
-from xpoz._constants import DEFAULT_SERVER_URL, ENV_API_KEY, ENV_SERVER_URL
+from xpoz._config._constants import DEFAULT_SERVER_URL, ENV_API_KEY, ENV_SERVER_URL
 from xpoz.namespaces.twitter import AsyncTwitterNamespace
 from xpoz.namespaces.instagram import AsyncInstagramNamespace
 from xpoz.namespaces.reddit import AsyncRedditNamespace

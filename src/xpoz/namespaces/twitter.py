@@ -4,8 +4,8 @@ from typing import Any
 
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
-from xpoz.types.twitter import Tweet, TwitterUser
-from xpoz import _tools
+from xpoz.types.twitter import TwitterPost, TwitterUser
+from xpoz._config import _tools
 
 
 class TwitterNamespace(BaseNamespace):
@@ -15,14 +15,14 @@ class TwitterNamespace(BaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> list[Tweet]:
+    ) -> list[TwitterPost]:
         args = self._build_args(
             postIds=post_ids,
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
         result = self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_IDS, args)
-        return _parse_items(Tweet, result.get("results", []))
+        return _parse_items(TwitterPost, result.get("results", []))
 
     def get_posts_by_author(
         self,
@@ -33,7 +33,7 @@ class TwitterNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[Tweet]:
+    ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
@@ -43,7 +43,7 @@ class TwitterNamespace(BaseNamespace):
             forceLatest=force_latest,
         )
         result = self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_AUTHOR, args)
-        return self._build_paginated_result(result, Tweet, _tools.GET_TWITTER_POSTS_BY_AUTHOR, args)
+        return self._build_paginated_result(result, TwitterPost, _tools.GET_TWITTER_POSTS_BY_AUTHOR, args)
 
     def search_posts(
         self,
@@ -57,7 +57,7 @@ class TwitterNamespace(BaseNamespace):
         language: str | None = None,
         force_latest: bool | None = None,
         response_type: str | None = None,
-    ) -> PaginatedResult[Tweet]:
+    ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -76,9 +76,9 @@ class TwitterNamespace(BaseNamespace):
                 "results": [],
                 "dataDumpExportOperationId": export_op_id,
             }
-            return self._build_paginated_result(csv_raw, Tweet, _tools.SEARCH_TWITTER_POSTS, args)
+            return self._build_paginated_result(csv_raw, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args)
         result = self._call_and_maybe_poll(_tools.SEARCH_TWITTER_POSTS, args)
-        return self._build_paginated_result(result, Tweet, _tools.SEARCH_TWITTER_POSTS, args)
+        return self._build_paginated_result(result, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args)
 
     def get_retweets(
         self,
@@ -86,14 +86,14 @@ class TwitterNamespace(BaseNamespace):
         *,
         fields: list[str] | None = None,
         start_date: str | None = None,
-    ) -> PaginatedResult[Tweet]:
+    ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
             startDate=start_date,
         )
         result = self._call_and_maybe_poll(_tools.GET_TWITTER_RETWEETS, args)
-        return self._build_paginated_result(result, Tweet, _tools.GET_TWITTER_RETWEETS, args)
+        return self._build_paginated_result(result, TwitterPost, _tools.GET_TWITTER_RETWEETS, args)
 
     def get_quotes(
         self,
@@ -102,7 +102,7 @@ class TwitterNamespace(BaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[Tweet]:
+    ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -110,7 +110,7 @@ class TwitterNamespace(BaseNamespace):
             forceLatest=force_latest,
         )
         result = self._call_and_maybe_poll(_tools.GET_TWITTER_QUOTES, args)
-        return self._build_paginated_result(result, Tweet, _tools.GET_TWITTER_QUOTES, args)
+        return self._build_paginated_result(result, TwitterPost, _tools.GET_TWITTER_QUOTES, args)
 
     def get_comments(
         self,
@@ -119,7 +119,7 @@ class TwitterNamespace(BaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[Tweet]:
+    ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -127,7 +127,7 @@ class TwitterNamespace(BaseNamespace):
             forceLatest=force_latest,
         )
         result = self._call_and_maybe_poll(_tools.GET_TWITTER_COMMENTS, args)
-        return self._build_paginated_result(result, Tweet, _tools.GET_TWITTER_COMMENTS, args)
+        return self._build_paginated_result(result, TwitterPost, _tools.GET_TWITTER_COMMENTS, args)
 
     def get_post_interacting_users(
         self,
@@ -254,14 +254,14 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> list[Tweet]:
+    ) -> list[TwitterPost]:
         args = self._build_args(
             postIds=post_ids,
             fields=self._convert_fields(fields),
             forceLatest=force_latest,
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_IDS, args)
-        return _parse_items(Tweet, result.get("results", []))
+        return _parse_items(TwitterPost, result.get("results", []))
 
     async def get_posts_by_author(
         self,
@@ -272,7 +272,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[Tweet]:
+    ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
@@ -283,7 +283,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_AUTHOR, args)
         return await self._build_paginated_result(
-            result, Tweet, _tools.GET_TWITTER_POSTS_BY_AUTHOR, args
+            result, TwitterPost, _tools.GET_TWITTER_POSTS_BY_AUTHOR, args
         )
 
     async def search_posts(
@@ -298,7 +298,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         language: str | None = None,
         force_latest: bool | None = None,
         response_type: str | None = None,
-    ) -> AsyncPaginatedResult[Tweet]:
+    ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -318,11 +318,11 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
                 "dataDumpExportOperationId": export_op_id,
             }
             return await self._build_paginated_result(
-                csv_raw, Tweet, _tools.SEARCH_TWITTER_POSTS, args
+                csv_raw, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args
             )
         result = await self._call_and_maybe_poll(_tools.SEARCH_TWITTER_POSTS, args)
         return await self._build_paginated_result(
-            result, Tweet, _tools.SEARCH_TWITTER_POSTS, args
+            result, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args
         )
 
     async def get_retweets(
@@ -331,7 +331,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         *,
         fields: list[str] | None = None,
         start_date: str | None = None,
-    ) -> AsyncPaginatedResult[Tweet]:
+    ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -339,7 +339,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_RETWEETS, args)
         return await self._build_paginated_result(
-            result, Tweet, _tools.GET_TWITTER_RETWEETS, args
+            result, TwitterPost, _tools.GET_TWITTER_RETWEETS, args
         )
 
     async def get_quotes(
@@ -349,7 +349,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[Tweet]:
+    ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -358,7 +358,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_QUOTES, args)
         return await self._build_paginated_result(
-            result, Tweet, _tools.GET_TWITTER_QUOTES, args
+            result, TwitterPost, _tools.GET_TWITTER_QUOTES, args
         )
 
     async def get_comments(
@@ -368,7 +368,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[Tweet]:
+    ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -377,7 +377,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_COMMENTS, args)
         return await self._build_paginated_result(
-            result, Tweet, _tools.GET_TWITTER_COMMENTS, args
+            result, TwitterPost, _tools.GET_TWITTER_COMMENTS, args
         )
 
     async def get_post_interacting_users(

@@ -5,7 +5,7 @@ from typing import Any
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
-from xpoz import _tools
+from xpoz._config import _tools
 
 
 class InstagramNamespace(BaseNamespace):

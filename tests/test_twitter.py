@@ -1,7 +1,7 @@
 import pytest
 
 from xpoz import PaginatedResult
-from xpoz.types.twitter import Tweet, TwitterUser
+from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz.types.common import PaginationInfo
 
 
@@ -91,7 +91,7 @@ class TestTwitterPosts:
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for post in result.data:
-            assert isinstance(post, Tweet)
+            assert isinstance(post, TwitterPost)
             assert post.text is not None
 
     def test_search_posts(self, twitter_search_result):
@@ -130,7 +130,7 @@ class TestTwitterPosts:
         posts = client.twitter.get_posts_by_ids([twitter_post_id])
         assert isinstance(posts, list)
         assert len(posts) == 1
-        assert isinstance(posts[0], Tweet)
+        assert isinstance(posts[0], TwitterPost)
 
     def test_count_posts(self, client):
         count = client.twitter.count_posts("bitcoin", start_date="2025-01-01")

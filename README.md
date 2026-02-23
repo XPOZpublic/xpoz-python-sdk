@@ -101,7 +101,7 @@ Methods that return large datasets use server-side pagination (100 items per pag
 ```python
 results = client.twitter.search_posts("AI")
 
-results.data                       # list[Tweet] — current page
+results.data                       # list[TwitterPost] — current page
 results.pagination.total_rows      # total matching rows
 results.pagination.total_pages     # total pages
 results.pagination.page_number     # current page number
@@ -114,7 +114,7 @@ page2 = results.next_page()        # fetch next page
 page5 = results.get_page(5)        # jump to specific page
 
 # Fetch everything
-all_tweets = results.get_all_pages()  # flat list[Tweet] of all pages
+all_tweets = results.get_all_pages()  # flat list[TwitterPost] of all pages
 
 # Export to CSV
 csv_url = results.export_csv()     # returns download URL
@@ -138,6 +138,48 @@ user = client.twitter.get_user(
 ```
 
 Requesting fewer fields significantly improves response time.
+
+## Query Syntax
+
+The `query` parameter on all `search_*` and `get_*_by_keywords` methods supports a Lucene-style full-text syntax across Twitter, Instagram, and Reddit.
+
+### Exact phrase
+Wrap in double quotes to require an exact match:
+```
+"machine learning"
+"climate change"
+```
+
+### Keywords (any word)
+Space-separated terms without quotes match posts containing **any** of the words:
+```
+AI crypto blockchain
+```
+
+### Boolean operators
+Use `AND`, `OR`, `NOT` (case-insensitive). A bare space is treated as `OR` — be explicit:
+```
+"deep learning" AND python
+tensorflow OR pytorch
+climate NOT politics
+```
+
+### Grouping with parentheses
+```
+(AI OR "artificial intelligence") AND ethics
+(startup OR entrepreneur) NOT "venture capital"
+```
+
+### Combined example
+```python
+results = client.twitter.search_posts(
+    '("machine learning" OR "deep learning") AND python NOT spam',
+    start_date="2025-01-01",
+    language="en",
+)
+```
+
+> **Note:** Do not use `from:`, `lang:`, `since:`, or `until:` in the query string — use the dedicated parameters (`author_username`, `language`, `start_date`, `end_date`) instead.
 
 ## Error Handling
 
@@ -211,7 +253,7 @@ users = client.twitter.get_users_by_keywords(
 )
 ```
 
-#### `get_posts_by_ids(post_ids, *, fields, force_latest) -> list[Tweet]`
+#### `get_posts_by_ids(post_ids, *, fields, force_latest) -> list[TwitterPost]`
 
 Get 1-100 posts by their IDs.
 
@@ -219,7 +261,7 @@ Get 1-100 posts by their IDs.
 tweets = client.twitter.get_posts_by_ids(["1234567890", "0987654321"])
 ```
 
-#### `get_posts_by_author(identifier, identifier_type="username", *, fields, start_date, end_date, force_latest) -> PaginatedResult[Tweet]`
+#### `get_posts_by_author(identifier, identifier_type="username", *, fields, start_date, end_date, force_latest) -> PaginatedResult[TwitterPost]`
 
 Get all posts by an author with optional date filtering.
 
@@ -227,7 +269,7 @@ Get all posts by an author with optional date filtering.
 results = client.twitter.get_posts_by_author("elonmusk", start_date="2025-01-01")
 ```
 
-#### `search_posts(query, *, fields, start_date, end_date, author_username, author_id, language, force_latest) -> PaginatedResult[Tweet]`
+#### `search_posts(query, *, fields, start_date, end_date, author_username, author_id, language, force_latest) -> PaginatedResult[TwitterPost]`
 
 Full-text search with filters. Supports exact phrases (`"machine learning"`), boolean operators (`AI AND python`), and parentheses.
 
@@ -241,7 +283,7 @@ results = client.twitter.search_posts(
 )
 ```
 
-#### `get_retweets(post_id, *, fields, start_date) -> PaginatedResult[Tweet]`
+#### `get_retweets(post_id, *, fields, start_date) -> PaginatedResult[TwitterPost]`
 
 Get retweets of a specific post (database only).
 
@@ -249,7 +291,7 @@ Get retweets of a specific post (database only).
 retweets = client.twitter.get_retweets("1234567890")
 ```
 
-#### `get_quotes(post_id, *, fields, start_date, force_latest) -> PaginatedResult[Tweet]`
+#### `get_quotes(post_id, *, fields, start_date, force_latest) -> PaginatedResult[TwitterPost]`
 
 Get quote tweets of a specific post.
 
@@ -257,7 +299,7 @@ Get quote tweets of a specific post.
 quotes = client.twitter.get_quotes("1234567890")
 ```
 
-#### `get_comments(post_id, *, fields, start_date, force_latest) -> PaginatedResult[Tweet]`
+#### `get_comments(post_id, *, fields, start_date, force_latest) -> PaginatedResult[TwitterPost]`
 
 Get replies to a specific post.
 
@@ -425,12 +467,12 @@ subs = client.reddit.get_subreddits_by_keywords("cryptocurrency")
 
 All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown fields are preserved, not rejected). All fields are optional and default to `None`.
 
-### Tweet
+### TwitterPost
 
 | Field                | Type        | Description                |
 | -------------------- | ----------- | -------------------------- |
-| `id`                 | `str`       | Tweet ID                   |
-| `text`               | `str`       | Tweet text content         |
+| `id`                 | `str`       | Post ID                    |
+| `text`               | `str`       | Post text content          |
 | `author_id`          | `str`       | Author's user ID           |
 | `author_username`    | `str`       | Author's username          |
 | `like_count`         | `int`       | Number of likes            |
