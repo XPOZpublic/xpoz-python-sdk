@@ -1,5 +1,7 @@
 # Xpoz Python SDK
 
+[![PyPI version](https://img.shields.io/pypi/v/xpoz)](https://pypi.org/project/xpoz/)
+
 Python SDK for the [Xpoz](https://xpoz.ai) social media intelligence platform. Query Twitter/X, Instagram, and Reddit data through a simple, Pythonic interface.
 
 ## Installation
