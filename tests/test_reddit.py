@@ -13,9 +13,16 @@ from xpoz.types.common import PaginationInfo
 
 
 @pytest.fixture(scope="module")
-def reddit_search_result(client):
+def reddit_search_fast_result(client):
     return client.reddit.search_posts(
-        "python", fields=["id", "title", "score"]
+        "python", fields=["id", "title", "score"], response_type="fast", limit=10
+    )
+
+
+@pytest.fixture(scope="module")
+def reddit_search_paging_result(client):
+    return client.reddit.search_posts(
+        "python", fields=["id", "title", "score"], response_type="paging"
     )
 
 
@@ -48,15 +55,19 @@ class TestRedditUsers:
 
 
 class TestRedditPosts:
-    def test_search_posts(self, reddit_search_result):
-        result = reddit_search_result
+    def test_search_posts_fast(self, reddit_search_fast_result):
+        result = reddit_search_fast_result
         assert isinstance(result, PaginatedResult)
-        assert isinstance(result.pagination, PaginationInfo)
-        assert result.pagination.total_rows > 0
-        assert result.pagination.page_number == 1
         assert len(result.data) > 0
         for post in result.data:
             assert isinstance(post, RedditPost)
+
+    def test_search_posts_paging(self, reddit_search_paging_result):
+        result = reddit_search_paging_result
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
 
     def test_search_posts_with_subreddit(self, client):
         result = client.reddit.search_posts(
@@ -65,10 +76,10 @@ class TestRedditPosts:
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
 
-    def test_search_posts_pagination(self, reddit_search_result):
-        if not reddit_search_result.has_next_page():
+    def test_search_posts_pagination(self, reddit_search_paging_result):
+        if not reddit_search_paging_result.has_next_page():
             pytest.skip("Only one page of results")
-        page2 = reddit_search_result.next_page()
+        page2 = reddit_search_paging_result.next_page()
         assert isinstance(page2, PaginatedResult)
         assert len(page2.data) > 0
 

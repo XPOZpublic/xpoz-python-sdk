@@ -27,20 +27,22 @@ class TwitterNamespace(BaseNamespace):
     def get_posts_by_author(
         self,
         identifier: str,
-        identifier_type: str = "username",
         *,
         fields: list[str] | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
+        limit: int | None = None,
     ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
-            identifier=identifier,
-            identifierType=identifier_type,
+            username=identifier,
             fields=self._convert_fields(fields),
             startDate=start_date,
             endDate=end_date,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_AUTHOR, args)
         return self._build_paginated_result(result, TwitterPost, _tools.GET_TWITTER_POSTS_BY_AUTHOR, args)
@@ -57,6 +59,7 @@ class TwitterNamespace(BaseNamespace):
         language: str | None = None,
         force_latest: bool | None = None,
         response_type: str | None = None,
+        limit: int | None = None,
     ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
             query=query,
@@ -68,6 +71,7 @@ class TwitterNamespace(BaseNamespace):
             language=language,
             forceLatest=force_latest,
             responseType=response_type,
+            limit=limit,
         )
         if response_type == "csv":
             raw = self._call_tool(_tools.SEARCH_TWITTER_POSTS, args)
@@ -266,20 +270,22 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
     async def get_posts_by_author(
         self,
         identifier: str,
-        identifier_type: str = "username",
         *,
         fields: list[str] | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
+        limit: int | None = None,
     ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
-            identifier=identifier,
-            identifierType=identifier_type,
+            username=identifier,
             fields=self._convert_fields(fields),
             startDate=start_date,
             endDate=end_date,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_AUTHOR, args)
         return await self._build_paginated_result(
@@ -298,6 +304,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         language: str | None = None,
         force_latest: bool | None = None,
         response_type: str | None = None,
+        limit: int | None = None,
     ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
             query=query,
@@ -309,6 +316,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
             language=language,
             forceLatest=force_latest,
             responseType=response_type,
+            limit=limit,
         )
         if response_type == "csv":
             raw = await self._call_tool(_tools.SEARCH_TWITTER_POSTS, args)
