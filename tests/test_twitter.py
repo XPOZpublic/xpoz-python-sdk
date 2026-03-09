@@ -36,6 +36,20 @@ def twitter_csv_result(client):
 
 
 @pytest.fixture(scope="module")
+def twitter_users_by_keywords_fast(client):
+    return client.twitter.get_users_by_keywords(
+        "artificial intelligence", response_type="fast", limit=10
+    )
+
+
+@pytest.fixture(scope="module")
+def twitter_users_by_keywords_paging(client):
+    return client.twitter.get_users_by_keywords(
+        "artificial intelligence", response_type="paging"
+    )
+
+
+@pytest.fixture(scope="module")
 def twitter_post_id():
     return "1874266108200673750"
 
@@ -77,12 +91,19 @@ class TestTwitterUsers:
         for u in result.data:
             assert isinstance(u, TwitterUser)
 
-    def test_get_users_by_keywords(self, client):
-        result = client.twitter.get_users_by_keywords("artificial intelligence")
+    def test_get_users_by_keywords_fast(self, twitter_users_by_keywords_fast):
+        result = twitter_users_by_keywords_fast
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for u in result.data:
             assert isinstance(u, TwitterUser)
+
+    def test_get_users_by_keywords_paging(self, twitter_users_by_keywords_paging):
+        result = twitter_users_by_keywords_paging
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
 
 
 class TestTwitterPosts:

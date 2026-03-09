@@ -34,6 +34,20 @@ def instagram_search_paging_result(client):
 
 
 @pytest.fixture(scope="module")
+def instagram_users_by_keywords_fast(client):
+    return client.instagram.get_users_by_keywords(
+        "fashion", response_type="fast", limit=10
+    )
+
+
+@pytest.fixture(scope="module")
+def instagram_users_by_keywords_paging(client):
+    return client.instagram.get_users_by_keywords(
+        "fashion", response_type="paging"
+    )
+
+
+@pytest.fixture(scope="module")
 def instagram_post_id():
     return "3650461835687763021_8763092944"
 
@@ -68,12 +82,19 @@ class TestInstagramUsers:
         for u in result.data:
             assert isinstance(u, InstagramUser)
 
-    def test_get_users_by_keywords(self, client):
-        result = client.instagram.get_users_by_keywords("fashion")
+    def test_get_users_by_keywords_fast(self, instagram_users_by_keywords_fast):
+        result = instagram_users_by_keywords_fast
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for u in result.data:
             assert isinstance(u, InstagramUser)
+
+    def test_get_users_by_keywords_paging(self, instagram_users_by_keywords_paging):
+        result = instagram_users_by_keywords_paging
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
 
 
 class TestInstagramPosts:

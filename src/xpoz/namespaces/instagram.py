@@ -176,6 +176,8 @@ class InstagramNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
+        limit: int | None = None,
     ) -> PaginatedResult[InstagramUser]:
         args = self._build_args(
             query=query,
@@ -183,6 +185,8 @@ class InstagramNamespace(BaseNamespace):
             startDate=start_date,
             endDate=end_date,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USERS_BY_KEYWORDS, args)
         return self._build_paginated_result(
@@ -358,6 +362,8 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
+        limit: int | None = None,
     ) -> AsyncPaginatedResult[InstagramUser]:
         args = self._build_args(
             query=query,
@@ -365,6 +371,8 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
             startDate=start_date,
             endDate=end_date,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USERS_BY_KEYWORDS, args)
         return await self._build_paginated_result(

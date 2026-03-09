@@ -236,6 +236,8 @@ class TwitterNamespace(BaseNamespace):
         end_date: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
+        limit: int | None = None,
     ) -> PaginatedResult[TwitterUser]:
         args = self._build_args(
             query=query,
@@ -244,6 +246,8 @@ class TwitterNamespace(BaseNamespace):
             endDate=end_date,
             language=language,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = self._call_and_maybe_poll(_tools.GET_TWITTER_USERS_BY_KEYWORDS, args)
         return self._build_paginated_result(
@@ -491,6 +495,8 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         end_date: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
+        response_type: str | None = None,
+        limit: int | None = None,
     ) -> AsyncPaginatedResult[TwitterUser]:
         args = self._build_args(
             query=query,
@@ -499,6 +505,8 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
             endDate=end_date,
             language=language,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_USERS_BY_KEYWORDS, args)
         return await self._build_paginated_result(
