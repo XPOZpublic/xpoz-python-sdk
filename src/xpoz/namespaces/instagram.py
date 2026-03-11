@@ -6,6 +6,7 @@ from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
 from xpoz._config import _tools
+from xpoz._config._constants import ResponseType
 
 
 class InstagramNamespace(BaseNamespace):
@@ -33,7 +34,7 @@ class InstagramNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[InstagramPost]:
         args = self._build_args(
@@ -59,7 +60,7 @@ class InstagramNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[InstagramPost]:
         args = self._build_args(
@@ -176,7 +177,7 @@ class InstagramNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[InstagramUser]:
         args = self._build_args(
@@ -219,7 +220,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[InstagramPost]:
         args = self._build_args(
@@ -245,7 +246,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[InstagramPost]:
         args = self._build_args(
@@ -362,7 +363,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[InstagramUser]:
         args = self._build_args(

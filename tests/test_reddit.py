@@ -1,6 +1,6 @@
 import pytest
 
-from xpoz import PaginatedResult
+from xpoz import PaginatedResult, ResponseType
 from xpoz.types.reddit import (
     RedditPost,
     RedditUser,
@@ -15,14 +15,14 @@ from xpoz.types.common import PaginationInfo
 @pytest.fixture(scope="module")
 def reddit_search_fast_result(client):
     return client.reddit.search_posts(
-        "python", fields=["id", "title", "score"], response_type="fast", limit=10
+        "python", fields=["id", "title", "score"], response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
 def reddit_search_paging_result(client):
     return client.reddit.search_posts(
-        "python", fields=["id", "title", "score"], response_type="paging"
+        "python", fields=["id", "title", "score"], response_type=ResponseType.PAGING
     )
 
 

@@ -1,6 +1,8 @@
+from datetime import date, timedelta
+
 import pytest
 
-from xpoz import PaginatedResult
+from xpoz import PaginatedResult, ResponseType
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
 from xpoz.types.common import PaginationInfo
 
@@ -8,43 +10,39 @@ from xpoz.types.common import PaginationInfo
 @pytest.fixture(scope="module")
 def instagram_posts_fast_result(client):
     return client.instagram.get_posts_by_user(
-        "instagram", fields=["id", "caption", "like_count"], response_type="fast", limit=10
+        "instagram", fields=["id", "caption", "like_count"], response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_posts_paging_result(client):
     return client.instagram.get_posts_by_user(
-        "instagram", fields=["id", "caption", "like_count"], response_type="paging"
+        "instagram", fields=["id", "caption", "like_count"], response_type=ResponseType.PAGING
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_search_fast_result(client):
     return client.instagram.search_posts(
-        "travel", fields=["id", "caption", "like_count"], response_type="fast", limit=10
+        "travel", fields=["id", "caption", "like_count"], response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_search_paging_result(client):
     return client.instagram.search_posts(
-        "travel", fields=["id", "caption", "like_count"], response_type="paging"
+        "travel", fields=["id", "caption", "like_count"], response_type=ResponseType.PAGING
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_users_by_keywords_fast(client):
-    return client.instagram.get_users_by_keywords(
-        "fashion", response_type="fast", limit=10
-    )
+    return client.instagram.get_users_by_keywords("fashion", response_type="fast", limit=10)
 
 
 @pytest.fixture(scope="module")
 def instagram_users_by_keywords_paging(client):
-    return client.instagram.get_users_by_keywords(
-        "fashion", response_type="paging"
-    )
+    return client.instagram.get_users_by_keywords("fashion", response_type="paging")
 
 
 @pytest.fixture(scope="module")
@@ -59,9 +57,7 @@ class TestInstagramUsers:
         assert user.username == "instagram"
 
     def test_get_user_with_fields(self, client):
-        user = client.instagram.get_user(
-            "instagram", fields=["id", "username", "follower_count"]
-        )
+        user = client.instagram.get_user("instagram", fields=["id", "username", "follower_count"])
         assert isinstance(user, InstagramUser)
         assert user.id is not None
         assert user.username is not None
@@ -135,7 +131,5 @@ class TestInstagramPosts:
         assert isinstance(result, PaginatedResult)
 
     def test_get_post_interacting_users(self, client, instagram_post_id):
-        result = client.instagram.get_post_interacting_users(
-            instagram_post_id, "commenters"
-        )
+        result = client.instagram.get_post_interacting_users(instagram_post_id, "commenters")
         assert isinstance(result, PaginatedResult)

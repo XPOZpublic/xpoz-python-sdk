@@ -22,6 +22,7 @@ from xpoz.types.reddit import (
 )
 from xpoz.types.common import PaginationInfo
 from xpoz._config import _tools
+from xpoz._config._constants import ResponseType
 
 
 class RedditNamespace(BaseNamespace):
@@ -36,7 +37,7 @@ class RedditNamespace(BaseNamespace):
         time: str | None = None,
         subreddit: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[RedditPost]:
         args = self._build_args(
@@ -246,7 +247,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
         time: str | None = None,
         subreddit: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[RedditPost]:
         args = self._build_args(

@@ -1,6 +1,6 @@
 import pytest
 
-from xpoz import PaginatedResult
+from xpoz import PaginatedResult, ResponseType
 from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz.types.common import PaginationInfo
 
@@ -11,7 +11,7 @@ def twitter_search_fast_result(client):
         "bitcoin",
         start_date="2025-01-01",
         fields=["id", "text", "like_count", "retweet_count"],
-        response_type="fast",
+        response_type=ResponseType.FAST,
         limit=10,
     )
 
@@ -22,7 +22,7 @@ def twitter_search_paging_result(client):
         "bitcoin",
         start_date="2025-01-01",
         fields=["id", "text", "like_count", "retweet_count"],
-        response_type="paging",
+        response_type=ResponseType.PAGING,
     )
 
 
@@ -31,21 +31,21 @@ def twitter_csv_result(client):
     return client.twitter.search_posts(
         "bitcoin",
         start_date="2025-01-01",
-        response_type="csv",
+        response_type=ResponseType.CSV,
     )
 
 
 @pytest.fixture(scope="module")
 def twitter_users_by_keywords_fast(client):
     return client.twitter.get_users_by_keywords(
-        "artificial intelligence", response_type="fast", limit=10
+        "artificial intelligence", response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
 def twitter_users_by_keywords_paging(client):
     return client.twitter.get_users_by_keywords(
-        "artificial intelligence", response_type="paging"
+        "artificial intelligence", response_type=ResponseType.PAGING
     )
 
 
@@ -109,7 +109,7 @@ class TestTwitterUsers:
 class TestTwitterPosts:
     def test_get_posts_by_author_fast(self, client):
         result = client.twitter.get_posts_by_author(
-            "elonmusk", fields=["id", "text", "like_count"], response_type="fast", limit=10
+            "elonmusk", fields=["id", "text", "like_count"], response_type=ResponseType.FAST, limit=10
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
@@ -119,7 +119,7 @@ class TestTwitterPosts:
 
     def test_get_posts_by_author_paging(self, client):
         result = client.twitter.get_posts_by_author(
-            "elonmusk", fields=["id", "text", "like_count"], response_type="paging"
+            "elonmusk", fields=["id", "text", "like_count"], response_type=ResponseType.PAGING
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0

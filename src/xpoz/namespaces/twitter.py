@@ -6,6 +6,7 @@ from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz._config import _tools
+from xpoz._config._constants import ResponseType
 
 
 class TwitterNamespace(BaseNamespace):
@@ -32,7 +33,7 @@ class TwitterNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
@@ -58,7 +59,7 @@ class TwitterNamespace(BaseNamespace):
         author_id: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[TwitterPost]:
         args = self._build_args(
@@ -236,7 +237,7 @@ class TwitterNamespace(BaseNamespace):
         end_date: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[TwitterUser]:
         args = self._build_args(
@@ -279,7 +280,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
@@ -307,7 +308,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         author_id: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[TwitterPost]:
         args = self._build_args(
@@ -495,7 +496,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         end_date: str | None = None,
         language: str | None = None,
         force_latest: bool | None = None,
-        response_type: str | None = None,
+        response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[TwitterUser]:
         args = self._build_args(

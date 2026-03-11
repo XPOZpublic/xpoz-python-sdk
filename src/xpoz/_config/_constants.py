@@ -1,3 +1,11 @@
+from enum import Enum
+
 DEFAULT_SERVER_URL = "https://mcp.xpoz.ai/mcp"
 ENV_API_KEY = "XPOZ_API_KEY"
 ENV_SERVER_URL = "XPOZ_SERVER_URL"
+
+
+class ResponseType(str, Enum):
+    FAST = "fast"
+    PAGING = "paging"
+    CSV = "csv"
