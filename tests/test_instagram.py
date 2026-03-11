@@ -1,15 +1,48 @@
+from datetime import date, timedelta
+
 import pytest
 
-from xpoz import PaginatedResult
+from xpoz import PaginatedResult, ResponseType
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
 from xpoz.types.common import PaginationInfo
 
 
 @pytest.fixture(scope="module")
-def instagram_posts_result(client):
+def instagram_posts_fast_result(client):
     return client.instagram.get_posts_by_user(
-        "instagram", fields=["id", "caption", "like_count"]
+        "instagram", fields=["id", "caption", "like_count"], response_type=ResponseType.FAST, limit=10
     )
+
+
+@pytest.fixture(scope="module")
+def instagram_posts_paging_result(client):
+    return client.instagram.get_posts_by_user(
+        "instagram", fields=["id", "caption", "like_count"], response_type=ResponseType.PAGING
+    )
+
+
+@pytest.fixture(scope="module")
+def instagram_search_fast_result(client):
+    return client.instagram.search_posts(
+        "travel", fields=["id", "caption", "like_count"], response_type=ResponseType.FAST, limit=10
+    )
+
+
+@pytest.fixture(scope="module")
+def instagram_search_paging_result(client):
+    return client.instagram.search_posts(
+        "travel", fields=["id", "caption", "like_count"], response_type=ResponseType.PAGING
+    )
+
+
+@pytest.fixture(scope="module")
+def instagram_users_by_keywords_fast(client):
+    return client.instagram.get_users_by_keywords("fashion", response_type="fast", limit=10)
+
+
+@pytest.fixture(scope="module")
+def instagram_users_by_keywords_paging(client):
+    return client.instagram.get_users_by_keywords("fashion", response_type="paging")
 
 
 @pytest.fixture(scope="module")
@@ -24,9 +57,7 @@ class TestInstagramUsers:
         assert user.username == "instagram"
 
     def test_get_user_with_fields(self, client):
-        user = client.instagram.get_user(
-            "instagram", fields=["id", "username", "follower_count"]
-        )
+        user = client.instagram.get_user("instagram", fields=["id", "username", "follower_count"])
         assert isinstance(user, InstagramUser)
         assert user.id is not None
         assert user.username is not None
@@ -47,29 +78,47 @@ class TestInstagramUsers:
         for u in result.data:
             assert isinstance(u, InstagramUser)
 
-    def test_get_users_by_keywords(self, client):
-        result = client.instagram.get_users_by_keywords("fashion")
+    def test_get_users_by_keywords_fast(self, instagram_users_by_keywords_fast):
+        result = instagram_users_by_keywords_fast
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for u in result.data:
             assert isinstance(u, InstagramUser)
 
+    def test_get_users_by_keywords_paging(self, instagram_users_by_keywords_paging):
+        result = instagram_users_by_keywords_paging
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
+
 
 class TestInstagramPosts:
-    def test_get_posts_by_user(self, instagram_posts_result):
-        result = instagram_posts_result
+    def test_get_posts_by_user_fast(self, instagram_posts_fast_result):
+        result = instagram_posts_fast_result
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for post in result.data:
             assert isinstance(post, InstagramPost)
 
-    def test_search_posts(self, client):
-        result = client.instagram.search_posts(
-            "travel", fields=["id", "caption", "like_count"]
-        )
+    def test_get_posts_by_user_paging(self, instagram_posts_paging_result):
+        result = instagram_posts_paging_result
         assert isinstance(result, PaginatedResult)
-        assert isinstance(result.pagination, PaginationInfo)
+        assert len(result.data) > 0
         assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
+
+    def test_search_posts_fast(self, instagram_search_fast_result):
+        result = instagram_search_fast_result
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+
+    def test_search_posts_paging(self, instagram_search_paging_result):
+        result = instagram_search_paging_result
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
 
     def test_get_posts_by_ids(self, client, instagram_post_id):
         posts = client.instagram.get_posts_by_ids([instagram_post_id])
@@ -82,7 +131,5 @@ class TestInstagramPosts:
         assert isinstance(result, PaginatedResult)
 
     def test_get_post_interacting_users(self, client, instagram_post_id):
-        result = client.instagram.get_post_interacting_users(
-            instagram_post_id, "commenters"
-        )
+        result = client.instagram.get_post_interacting_users(instagram_post_id, "commenters")
         assert isinstance(result, PaginatedResult)

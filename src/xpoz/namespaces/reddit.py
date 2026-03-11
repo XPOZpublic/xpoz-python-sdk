@@ -22,6 +22,7 @@ from xpoz.types.reddit import (
 )
 from xpoz.types.common import PaginationInfo
 from xpoz._config import _tools
+from xpoz._config._constants import ResponseType
 
 
 class RedditNamespace(BaseNamespace):
@@ -36,6 +37,8 @@ class RedditNamespace(BaseNamespace):
         time: str | None = None,
         subreddit: str | None = None,
         force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
     ) -> PaginatedResult[RedditPost]:
         args = self._build_args(
             query=query,
@@ -46,6 +49,8 @@ class RedditNamespace(BaseNamespace):
             time=time,
             subreddit=subreddit,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = self._call_and_maybe_poll(_tools.SEARCH_REDDIT_POSTS, args)
         return self._build_paginated_result(
@@ -242,6 +247,8 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
         time: str | None = None,
         subreddit: str | None = None,
         force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
     ) -> AsyncPaginatedResult[RedditPost]:
         args = self._build_args(
             query=query,
@@ -252,6 +259,8 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             time=time,
             subreddit=subreddit,
             forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
         )
         result = await self._call_and_maybe_poll(_tools.SEARCH_REDDIT_POSTS, args)
         return await self._build_paginated_result(

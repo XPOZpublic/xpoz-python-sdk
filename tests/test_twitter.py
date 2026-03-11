@@ -1,26 +1,28 @@
 import pytest
 
-from xpoz import PaginatedResult
+from xpoz import PaginatedResult, ResponseType
 from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz.types.common import PaginationInfo
 
 
 @pytest.fixture(scope="module")
-def twitter_search_result(client):
+def twitter_search_fast_result(client):
     return client.twitter.search_posts(
         "bitcoin",
         start_date="2025-01-01",
         fields=["id", "text", "like_count", "retweet_count"],
+        response_type=ResponseType.FAST,
+        limit=10,
     )
 
 
 @pytest.fixture(scope="module")
-def twitter_paging_result(client):
+def twitter_search_paging_result(client):
     return client.twitter.search_posts(
         "bitcoin",
         start_date="2025-01-01",
         fields=["id", "text", "like_count", "retweet_count"],
-        response_type="paging",
+        response_type=ResponseType.PAGING,
     )
 
 
@@ -29,7 +31,21 @@ def twitter_csv_result(client):
     return client.twitter.search_posts(
         "bitcoin",
         start_date="2025-01-01",
-        response_type="csv",
+        response_type=ResponseType.CSV,
+    )
+
+
+@pytest.fixture(scope="module")
+def twitter_users_by_keywords_fast(client):
+    return client.twitter.get_users_by_keywords(
+        "artificial intelligence", response_type=ResponseType.FAST, limit=10
+    )
+
+
+@pytest.fixture(scope="module")
+def twitter_users_by_keywords_paging(client):
+    return client.twitter.get_users_by_keywords(
+        "artificial intelligence", response_type=ResponseType.PAGING
     )
 
 
@@ -75,18 +91,25 @@ class TestTwitterUsers:
         for u in result.data:
             assert isinstance(u, TwitterUser)
 
-    def test_get_users_by_keywords(self, client):
-        result = client.twitter.get_users_by_keywords("artificial intelligence")
+    def test_get_users_by_keywords_fast(self, twitter_users_by_keywords_fast):
+        result = twitter_users_by_keywords_fast
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for u in result.data:
             assert isinstance(u, TwitterUser)
 
+    def test_get_users_by_keywords_paging(self, twitter_users_by_keywords_paging):
+        result = twitter_users_by_keywords_paging
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
+
 
 class TestTwitterPosts:
-    def test_get_posts_by_author(self, client):
+    def test_get_posts_by_author_fast(self, client):
         result = client.twitter.get_posts_by_author(
-            "elonmusk", fields=["id", "text", "like_count"]
+            "elonmusk", fields=["id", "text", "like_count"], response_type=ResponseType.FAST, limit=10
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
@@ -94,17 +117,31 @@ class TestTwitterPosts:
             assert isinstance(post, TwitterPost)
             assert post.text is not None
 
-    def test_search_posts(self, twitter_search_result):
-        result = twitter_search_result
+    def test_get_posts_by_author_paging(self, client):
+        result = client.twitter.get_posts_by_author(
+            "elonmusk", fields=["id", "text", "like_count"], response_type=ResponseType.PAGING
+        )
         assert isinstance(result, PaginatedResult)
-        assert isinstance(result.pagination, PaginationInfo)
-        assert result.pagination.page_number == 1
-        assert isinstance(result.pagination.total_pages, int)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
 
-    def test_search_posts_pagination(self, twitter_paging_result):
-        if not twitter_paging_result.has_next_page():
+    def test_search_posts_fast(self, twitter_search_fast_result):
+        result = twitter_search_fast_result
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+
+    def test_search_posts_paging(self, twitter_search_paging_result):
+        result = twitter_search_paging_result
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert result.pagination.total_rows > 0
+        assert result.pagination.table_name is not None
+
+    def test_search_posts_pagination(self, twitter_search_paging_result):
+        if not twitter_search_paging_result.has_next_page():
             pytest.skip("Only one page of results")
-        page2 = twitter_paging_result.next_page()
+        page2 = twitter_search_paging_result.next_page()
         assert isinstance(page2, PaginatedResult)
         assert len(page2.data) > 0
 

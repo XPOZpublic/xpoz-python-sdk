@@ -51,6 +51,8 @@ class BaseNamespace:
         self, tool_name: str, arguments: dict[str, Any]
     ) -> dict[str, Any]:
         result = self._call_tool(tool_name, arguments)
+        if "results" in result:
+            return result
         operation_id = result.get("operationId")
         if operation_id:
             return wait_for_result_sync(self._call_tool, operation_id, self._timeout)
@@ -113,6 +115,8 @@ class AsyncBaseNamespace:
         self, tool_name: str, arguments: dict[str, Any]
     ) -> dict[str, Any]:
         result = await self._call_tool(tool_name, arguments)
+        if "results" in result:
+            return result
         operation_id = result.get("operationId")
         if operation_id:
             return await wait_for_result(self._call_tool, operation_id, self._timeout)
