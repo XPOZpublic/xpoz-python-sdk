@@ -38,3 +38,12 @@ class NotFoundError(XpozError):
 
 class ValidationError(XpozError):
     pass
+
+
+class RateLimitError(XpozError):
+    def __init__(self, retry_after: float | None = None):
+        self.retry_after = retry_after
+        msg = "Rate limited by server"
+        if retry_after:
+            msg += f" (retry after {retry_after:.0f}s)"
+        super().__init__(msg)

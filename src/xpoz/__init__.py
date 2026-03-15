@@ -9,6 +9,7 @@ from xpoz._exceptions import (
     OperationCancelledError,
     NotFoundError,
     ValidationError,
+    RateLimitError,
 )
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz._config._constants import ResponseType
@@ -25,6 +26,7 @@ __all__ = [
     "OperationCancelledError",
     "NotFoundError",
     "ValidationError",
+    "RateLimitError",
     "PaginatedResult",
     "AsyncPaginatedResult",
     "ResponseType",
