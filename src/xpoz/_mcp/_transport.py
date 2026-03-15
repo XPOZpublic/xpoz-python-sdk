@@ -8,6 +8,7 @@ from anyio.from_thread import BlockingPortal, start_blocking_portal
 from mcp import ClientSession
 from mcp.client.streamable_http import streamable_http_client
 
+from xpoz._exceptions import RateLimitError
 from xpoz._transform._response_parser import parse_response_text
 from xpoz._version import __version__
 
@@ -55,7 +56,12 @@ class McpTransport:
         self._session = await session_ctx.__aenter__()
         self._context_stack.append(session_ctx)
 
-        await self._session.initialize()
+        try:
+            await self._session.initialize()
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code == 429:
+                raise RateLimitError() from exc
+            raise
 
     async def close(self) -> None:
         for ctx in reversed(self._context_stack):
@@ -70,7 +76,12 @@ class McpTransport:
         if self._session is None:
             raise RuntimeError("Transport not connected. Call connect() first.")
 
-        result = await self._session.call_tool(tool_name, arguments)
+        try:
+            result = await self._session.call_tool(tool_name, arguments)
+        except httpx.HTTPStatusError as exc:
+            if exc.response.status_code == 429:
+                raise RateLimitError() from exc
+            raise
         return _parse_tool_result(tool_name, result)
 
 
@@ -113,7 +124,12 @@ class SyncTransport:
             async with streamable_http_client(self._server_url, http_client=http_client) as streams:
                 read_stream, write_stream, _ = streams
                 async with ClientSession(read_stream, write_stream) as session:
-                    await session.initialize()
+                    try:
+                        await session.initialize()
+                    except httpx.HTTPStatusError as exc:
+                        if exc.response.status_code == 429:
+                            raise RateLimitError() from exc
+                        raise
                     self._session = session
                     ready.set()
                     await shutdown.wait()
@@ -145,7 +161,12 @@ class SyncTransport:
 
         async def _call() -> dict[str, Any]:
             assert self._session is not None
-            result = await self._session.call_tool(tool_name, arguments)
+            try:
+                result = await self._session.call_tool(tool_name, arguments)
+            except httpx.HTTPStatusError as exc:
+                if exc.response.status_code == 429:
+                    raise RateLimitError() from exc
+                raise
             return _parse_tool_result(tool_name, result)
 
         return self._portal.call(_call)
