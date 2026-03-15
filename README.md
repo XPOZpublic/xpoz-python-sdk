@@ -33,6 +33,7 @@ The SDK wraps Xpoz's [MCP](https://modelcontextprotocol.io) server, abstracting 
 - **30 data methods** across Twitter, Instagram, and Reddit
 - **Sync and async clients** — `XpozClient` and `AsyncXpozClient`
 - **Automatic operation polling** — long-running queries are abstracted away
+- **Response modes** — `ResponseType.FAST` for quick limited results, `PAGING` for full pagination, `CSV` for export
 - **Server-side pagination** — `PaginatedResult` with `next_page()`, `get_page(n)`
 - **CSV export** — `export_csv()` on any paginated result
 - **Field selection** — request only the fields you need in Pythonic snake_case
@@ -118,6 +119,67 @@ page5 = results.get_page(5)        # jump to specific page
 # Export to CSV
 csv_url = results.export_csv()     # returns download URL
 ```
+
+## Response Modes
+
+Methods that return `PaginatedResult` support a `response_type` parameter to control how results are fetched. Import the `ResponseType` enum:
+
+```python
+from xpoz import XpozClient, ResponseType
+```
+
+### Fast mode
+
+Returns up to `limit` results directly — no polling, no pagination. Best for quick lookups where you only need a small number of results.
+
+```python
+results = client.twitter.search_posts(
+    "bitcoin",
+    response_type=ResponseType.FAST,
+    limit=10,
+    fields=["id", "text", "like_count"]
+)
+for tweet in results.data:
+    print(tweet.text)
+```
+
+### Paging mode (default)
+
+Returns full paginated results (100 items per page). This is the default behavior when `response_type` is not specified.
+
+```python
+results = client.twitter.search_posts(
+    "bitcoin",
+    response_type=ResponseType.PAGING,
+)
+# Equivalent to not passing response_type at all
+```
+
+### CSV mode
+
+Triggers a server-side CSV export. The result contains no inline data — call `export_csv()` to get the download URL.
+
+```python
+results = client.twitter.search_posts(
+    "bitcoin",
+    response_type=ResponseType.CSV,
+)
+csv_url = results.export_csv()
+```
+
+### Supported methods
+
+`response_type` and `limit` are available on:
+
+| Platform  | Method                  |
+| --------- | ----------------------- |
+| Twitter   | `search_posts`          |
+| Twitter   | `get_posts_by_author`   |
+| Twitter   | `get_users_by_keywords` |
+| Instagram | `search_posts`          |
+| Instagram | `get_posts_by_user`     |
+| Instagram | `get_users_by_keywords` |
+| Reddit    | `search_posts`          |
 
 ## Field Selection
 
@@ -241,7 +303,7 @@ followers = client.twitter.get_user_connections("elonmusk", "followers")
 following = client.twitter.get_user_connections("elonmusk", "following")
 ```
 
-#### `get_users_by_keywords(query, *, fields, start_date, end_date, language, force_latest) -> PaginatedResult[TwitterUser]`
+#### `get_users_by_keywords(query, *, fields, start_date, end_date, language, force_latest, response_type, limit) -> PaginatedResult[TwitterUser]`
 
 Find users who authored posts matching a keyword query. Includes aggregation fields like `relevant_tweets_count`, `relevant_tweets_likes_sum`.
 
@@ -260,7 +322,7 @@ Get 1-100 posts by their IDs.
 tweets = client.twitter.get_posts_by_ids(["1234567890", "0987654321"])
 ```
 
-#### `get_posts_by_author(identifier, identifier_type="username", *, fields, start_date, end_date, force_latest) -> PaginatedResult[TwitterPost]`
+#### `get_posts_by_author(identifier, identifier_type="username", *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[TwitterPost]`
 
 Get all posts by an author with optional date filtering.
 
@@ -268,7 +330,7 @@ Get all posts by an author with optional date filtering.
 results = client.twitter.get_posts_by_author("elonmusk", start_date="2025-01-01")
 ```
 
-#### `search_posts(query, *, fields, start_date, end_date, author_username, author_id, language, force_latest) -> PaginatedResult[TwitterPost]`
+#### `search_posts(query, *, fields, start_date, end_date, author_username, author_id, language, force_latest, response_type, limit) -> PaginatedResult[TwitterPost]`
 
 Full-text search with filters. Supports exact phrases (`"machine learning"`), boolean operators (`AI AND python`), and parentheses.
 
@@ -346,7 +408,7 @@ users = client.instagram.search_users("nasa")
 followers = client.instagram.get_user_connections("instagram", "followers")
 ```
 
-#### `get_users_by_keywords(query, *, fields, start_date, end_date, force_latest) -> PaginatedResult[InstagramUser]`
+#### `get_users_by_keywords(query, *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[InstagramUser]`
 
 ```python
 users = client.instagram.get_users_by_keywords('"sustainable fashion"')
@@ -360,13 +422,13 @@ Post IDs must be in strong_id format: `"media_id_user_id"` (e.g. `"3606450040306
 posts = client.instagram.get_posts_by_ids(["3606450040306139062_4836333238"])
 ```
 
-#### `get_posts_by_user(identifier, identifier_type="username", *, fields, start_date, end_date, force_latest) -> PaginatedResult[InstagramPost]`
+#### `get_posts_by_user(identifier, identifier_type="username", *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[InstagramPost]`
 
 ```python
 results = client.instagram.get_posts_by_user("nasa")
 ```
 
-#### `search_posts(query, *, fields, start_date, end_date, force_latest) -> PaginatedResult[InstagramPost]`
+#### `search_posts(query, *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[InstagramPost]`
 
 ```python
 results = client.instagram.search_posts("travel photography")
@@ -409,7 +471,7 @@ users = client.reddit.search_users("spez")
 users = client.reddit.get_users_by_keywords('"machine learning"', subreddit="MachineLearning")
 ```
 
-#### `search_posts(query, *, fields, start_date, end_date, sort, time, subreddit, force_latest) -> PaginatedResult[RedditPost]`
+#### `search_posts(query, *, fields, start_date, end_date, sort, time, subreddit, force_latest, response_type, limit) -> PaginatedResult[RedditPost]`
 
 `sort`: `"relevance"`, `"hot"`, `"top"`, `"new"`, `"comments"`. `time`: `"hour"`, `"day"`, `"week"`, `"month"`, `"year"`, `"all"`.
 
