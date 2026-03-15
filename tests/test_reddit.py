@@ -13,16 +13,16 @@ from xpoz.types.common import PaginationInfo
 
 
 @pytest.fixture(scope="module")
-def reddit_search_fast_result(client):
+def reddit_search_fast_result(client, seven_days_ago):
     return client.reddit.search_posts(
-        "python", fields=["id", "title", "score"], response_type=ResponseType.FAST, limit=10
+        "python", fields=["id", "title", "score"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
-def reddit_search_paging_result(client):
+def reddit_search_paging_result(client, seven_days_ago):
     return client.reddit.search_posts(
-        "python", fields=["id", "title", "score"], response_type=ResponseType.PAGING
+        "python", fields=["id", "title", "score"], start_date=seven_days_ago, response_type=ResponseType.PAGING
     )
 
 
@@ -46,8 +46,8 @@ class TestRedditUsers:
         for u in users:
             assert isinstance(u, RedditUser)
 
-    def test_get_users_by_keywords(self, client):
-        result = client.reddit.get_users_by_keywords("programming")
+    def test_get_users_by_keywords(self, client, seven_days_ago):
+        result = client.reddit.get_users_by_keywords("programming", start_date=seven_days_ago)
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for u in result.data:
@@ -69,9 +69,9 @@ class TestRedditPosts:
         assert result.pagination.total_rows > 0
         assert result.pagination.table_name is not None
 
-    def test_search_posts_with_subreddit(self, client):
+    def test_search_posts_with_subreddit(self, client, seven_days_ago):
         result = client.reddit.search_posts(
-            "help", subreddit="python", fields=["id", "title", "subreddit_name"]
+            "help", subreddit="python", fields=["id", "title", "subreddit_name"], start_date=seven_days_ago
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
@@ -89,8 +89,8 @@ class TestRedditPosts:
         assert isinstance(result.post, RedditPost)
         assert isinstance(result.comments, list)
 
-    def test_search_comments(self, client):
-        result = client.reddit.search_comments("python")
+    def test_search_comments(self, client, seven_days_ago):
+        result = client.reddit.search_comments("python", start_date=seven_days_ago)
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for c in result.data:
@@ -113,8 +113,8 @@ class TestRedditSubreddits:
         assert result.subreddit.display_name is not None
         assert isinstance(result.posts, list)
 
-    def test_get_subreddits_by_keywords(self, client):
-        result = client.reddit.get_subreddits_by_keywords("programming")
+    def test_get_subreddits_by_keywords(self, client, seven_days_ago):
+        result = client.reddit.get_subreddits_by_keywords("programming", start_date=seven_days_ago)
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for s in result.data:

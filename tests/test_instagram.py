@@ -1,5 +1,3 @@
-from datetime import date, timedelta
-
 import pytest
 
 from xpoz import PaginatedResult, ResponseType
@@ -8,41 +6,41 @@ from xpoz.types.common import PaginationInfo
 
 
 @pytest.fixture(scope="module")
-def instagram_posts_fast_result(client):
+def instagram_posts_fast_result(client, seven_days_ago):
     return client.instagram.get_posts_by_user(
-        "instagram", fields=["id", "caption", "like_count"], response_type=ResponseType.FAST, limit=10
+        "instagram", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
-def instagram_posts_paging_result(client):
+def instagram_posts_paging_result(client, seven_days_ago):
     return client.instagram.get_posts_by_user(
-        "instagram", fields=["id", "caption", "like_count"], response_type=ResponseType.PAGING
+        "instagram", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
     )
 
 
 @pytest.fixture(scope="module")
-def instagram_search_fast_result(client):
+def instagram_search_fast_result(client, seven_days_ago):
     return client.instagram.search_posts(
-        "travel", fields=["id", "caption", "like_count"], response_type=ResponseType.FAST, limit=10
+        "travel", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
-def instagram_search_paging_result(client):
+def instagram_search_paging_result(client, seven_days_ago):
     return client.instagram.search_posts(
-        "travel", fields=["id", "caption", "like_count"], response_type=ResponseType.PAGING
+        "travel", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
     )
 
 
 @pytest.fixture(scope="module")
-def instagram_users_by_keywords_fast(client):
-    return client.instagram.get_users_by_keywords("fashion", response_type="fast", limit=10)
+def instagram_users_by_keywords_fast(client, seven_days_ago):
+    return client.instagram.get_users_by_keywords("fashion", start_date=seven_days_ago, response_type="fast", limit=10)
 
 
 @pytest.fixture(scope="module")
-def instagram_users_by_keywords_paging(client):
-    return client.instagram.get_users_by_keywords("fashion", response_type="paging")
+def instagram_users_by_keywords_paging(client, seven_days_ago):
+    return client.instagram.get_users_by_keywords("fashion", start_date=seven_days_ago, response_type="paging")
 
 
 @pytest.fixture(scope="module")

@@ -1,8 +1,14 @@
 import os
+from datetime import date, timedelta
 
 import pytest
 
 from xpoz import XpozClient
+
+
+@pytest.fixture(scope="session")
+def seven_days_ago():
+    return (date.today() - timedelta(days=7)).isoformat()
 
 
 @pytest.fixture(scope="module")
