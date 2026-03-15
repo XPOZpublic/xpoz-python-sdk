@@ -128,31 +128,30 @@ Methods that return `PaginatedResult` support a `response_type` parameter to con
 from xpoz import XpozClient, ResponseType
 ```
 
-### Fast mode
+### Fast mode (default)
 
-Returns up to `limit` results directly — no polling, no pagination. Best for quick lookups where you only need a small number of results.
+Returns up to `limit` results directly — no polling, no pagination. This is the default behavior when `response_type` is not specified.
 
 ```python
 results = client.twitter.search_posts(
     "bitcoin",
-    response_type=ResponseType.FAST,
     limit=10,
     fields=["id", "text", "like_count"]
 )
+# Equivalent to response_type=ResponseType.FAST
 for tweet in results.data:
     print(tweet.text)
 ```
 
-### Paging mode (default)
+### Paging mode
 
-Returns full paginated results (100 items per page). This is the default behavior when `response_type` is not specified.
+Returns full paginated results (100 items per page). Use this when you need to iterate through all results.
 
 ```python
 results = client.twitter.search_posts(
     "bitcoin",
     response_type=ResponseType.PAGING,
 )
-# Equivalent to not passing response_type at all
 ```
 
 ### CSV mode
