@@ -6,10 +6,10 @@ from xpoz.types.common import PaginationInfo
 
 
 @pytest.fixture(scope="module")
-def twitter_search_fast_result(client):
+def twitter_search_fast_result(client, seven_days_ago):
     return client.twitter.search_posts(
         "bitcoin",
-        start_date="2025-01-01",
+        start_date=seven_days_ago,
         fields=["id", "text", "like_count", "retweet_count"],
         response_type=ResponseType.FAST,
         limit=10,
@@ -17,35 +17,35 @@ def twitter_search_fast_result(client):
 
 
 @pytest.fixture(scope="module")
-def twitter_search_paging_result(client):
+def twitter_search_paging_result(client, seven_days_ago):
     return client.twitter.search_posts(
         "bitcoin",
-        start_date="2025-01-01",
+        start_date=seven_days_ago,
         fields=["id", "text", "like_count", "retweet_count"],
         response_type=ResponseType.PAGING,
     )
 
 
 @pytest.fixture(scope="module")
-def twitter_csv_result(client):
+def twitter_csv_result(client, seven_days_ago):
     return client.twitter.search_posts(
         "bitcoin",
-        start_date="2025-01-01",
+        start_date=seven_days_ago,
         response_type=ResponseType.CSV,
     )
 
 
 @pytest.fixture(scope="module")
-def twitter_users_by_keywords_fast(client):
+def twitter_users_by_keywords_fast(client, seven_days_ago):
     return client.twitter.get_users_by_keywords(
-        "artificial intelligence", response_type=ResponseType.FAST, limit=10
+        "artificial intelligence", start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
     )
 
 
 @pytest.fixture(scope="module")
-def twitter_users_by_keywords_paging(client):
+def twitter_users_by_keywords_paging(client, seven_days_ago):
     return client.twitter.get_users_by_keywords(
-        "artificial intelligence", response_type=ResponseType.PAGING
+        "artificial intelligence", start_date=seven_days_ago, response_type=ResponseType.PAGING
     )
 
 
@@ -107,9 +107,9 @@ class TestTwitterUsers:
 
 
 class TestTwitterPosts:
-    def test_get_posts_by_author_fast(self, client):
+    def test_get_posts_by_author_fast(self, client, seven_days_ago):
         result = client.twitter.get_posts_by_author(
-            "elonmusk", fields=["id", "text", "like_count"], response_type=ResponseType.FAST, limit=10
+            "elonmusk", fields=["id", "text", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
@@ -117,9 +117,9 @@ class TestTwitterPosts:
             assert isinstance(post, TwitterPost)
             assert post.text is not None
 
-    def test_get_posts_by_author_paging(self, client):
+    def test_get_posts_by_author_paging(self, client, seven_days_ago):
         result = client.twitter.get_posts_by_author(
-            "elonmusk", fields=["id", "text", "like_count"], response_type=ResponseType.PAGING
+            "elonmusk", fields=["id", "text", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
@@ -169,8 +169,8 @@ class TestTwitterPosts:
         assert len(posts) == 1
         assert isinstance(posts[0], TwitterPost)
 
-    def test_count_posts(self, client):
-        count = client.twitter.count_posts("bitcoin", start_date="2025-01-01")
+    def test_count_posts(self, client, seven_days_ago):
+        count = client.twitter.count_posts("bitcoin", start_date=seven_days_ago)
         assert isinstance(count, int)
         assert count > 0
 
