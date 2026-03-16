@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import os
+import threading
 from typing import Any
 
 from xpoz._mcp._transport import McpTransport
 from xpoz._mcp._polling import DEFAULT_TIMEOUT_SECONDS
 from xpoz._exceptions import AuthenticationError
 from xpoz._config._constants import DEFAULT_SERVER_URL, ENV_API_KEY, ENV_SERVER_URL
+from xpoz._update_check import check_for_update
 from xpoz.namespaces.twitter import AsyncTwitterNamespace
 from xpoz.namespaces.instagram import AsyncInstagramNamespace
 from xpoz.namespaces.reddit import AsyncRedditNamespace
@@ -19,6 +21,7 @@ class AsyncXpozClient:
         *,
         server_url: str | None = None,
         timeout: float = DEFAULT_TIMEOUT_SECONDS,
+        check_update: bool = True,
     ):
         self._api_key = api_key or os.environ.get(ENV_API_KEY)
         if not self._api_key:
@@ -31,6 +34,7 @@ class AsyncXpozClient:
         self._timeout = timeout
         self._transport = McpTransport(self._server_url, self._api_key)
         self._connected = False
+        self._check_update = check_update
 
     def __getattr__(self, name: str) -> object:
         if name in ("twitter", "instagram", "reddit"):
@@ -47,6 +51,9 @@ class AsyncXpozClient:
             self.twitter = AsyncTwitterNamespace(self._transport.call_tool, self._timeout)
             self.instagram = AsyncInstagramNamespace(self._transport.call_tool, self._timeout)
             self.reddit = AsyncRedditNamespace(self._transport.call_tool, self._timeout)
+
+            if self._check_update:
+                threading.Thread(target=check_for_update, daemon=True, name="xpoz-update-check").start()
 
     async def close(self) -> None:
         if self._connected:
