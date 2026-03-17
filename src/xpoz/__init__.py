@@ -12,6 +12,7 @@ from xpoz._exceptions import (
 )
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz._config._constants import ResponseType
+from xpoz._update_check import XpozUpdateWarning
 from xpoz._version import __version__
 
 __all__ = [
@@ -28,5 +29,6 @@ __all__ = [
     "PaginatedResult",
     "AsyncPaginatedResult",
     "ResponseType",
+    "XpozUpdateWarning",
     "__version__",
 ]

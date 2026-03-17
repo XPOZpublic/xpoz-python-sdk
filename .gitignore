@@ -17,3 +17,5 @@ env/
 *.whl
 .DS_Store
 node_modules/
+.worktrees/
+docs/
