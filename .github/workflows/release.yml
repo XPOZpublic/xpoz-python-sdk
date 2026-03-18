@@ -1,0 +1,186 @@
+name: Release to PyPI
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: "Version bump type"
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+          - custom
+        default: patch
+      custom_version:
+        description: "Custom version (only when type is 'custom', e.g. 1.2.3)"
+        required: false
+        type: string
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  bump-and-build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      new_version: ${{ steps.version.outputs.new_version }}
+      new_tag: ${{ steps.version.outputs.new_tag }}
+      previous_version: ${{ steps.version.outputs.previous_version }}
+    steps:
+      - name: Validate inputs
+        run: |
+          if [ "${{ inputs.bump }}" = "custom" ] && [ -z "${{ inputs.custom_version }}" ]; then
+            echo "::error::Custom version is required when bump type is 'custom'"
+            exit 1
+          fi
+          if [ "${{ inputs.bump }}" = "custom" ]; then
+            if ! echo "${{ inputs.custom_version }}" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+              echo "::error::Custom version must be in semver format (e.g. 1.2.3)"
+              exit 1
+            fi
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: pip install build
+
+      - name: Bump version
+        id: version
+        run: |
+          python3 - "${{ inputs.bump }}" "${{ inputs.custom_version }}" <<'PYEOF'
+          import re, sys, os
+
+          bump = sys.argv[1]
+          custom_version = sys.argv[2] if len(sys.argv) > 2 else ""
+
+          with open("src/xpoz/_version.py") as f:
+              content = f.read()
+          m = re.search(r'__version__\s*=\s*"(\d+)\.(\d+)\.(\d+)"', content)
+          if not m:
+              sys.exit("Could not parse current version from _version.py")
+          major, minor, patch = int(m.group(1)), int(m.group(2)), int(m.group(3))
+          previous_version = f"{major}.{minor}.{patch}"
+
+          if bump == "custom":
+              new_version = custom_version
+          elif bump == "major":
+              major, minor, patch = major + 1, 0, 0
+              new_version = f"{major}.{minor}.{patch}"
+          elif bump == "minor":
+              major, minor, patch = major, minor + 1, 0
+              new_version = f"{major}.{minor}.{patch}"
+          elif bump == "patch":
+              major, minor, patch = major, minor, patch + 1
+              new_version = f"{major}.{minor}.{patch}"
+          else:
+              sys.exit(f"Unknown bump type: {bump}")
+
+          with open("src/xpoz/_version.py", "w") as f:
+              f.write(f'__version__ = "{new_version}"\n')
+
+          with open("pyproject.toml") as f:
+              toml_content = f.read()
+          toml_content = re.sub(
+              r'^(version\s*=\s*)"[^"]*"',
+              rf'\1"{new_version}"',
+              toml_content,
+              count=1,
+              flags=re.MULTILINE,
+          )
+          with open("pyproject.toml", "w") as f:
+              f.write(toml_content)
+
+          with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+              f.write(f"previous_version={previous_version}\n")
+              f.write(f"new_version={new_version}\n")
+              f.write(f"new_tag=v{new_version}\n")
+
+          print(f"Bumped {previous_version} -> {new_version}")
+          PYEOF
+
+      - name: Verify version consistency
+        run: |
+          PY_VER=$(python3 -c "import re; m=re.search(r'\"(.+?)\"', open('src/xpoz/_version.py').read()); print(m.group(1))")
+          TOML_VER=$(python3 -c "import re; m=re.search(r'^version\s*=\s*\"(.+?)\"', open('pyproject.toml').read(), re.M); print(m.group(1))")
+          if [ "$PY_VER" != "$TOML_VER" ]; then
+            echo "::error::Version mismatch: _version.py=$PY_VER pyproject.toml=$TOML_VER"
+            exit 1
+          fi
+          echo "Both files have version $PY_VER"
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit and tag
+        run: |
+          git add pyproject.toml src/xpoz/_version.py
+          git commit -m "release: v${{ steps.version.outputs.new_version }}"
+          git tag -a "${{ steps.version.outputs.new_tag }}" -m "${{ steps.version.outputs.new_tag }}"
+
+      - name: Build package
+        run: python -m build
+
+      - name: Verify build artifacts
+        run: |
+          EXPECTED="${{ steps.version.outputs.new_version }}"
+          ls -la dist/
+          ls dist/*.tar.gz | grep -q "$EXPECTED" || { echo "::error::sdist not found for version $EXPECTED"; exit 1; }
+          ls dist/*.whl | grep -q "$EXPECTED" || { echo "::error::wheel not found for version $EXPECTED"; exit 1; }
+
+      - name: Push commit and tag
+        run: |
+          git push origin main
+          git push origin "${{ steps.version.outputs.new_tag }}"
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+  publish:
+    needs: bump-and-build
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    environment: pypi
+    steps:
+      - name: Download dist artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  release:
+    needs: [bump-and-build, publish]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.bump-and-build.outputs.new_tag }}
+
+      - name: Create GitHub Release
+        run: |
+          gh release create "${{ needs.bump-and-build.outputs.new_tag }}" \
+            --title "${{ needs.bump-and-build.outputs.new_tag }}" \
+            --generate-notes \
+            --notes-start-tag "v${{ needs.bump-and-build.outputs.previous_version }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
