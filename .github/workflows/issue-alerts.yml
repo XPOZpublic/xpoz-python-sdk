@@ -1,0 +1,90 @@
+name: Issue Alerts to Slack
+
+on:
+  issues:
+    types:
+      - opened
+      - edited
+      - deleted
+      - transferred
+      - pinned
+      - unpinned
+      - closed
+      - reopened
+      - assigned
+      - unassigned
+      - labeled
+      - unlabeled
+  issue_comment:
+    types:
+      - created
+      - edited
+      - deleted
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Slack notification
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          EVENT_NAME="${{ github.event_name }}"
+          ACTION="${{ github.event.action }}"
+          ACTOR="${{ github.actor }}"
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          ISSUE_URL="${{ github.event.issue.html_url }}"
+          ISSUE_NUMBER="${{ github.event.issue.number }}"
+
+          if [ "$EVENT_NAME" = "issue_comment" ]; then
+            LABEL="Comment ${ACTION}"
+            BODY=$(echo '${{ toJSON(github.event.comment.body) }}' | jq -r '.' | head -c 200)
+            LINK="${{ github.event.comment.html_url }}"
+          else
+            LABEL="Issue ${ACTION}"
+            BODY=$(echo '${{ toJSON(github.event.issue.body) }}' | jq -r '.' | head -c 200)
+            LINK="${ISSUE_URL}"
+          fi
+
+          # Add context for specific actions
+          EXTRA=""
+          if [ "$ACTION" = "assigned" ] || [ "$ACTION" = "unassigned" ]; then
+            EXTRA="\nAssignee: ${{ github.event.assignee.login }}"
+          elif [ "$ACTION" = "labeled" ] || [ "$ACTION" = "unlabeled" ]; then
+            EXTRA="\nLabel: ${{ github.event.label.name }}"
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg label "$LABEL" \
+            --arg title "$ISSUE_TITLE" \
+            --arg number "$ISSUE_NUMBER" \
+            --arg link "$LINK" \
+            --arg actor "$ACTOR" \
+            --arg body "$BODY" \
+            --arg extra "$EXTRA" \
+            '{
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: ("*" + $label + "* by " + $actor + "\n<" + $link + "|#" + $number + " " + $title + ">" + $extra)
+                  }
+                },
+                (if ($body | length) > 0 then
+                  {
+                    type: "context",
+                    elements: [
+                      {
+                        type: "mrkdwn",
+                        text: ($body | if length > 200 then (.[0:200] + "...") else . end)
+                      }
+                    ]
+                  }
+                else empty end)
+              ]
+            }')
+
+          curl -sf -X POST -H 'Content-Type: application/json' \
+            -d "$PAYLOAD" \
+            "$SLACK_WEBHOOK_URL"
