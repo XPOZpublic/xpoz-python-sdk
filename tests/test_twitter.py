@@ -169,6 +169,22 @@ class TestTwitterPosts:
         assert len(posts) == 1
         assert isinstance(posts[0], TwitterPost)
 
+    def test_search_posts_filter_retweets(self, client, seven_days_ago):
+        result = client.twitter.search_posts(
+            "bitcoin",
+            start_date=seven_days_ago,
+            filter_retweets=True,
+            fields=["id", "text"],
+            response_type=ResponseType.FAST,
+            limit=10,
+        )
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        for post in result.data:
+            assert isinstance(post, TwitterPost)
+            if post.text:
+                assert not post.text.startswith("RT @"), f"Retweet found despite filter_retweets=True: {post.text[:80]}"
+
     def test_count_posts(self, client, seven_days_ago):
         count = client.twitter.count_posts("bitcoin", start_date=seven_days_ago)
         assert isinstance(count, int)
