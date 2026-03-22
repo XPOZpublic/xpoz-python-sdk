@@ -66,9 +66,7 @@ class TestTwitterUsers:
         assert user.id == "44196397"
 
     def test_get_user_with_fields(self, client):
-        user = client.twitter.get_user(
-            "elonmusk", fields=["id", "username", "followers_count"]
-        )
+        user = client.twitter.get_user("elonmusk", fields=["id", "username", "followers_count"])
         assert isinstance(user, TwitterUser)
         assert user.id is not None
         assert user.username is not None
@@ -109,7 +107,11 @@ class TestTwitterUsers:
 class TestTwitterPosts:
     def test_get_posts_by_author_fast(self, client, seven_days_ago):
         result = client.twitter.get_posts_by_author(
-            "elonmusk", fields=["id", "text", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
+            "elonmusk",
+            fields=["id", "text", "like_count"],
+            start_date=seven_days_ago,
+            response_type=ResponseType.FAST,
+            limit=10,
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
@@ -119,7 +121,10 @@ class TestTwitterPosts:
 
     def test_get_posts_by_author_paging(self, client, seven_days_ago):
         result = client.twitter.get_posts_by_author(
-            "elonmusk", fields=["id", "text", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
+            "elonmusk",
+            fields=["id", "text", "like_count"],
+            start_date=seven_days_ago,
+            response_type=ResponseType.PAGING,
         )
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
@@ -158,9 +163,7 @@ class TestTwitterPosts:
         assert isinstance(result, PaginatedResult)
 
     def test_get_post_interacting_users(self, client, twitter_post_id):
-        result = client.twitter.get_post_interacting_users(
-            twitter_post_id, "commenters"
-        )
+        result = client.twitter.get_post_interacting_users(twitter_post_id, "commenters")
         assert isinstance(result, PaginatedResult)
 
     def test_get_posts_by_ids(self, client, twitter_post_id):
@@ -169,11 +172,11 @@ class TestTwitterPosts:
         assert len(posts) == 1
         assert isinstance(posts[0], TwitterPost)
 
-    def test_search_posts_filter_retweets(self, client, seven_days_ago):
+    def test_search_posts_filter_out_retweets(self, client, seven_days_ago):
         result = client.twitter.search_posts(
             "bitcoin",
             start_date=seven_days_ago,
-            filter_retweets=True,
+            filter_out_retweets=True,
             fields=["id", "text"],
             response_type=ResponseType.FAST,
             limit=10,
@@ -183,7 +186,9 @@ class TestTwitterPosts:
         for post in result.data:
             assert isinstance(post, TwitterPost)
             if post.text:
-                assert not post.text.startswith("RT @"), f"Retweet found despite filter_retweets=True: {post.text[:80]}"
+                assert not post.text.startswith(
+                    "RT @"
+                ), f"Retweet found despite filter_out_retweets=True: {post.text[:80]}"
 
     def test_count_posts(self, client, seven_days_ago):
         count = client.twitter.count_posts("bitcoin", start_date=seven_days_ago)
