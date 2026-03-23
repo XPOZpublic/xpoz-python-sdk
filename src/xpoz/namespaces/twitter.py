@@ -176,6 +176,23 @@ class TwitterNamespace(BaseNamespace):
             return int(first)
         return int(count)
 
+    def get_users(
+        self,
+        identifiers: list[str],
+        identifier_type: str = "username",
+        *,
+        fields: list[str] | None = None,
+        force_latest: bool | None = None,
+    ) -> list[TwitterUser]:
+        args = self._build_args(
+            identifiers=identifiers,
+            identifierType=identifier_type,
+            fields=self._convert_fields(fields),
+            forceLatest=force_latest,
+        )
+        result = self._call_and_maybe_poll(_tools.GET_TWITTER_USERS, args)
+        return _parse_items(TwitterUser, result.get("results", []))
+
     def get_user(
         self,
         identifier: str,
@@ -434,6 +451,23 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
                 return int(next(iter(first.values())))
             return int(first)
         return int(count)
+
+    async def get_users(
+        self,
+        identifiers: list[str],
+        identifier_type: str = "username",
+        *,
+        fields: list[str] | None = None,
+        force_latest: bool | None = None,
+    ) -> list[TwitterUser]:
+        args = self._build_args(
+            identifiers=identifiers,
+            identifierType=identifier_type,
+            fields=self._convert_fields(fields),
+            forceLatest=force_latest,
+        )
+        result = await self._call_and_maybe_poll(_tools.GET_TWITTER_USERS, args)
+        return _parse_items(TwitterUser, result.get("results", []))
 
     async def get_user(
         self,

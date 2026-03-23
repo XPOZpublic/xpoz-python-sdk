@@ -55,6 +55,31 @@ def twitter_post_id():
 
 
 class TestTwitterUsers:
+    def test_get_users_by_usernames(self, client):
+        users = client.twitter.get_users(["elonmusk", "sama"])
+        assert isinstance(users, list)
+        assert len(users) == 2
+        for u in users:
+            assert isinstance(u, TwitterUser)
+            assert u.username is not None
+
+    def test_get_users_by_ids(self, client):
+        users = client.twitter.get_users(["44196397"], identifier_type="id")
+        assert isinstance(users, list)
+        assert len(users) == 1
+        assert isinstance(users[0], TwitterUser)
+        assert users[0].id == "44196397"
+
+    def test_get_users_with_fields(self, client):
+        users = client.twitter.get_users(
+            ["elonmusk"], fields=["id", "username", "followers_count"]
+        )
+        assert isinstance(users, list)
+        assert len(users) == 1
+        assert users[0].id is not None
+        assert users[0].username is not None
+        assert users[0].followers_count is not None
+
     def test_get_user(self, client):
         user = client.twitter.get_user("elonmusk")
         assert isinstance(user, TwitterUser)
