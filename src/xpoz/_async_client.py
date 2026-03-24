@@ -12,6 +12,7 @@ from xpoz._update_check import check_for_update
 from xpoz.namespaces.twitter import AsyncTwitterNamespace
 from xpoz.namespaces.instagram import AsyncInstagramNamespace
 from xpoz.namespaces.reddit import AsyncRedditNamespace
+from xpoz.namespaces.tiktok import AsyncTiktokNamespace
 
 
 class AsyncXpozClient:
@@ -37,7 +38,7 @@ class AsyncXpozClient:
         self._check_update = check_update
 
     def __getattr__(self, name: str) -> object:
-        if name in ("twitter", "instagram", "reddit"):
+        if name in ("twitter", "instagram", "reddit", "tiktok"):
             raise RuntimeError(
                 f"AsyncXpozClient.{name} is not available. "
                 "Call 'await client.connect()' or use 'async with client' first."
@@ -51,6 +52,7 @@ class AsyncXpozClient:
             self.twitter = AsyncTwitterNamespace(self._transport.call_tool, self._timeout)
             self.instagram = AsyncInstagramNamespace(self._transport.call_tool, self._timeout)
             self.reddit = AsyncRedditNamespace(self._transport.call_tool, self._timeout)
+            self.tiktok = AsyncTiktokNamespace(self._transport.call_tool, self._timeout)
 
             if self._check_update:
                 threading.Thread(target=check_for_update, daemon=True, name="xpoz-update-check").start()
