@@ -3,7 +3,7 @@ import pytest
 from xpoz import PaginatedResult, ResponseType
 from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
 from xpoz.types.common import PaginationInfo
-from schema_validators import assert_has_fields, assert_field_types, assert_pagination_structure
+from .schema_validators import assert_has_fields, assert_field_types, assert_pagination_structure
 
 
 @pytest.fixture(scope="module")

@@ -3,7 +3,7 @@ import pytest
 from xpoz import PaginatedResult, ResponseType
 from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz.types.common import PaginationInfo
-from schema_validators import assert_has_fields, assert_field_types, assert_pagination_structure
+from .schema_validators import assert_has_fields, assert_field_types, assert_pagination_structure
 
 
 @pytest.fixture(scope="module")
