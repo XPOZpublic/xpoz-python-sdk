@@ -3,6 +3,7 @@ import pytest
 from xpoz import PaginatedResult, ResponseType
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
 from xpoz.types.common import PaginationInfo
+from .schema_validators import assert_has_fields, assert_pagination_structure
 
 
 @pytest.fixture(scope="module")
@@ -53,6 +54,7 @@ class TestInstagramUsers:
         user = client.instagram.get_user("instagram")
         assert isinstance(user, InstagramUser)
         assert user.username == "instagram"
+        assert_has_fields(user, ["id", "username", "full_name"], "InstagramUser")
 
     def test_get_user_with_fields(self, client):
         user = client.instagram.get_user("instagram", fields=["id", "username", "follower_count"])
@@ -87,8 +89,7 @@ class TestInstagramUsers:
         result = instagram_users_by_keywords_paging
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
-        assert result.pagination.total_rows > 0
-        assert result.pagination.table_name is not None
+        assert_pagination_structure(result)
 
 
 class TestInstagramPosts:

@@ -3,6 +3,7 @@ import pytest
 from xpoz import PaginatedResult, ResponseType
 from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz.types.common import PaginationInfo
+from .schema_validators import assert_has_fields, assert_field_types, assert_pagination_structure
 
 
 @pytest.fixture(scope="module")
@@ -84,6 +85,7 @@ class TestTwitterUsers:
         user = client.twitter.get_user("elonmusk")
         assert isinstance(user, TwitterUser)
         assert user.username == "elonmusk"
+        assert_has_fields(user, ["id", "username", "name"], "TwitterUser")
 
     def test_get_user_by_id(self, client):
         user = client.twitter.get_user("44196397", identifier_type="id")
@@ -96,6 +98,8 @@ class TestTwitterUsers:
         assert user.id is not None
         assert user.username is not None
         assert user.followers_count is not None
+        assert_has_fields(user, ["id", "username", "followers_count"], "TwitterUser")
+        assert_field_types(user, {"followers_count": int}, "TwitterUser")
 
     def test_search_users(self, client):
         users = client.twitter.search_users("elon")
@@ -125,8 +129,7 @@ class TestTwitterUsers:
         result = twitter_users_by_keywords_paging
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
-        assert result.pagination.total_rows > 0
-        assert result.pagination.table_name is not None
+        assert_pagination_structure(result)
 
 
 class TestTwitterPosts:
@@ -165,8 +168,9 @@ class TestTwitterPosts:
         result = twitter_search_paging_result
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
-        assert result.pagination.total_rows > 0
-        assert result.pagination.table_name is not None
+        assert_pagination_structure(result)
+        for post in result.data[:3]:
+            assert_has_fields(post, ["id", "text"], "TwitterPost")
 
     def test_search_posts_pagination(self, twitter_search_paging_result):
         if not twitter_search_paging_result.has_next_page():

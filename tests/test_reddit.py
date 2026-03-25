@@ -10,6 +10,7 @@ from xpoz.types.reddit import (
     SubredditWithPosts,
 )
 from xpoz.types.common import PaginationInfo
+from .schema_validators import assert_has_fields, assert_pagination_structure
 
 
 @pytest.fixture(scope="module")
@@ -38,6 +39,7 @@ class TestRedditUsers:
         if getattr(user, "error", None):
             pytest.skip(f"Server error: {user.error}")
         assert user.username == "spez"
+        assert_has_fields(user, ["id", "username", "total_karma"], "RedditUser")
 
     def test_search_users(self, client):
         users = client.reddit.search_users("spez")
@@ -66,8 +68,7 @@ class TestRedditPosts:
         result = reddit_search_paging_result
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
-        assert result.pagination.total_rows > 0
-        assert result.pagination.table_name is not None
+        assert_pagination_structure(result)
 
     def test_search_posts_with_subreddit(self, client, seven_days_ago):
         result = client.reddit.search_posts(
