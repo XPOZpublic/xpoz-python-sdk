@@ -9,6 +9,7 @@ from xpoz.types.reddit import (
     RedditPostWithComments,
     SubredditWithPosts,
 )
+from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
 
 __all__ = [
     "PaginationInfo",
@@ -23,4 +24,7 @@ __all__ = [
     "RedditSubreddit",
     "RedditPostWithComments",
     "SubredditWithPosts",
+    "TiktokPost",
+    "TiktokUser",
+    "TiktokComment",
 ]

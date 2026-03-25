@@ -36,13 +36,15 @@ xpoz-python-sdk/
     │   ├── common.py        # PaginationInfo
     │   ├── twitter.py       # TwitterPost, TwitterUser
     │   ├── instagram.py     # InstagramPost, InstagramUser, InstagramComment
-    │   └── reddit.py        # RedditPost, RedditUser, RedditComment, RedditSubreddit, composites
+    │   ├── reddit.py        # RedditPost, RedditUser, RedditComment, RedditSubreddit, composites
+    │   └── tiktok.py        # TiktokPost, TiktokUser, TiktokComment
     └── namespaces/          # Platform method groups (sync + async variants)
         ├── __init__.py
         ├── _base.py         # BaseNamespace, AsyncBaseNamespace (shared logic)
         ├── twitter.py       # TwitterNamespace (12 methods)
         ├── instagram.py     # InstagramNamespace (9 methods)
-        └── reddit.py        # RedditNamespace (9 methods)
+        ├── reddit.py        # RedditNamespace (9 methods)
+        └── tiktok.py        # TiktokNamespace (7 methods)
 ```
 
 ## Development Commands
@@ -107,7 +109,7 @@ Many xpoz-mcp tools return an `operationId` instead of immediate results (long-r
 
 ### Namespace Pattern
 
-Each platform (Twitter, Instagram, Reddit) has sync + async namespace classes:
+Each platform (Twitter, Instagram, Reddit, TikTok) has sync + async namespace classes:
 - Sync: `TwitterNamespace(BaseNamespace)` — methods call `self._call_and_maybe_poll()` which handles operationId polling transparently
 - Async: `AsyncTwitterNamespace(AsyncBaseNamespace)` — same but with `await`
 - Both inherit `_build_args()` (filters None values), `_convert_fields()` (snake->camel), `_build_paginated_result()`
@@ -137,7 +139,10 @@ This SDK is a client for the xpoz-mcp server. Key correspondences:
 | RedditUser fields | `src/entities/reddit/User.ts` |
 | RedditComment fields | `src/entities/reddit/Comment.ts` |
 | RedditSubreddit fields | `src/entities/reddit/Subreddit.ts` |
-| Input schemas | `src/schemas/twitter/`, `src/schemas/instagram/`, `src/schemas/reddit/` |
+| TiktokPost fields | `src/entities/tiktok/Post.ts` |
+| TiktokUser fields | `src/entities/tiktok/User.ts` |
+| TiktokComment fields | `src/entities/tiktok/Comment.ts` |
+| Input schemas | `src/schemas/twitter/`, `src/schemas/instagram/`, `src/schemas/reddit/`, `src/schemas/tiktok/` |
 | Operation protocol | `src/tools/operations.ts` |
 
 When xpoz-mcp adds new fields or tools, the SDK should be updated to match.
@@ -167,6 +172,13 @@ When xpoz-mcp adds new fields or tools, the SDK should be updated to match.
 | `instagram.get_user_connections()` | `getInstagramUserConnections` |
 | `instagram.get_post_interacting_users()` | `getInstagramPostInteractingUsers` |
 | `instagram.get_users_by_keywords()` | `getInstagramUsersByKeywords` |
+| `tiktok.get_posts_by_ids()` | `getTiktokPostsByIds` |
+| `tiktok.get_posts_by_user()` | `getTiktokPostsByUser` |
+| `tiktok.search_posts()` | `getTiktokPostsByKeywords` |
+| `tiktok.get_comments()` | `getTiktokCommentsByPostId` |
+| `tiktok.get_user()` | `getTiktokUser` |
+| `tiktok.search_users()` | `searchTiktokUsers` |
+| `tiktok.get_users_by_keywords()` | `getTiktokUsersByKeywords` |
 | `reddit.search_posts()` | `getRedditPostsByKeywords` |
 | `reddit.get_post_with_comments()` | `getRedditPostWithCommentsById` |
 | `reddit.search_comments()` | `getRedditCommentsByKeywords` |
