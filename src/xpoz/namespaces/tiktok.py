@@ -25,32 +25,33 @@ class TiktokNamespace(BaseNamespace):
         result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_IDS, args)
         return _parse_items(TiktokPost, result.get("results", []))
 
-    def get_posts_by_user(
-        self,
-        identifier: str,
-        identifier_type: str = "username",
-        *,
-        fields: list[str] | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
-        force_latest: bool | None = None,
-        response_type: ResponseType | None = None,
-        limit: int | None = None,
-    ) -> PaginatedResult[TiktokPost]:
-        args = self._build_args(
-            identifier=identifier,
-            identifierType=identifier_type,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
-        )
-        result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_USER, args)
-        return self._build_paginated_result(
-            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_USER, args
-        )
+    # TEMPORARILY DISABLED
+    # def get_posts_by_user(
+    #     self,
+    #     identifier: str,
+    #     identifier_type: str = "username",
+    #     *,
+    #     fields: list[str] | None = None,
+    #     start_date: str | None = None,
+    #     end_date: str | None = None,
+    #     force_latest: bool | None = None,
+    #     response_type: ResponseType | None = None,
+    #     limit: int | None = None,
+    # ) -> PaginatedResult[TiktokPost]:
+    #     args = self._build_args(
+    #         identifier=identifier,
+    #         identifierType=identifier_type,
+    #         fields=self._convert_fields(fields),
+    #         startDate=start_date,
+    #         endDate=end_date,
+    #         forceLatest=force_latest,
+    #         responseType=response_type,
+    #         limit=limit,
+    #     )
+    #     result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_USER, args)
+    #     return self._build_paginated_result(
+    #         result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_USER, args
+    #     )
 
     def search_posts(
         self,
@@ -131,30 +132,31 @@ class TiktokNamespace(BaseNamespace):
         result = self._call_and_maybe_poll(_tools.SEARCH_TIKTOK_USERS, args)
         return _parse_items(TiktokUser, result.get("results", []))
 
-    def get_users_by_keywords(
-        self,
-        query: str,
-        *,
-        fields: list[str] | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
-        force_latest: bool | None = None,
-        response_type: ResponseType | None = None,
-        limit: int | None = None,
-    ) -> PaginatedResult[TiktokUser]:
-        args = self._build_args(
-            query=query,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
-        )
-        result = self._call_and_maybe_poll(_tools.GET_TIKTOK_USERS_BY_KEYWORDS, args)
-        return self._build_paginated_result(
-            result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_KEYWORDS, args
-        )
+    # TEMPORARILY DISABLED
+    # def get_users_by_keywords(
+    #     self,
+    #     query: str,
+    #     *,
+    #     fields: list[str] | None = None,
+    #     start_date: str | None = None,
+    #     end_date: str | None = None,
+    #     force_latest: bool | None = None,
+    #     response_type: ResponseType | None = None,
+    #     limit: int | None = None,
+    # ) -> PaginatedResult[TiktokUser]:
+    #     args = self._build_args(
+    #         query=query,
+    #         fields=self._convert_fields(fields),
+    #         startDate=start_date,
+    #         endDate=end_date,
+    #         forceLatest=force_latest,
+    #         responseType=response_type,
+    #         limit=limit,
+    #     )
+    #     result = self._call_and_maybe_poll(_tools.GET_TIKTOK_USERS_BY_KEYWORDS, args)
+    #     return self._build_paginated_result(
+    #         result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_KEYWORDS, args
+    #     )
 
 
 class AsyncTiktokNamespace(AsyncBaseNamespace):
@@ -173,32 +175,33 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_IDS, args)
         return _parse_items(TiktokPost, result.get("results", []))
 
-    async def get_posts_by_user(
-        self,
-        identifier: str,
-        identifier_type: str = "username",
-        *,
-        fields: list[str] | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
-        force_latest: bool | None = None,
-        response_type: ResponseType | None = None,
-        limit: int | None = None,
-    ) -> AsyncPaginatedResult[TiktokPost]:
-        args = self._build_args(
-            identifier=identifier,
-            identifierType=identifier_type,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
-        )
-        result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_USER, args)
-        return await self._build_paginated_result(
-            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_USER, args
-        )
+    # TEMPORARILY DISABLED
+    # async def get_posts_by_user(
+    #     self,
+    #     identifier: str,
+    #     identifier_type: str = "username",
+    #     *,
+    #     fields: list[str] | None = None,
+    #     start_date: str | None = None,
+    #     end_date: str | None = None,
+    #     force_latest: bool | None = None,
+    #     response_type: ResponseType | None = None,
+    #     limit: int | None = None,
+    # ) -> AsyncPaginatedResult[TiktokPost]:
+    #     args = self._build_args(
+    #         identifier=identifier,
+    #         identifierType=identifier_type,
+    #         fields=self._convert_fields(fields),
+    #         startDate=start_date,
+    #         endDate=end_date,
+    #         forceLatest=force_latest,
+    #         responseType=response_type,
+    #         limit=limit,
+    #     )
+    #     result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_USER, args)
+    #     return await self._build_paginated_result(
+    #         result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_USER, args
+    #     )
 
     async def search_posts(
         self,
@@ -279,27 +282,28 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         result = await self._call_and_maybe_poll(_tools.SEARCH_TIKTOK_USERS, args)
         return _parse_items(TiktokUser, result.get("results", []))
 
-    async def get_users_by_keywords(
-        self,
-        query: str,
-        *,
-        fields: list[str] | None = None,
-        start_date: str | None = None,
-        end_date: str | None = None,
-        force_latest: bool | None = None,
-        response_type: ResponseType | None = None,
-        limit: int | None = None,
-    ) -> AsyncPaginatedResult[TiktokUser]:
-        args = self._build_args(
-            query=query,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
-        )
-        result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_USERS_BY_KEYWORDS, args)
-        return await self._build_paginated_result(
-            result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_KEYWORDS, args
-        )
+    # TEMPORARILY DISABLED
+    # async def get_users_by_keywords(
+    #     self,
+    #     query: str,
+    #     *,
+    #     fields: list[str] | None = None,
+    #     start_date: str | None = None,
+    #     end_date: str | None = None,
+    #     force_latest: bool | None = None,
+    #     response_type: ResponseType | None = None,
+    #     limit: int | None = None,
+    # ) -> AsyncPaginatedResult[TiktokUser]:
+    #     args = self._build_args(
+    #         query=query,
+    #         fields=self._convert_fields(fields),
+    #         startDate=start_date,
+    #         endDate=end_date,
+    #         forceLatest=force_latest,
+    #         responseType=response_type,
+    #         limit=limit,
+    #     )
+    #     result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_USERS_BY_KEYWORDS, args)
+    #     return await self._build_paginated_result(
+    #         result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_KEYWORDS, args
+    #     )
