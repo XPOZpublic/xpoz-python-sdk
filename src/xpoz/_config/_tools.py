@@ -35,9 +35,11 @@ GET_REDDIT_SUBREDDIT_WITH_POSTS = "getRedditSubredditWithPostsByName"
 GET_REDDIT_SUBREDDITS_BY_KEYWORDS = "getRedditSubredditsByKeywords"
 
 GET_TIKTOK_POSTS_BY_IDS = "getTiktokPostsByIds"
-GET_TIKTOK_POSTS_BY_USER = "getTiktokPostsByUser"
+# TEMPORARILY DISABLED
+# GET_TIKTOK_POSTS_BY_USER = "getTiktokPostsByUser"
 SEARCH_TIKTOK_POSTS = "getTiktokPostsByKeywords"
 GET_TIKTOK_COMMENTS = "getTiktokCommentsByPostId"
 GET_TIKTOK_USER = "getTiktokUser"
 SEARCH_TIKTOK_USERS = "searchTiktokUsers"
-GET_TIKTOK_USERS_BY_KEYWORDS = "getTiktokUsersByKeywords"
+# TEMPORARILY DISABLED
+# GET_TIKTOK_USERS_BY_KEYWORDS = "getTiktokUsersByKeywords"
