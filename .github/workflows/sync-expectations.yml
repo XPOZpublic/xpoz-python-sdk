@@ -1,0 +1,50 @@
+name: Sync SDK Expectations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/xpoz/types/**'
+      - 'src/xpoz/_config/_tools.py'
+      - 'src/xpoz/namespaces/**'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install package
+        run: pip install -e .
+
+      - name: Generate expectations
+        run: python scripts/generate_expectations.py > /tmp/python-expectations.json
+
+      - name: Checkout xpoz-mcp
+        uses: actions/checkout@v4
+        with:
+          repository: hossenco/xpoz-mcp
+          path: xpoz-mcp
+          token: ${{ secrets.CROSS_REPO_PAT }}
+
+      - name: Update expectations
+        run: cp /tmp/python-expectations.json xpoz-mcp/sdk-compat/python-expectations.json
+
+      - name: Create PR if changed
+        working-directory: xpoz-mcp
+        env:
+          GH_TOKEN: ${{ secrets.CROSS_REPO_PAT }}
+        run: |
+          git diff --quiet sdk-compat/python-expectations.json && exit 0
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          BRANCH="auto/update-python-sdk-expectations"
+          git checkout -b "$BRANCH"
+          git add sdk-compat/python-expectations.json
+          git commit -m "chore: update Python SDK expectations"
+          git push -u origin "$BRANCH" --force
+          gh pr create --title "chore: update Python SDK expectations" --body "Auto-generated from xpoz-sdk type changes." --base main || true

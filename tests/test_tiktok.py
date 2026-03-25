@@ -3,6 +3,7 @@ import pytest
 from xpoz import PaginatedResult, ResponseType
 from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
 from xpoz.types.common import PaginationInfo
+from schema_validators import assert_has_fields, assert_field_types, assert_pagination_structure
 
 
 @pytest.fixture(scope="module")
@@ -55,6 +56,7 @@ class TestTiktokUsers:
         user = client.tiktok.get_user("tiktok")
         assert isinstance(user, TiktokUser)
         assert user.username == "tiktok"
+        assert_has_fields(user, ["id", "username", "nickname"], "TiktokUser")
 
     def test_get_user_with_fields(self, client):
         user = client.tiktok.get_user("tiktok", fields=["id", "username", "follower_count"])
@@ -62,6 +64,8 @@ class TestTiktokUsers:
         assert user.id is not None
         assert user.username is not None
         assert user.follower_count is not None
+        assert_has_fields(user, ["id", "username", "follower_count"], "TiktokUser")
+        assert_field_types(user, {"follower_count": int}, "TiktokUser")
 
     def test_search_users(self, client):
         users = client.tiktok.search_users("charli")
@@ -81,8 +85,7 @@ class TestTiktokUsers:
         result = tiktok_users_by_keywords_paging
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
-        assert result.pagination.total_rows > 0
-        assert result.pagination.table_name is not None
+        assert_pagination_structure(result)
 
 
 class TestTiktokPosts:
@@ -97,8 +100,9 @@ class TestTiktokPosts:
         result = tiktok_posts_paging_result
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
-        assert result.pagination.total_rows > 0
-        assert result.pagination.table_name is not None
+        assert_pagination_structure(result)
+        for post in result.data[:3]:
+            assert_has_fields(post, ["id", "description"], "TiktokPost")
 
     def test_search_posts_fast(self, tiktok_search_fast_result):
         result = tiktok_search_fast_result
@@ -109,8 +113,7 @@ class TestTiktokPosts:
         result = tiktok_search_paging_result
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
-        assert result.pagination.total_rows > 0
-        assert result.pagination.table_name is not None
+        assert_pagination_structure(result)
 
     def test_get_posts_by_ids(self, client, tiktok_post_id):
         if tiktok_post_id is None:
