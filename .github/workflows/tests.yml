@@ -27,3 +27,17 @@ jobs:
         env:
           XPOZ_API_KEY: ${{ secrets.XPOZ_API_KEY }}
         run: pytest tests/ -v
+
+  notify-failure:
+    runs-on: ubuntu-latest
+    needs: [test]
+    if: always() && contains(needs.*.result, 'failure')
+    steps:
+      - uses: slackapi/slack-github-action@v2.1.1
+        with:
+          webhook: ${{ secrets.SLACK_DEPLOYMENT_WEBHOOK_URL }}
+          webhook-type: webhook-trigger
+          payload: |
+            {
+              "text": "❌ **TESTS FAILED**\nxpoz-sdk@${{ github.sha }}\n<${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View run>"
+            }
