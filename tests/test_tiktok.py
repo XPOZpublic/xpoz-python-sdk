@@ -6,20 +6,18 @@ from xpoz.types.common import PaginationInfo
 from .schema_validators import assert_has_fields, assert_field_types, assert_pagination_structure
 
 
-# TEMPORARILY DISABLED
-# @pytest.fixture(scope="module")
-# def tiktok_posts_fast_result(client, seven_days_ago):
-#     return client.tiktok.get_posts_by_user(
-#         "tiktok", fields=["id", "description", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
-#     )
+@pytest.fixture(scope="module")
+def tiktok_posts_fast_result(client, seven_days_ago):
+    return client.tiktok.get_posts_by_user(
+        "tiktok", fields=["id", "description", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
+    )
 
 
-# TEMPORARILY DISABLED
-# @pytest.fixture(scope="module")
-# def tiktok_posts_paging_result(client, seven_days_ago):
-#     return client.tiktok.get_posts_by_user(
-#         "tiktok", fields=["id", "description", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
-#     )
+@pytest.fixture(scope="module")
+def tiktok_posts_paging_result(client, seven_days_ago):
+    return client.tiktok.get_posts_by_user(
+        "tiktok", fields=["id", "description", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
+    )
 
 
 @pytest.fixture(scope="module")
@@ -36,16 +34,14 @@ def tiktok_search_paging_result(client, seven_days_ago):
     )
 
 
-# TEMPORARILY DISABLED
-# @pytest.fixture(scope="module")
-# def tiktok_users_by_keywords_fast(client, seven_days_ago):
-#     return client.tiktok.get_users_by_keywords("dance", start_date=seven_days_ago, response_type="fast", limit=10)
+@pytest.fixture(scope="module")
+def tiktok_users_by_keywords_fast(client, seven_days_ago):
+    return client.tiktok.get_users_by_keywords("dance", start_date=seven_days_ago, response_type="fast", limit=10)
 
 
-# TEMPORARILY DISABLED
-# @pytest.fixture(scope="module")
-# def tiktok_users_by_keywords_paging(client, seven_days_ago):
-#     return client.tiktok.get_users_by_keywords("dance", start_date=seven_days_ago, response_type="paging")
+@pytest.fixture(scope="module")
+def tiktok_users_by_keywords_paging(client, seven_days_ago):
+    return client.tiktok.get_users_by_keywords("dance", start_date=seven_days_ago, response_type="paging")
 
 
 @pytest.fixture(scope="module")
@@ -76,39 +72,35 @@ class TestTiktokUsers:
         for u in users:
             assert isinstance(u, TiktokUser)
 
-    # TEMPORARILY DISABLED
-    # def test_get_users_by_keywords_fast(self, tiktok_users_by_keywords_fast):
-    #     result = tiktok_users_by_keywords_fast
-    #     assert isinstance(result, PaginatedResult)
-    #     assert len(result.data) > 0
-    #     for u in result.data:
-    #         assert isinstance(u, TiktokUser)
+    def test_get_users_by_keywords_fast(self, tiktok_users_by_keywords_fast):
+        result = tiktok_users_by_keywords_fast
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        for u in result.data:
+            assert isinstance(u, TiktokUser)
 
-    # TEMPORARILY DISABLED
-    # def test_get_users_by_keywords_paging(self, tiktok_users_by_keywords_paging):
-    #     result = tiktok_users_by_keywords_paging
-    #     assert isinstance(result, PaginatedResult)
-    #     assert len(result.data) > 0
-    #     assert_pagination_structure(result)
+    def test_get_users_by_keywords_paging(self, tiktok_users_by_keywords_paging):
+        result = tiktok_users_by_keywords_paging
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert_pagination_structure(result)
 
 
 class TestTiktokPosts:
-    # TEMPORARILY DISABLED
-    # def test_get_posts_by_user_fast(self, tiktok_posts_fast_result):
-    #     result = tiktok_posts_fast_result
-    #     assert isinstance(result, PaginatedResult)
-    #     assert len(result.data) > 0
-    #     for post in result.data:
-    #         assert isinstance(post, TiktokPost)
+    def test_get_posts_by_user_fast(self, tiktok_posts_fast_result):
+        result = tiktok_posts_fast_result
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        for post in result.data:
+            assert isinstance(post, TiktokPost)
 
-    # TEMPORARILY DISABLED
-    # def test_get_posts_by_user_paging(self, tiktok_posts_paging_result):
-    #     result = tiktok_posts_paging_result
-    #     assert isinstance(result, PaginatedResult)
-    #     assert len(result.data) > 0
-    #     assert_pagination_structure(result)
-    #     for post in result.data[:3]:
-    #         assert_has_fields(post, ["id", "description"], "TiktokPost")
+    def test_get_posts_by_user_paging(self, tiktok_posts_paging_result):
+        result = tiktok_posts_paging_result
+        assert isinstance(result, PaginatedResult)
+        assert len(result.data) > 0
+        assert_pagination_structure(result)
+        for post in result.data[:3]:
+            assert_has_fields(post, ["id", "description"], "TiktokPost")
 
     def test_search_posts_fast(self, tiktok_search_fast_result):
         result = tiktok_search_fast_result
