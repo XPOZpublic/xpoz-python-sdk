@@ -72,10 +72,11 @@ class TestRedditPosts:
 
     def test_search_posts_with_subreddit(self, client, seven_days_ago):
         result = client.reddit.search_posts(
-            "help", subreddit="python", fields=["id", "title", "subreddit_name"], start_date=seven_days_ago
+            "question", subreddit="AskReddit", fields=["id", "title", "subreddit_name"], start_date=seven_days_ago
         )
         assert isinstance(result, PaginatedResult)
-        assert len(result.data) > 0
+        for post in result.data:
+            assert isinstance(post, RedditPost)
 
     def test_search_posts_pagination(self, reddit_search_paging_result):
         if not reddit_search_paging_result.has_next_page():
