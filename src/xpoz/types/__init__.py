@@ -10,6 +10,7 @@ from xpoz.types.reddit import (
     SubredditWithPosts,
 )
 from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
+from xpoz.types.tracking import TrackedItem, AddTrackedItemsResult, RemoveTrackedItemsResult
 
 __all__ = [
     "PaginationInfo",
@@ -27,4 +28,7 @@ __all__ = [
     "TiktokPost",
     "TiktokUser",
     "TiktokComment",
+    "TrackedItem",
+    "AddTrackedItemsResult",
+    "RemoveTrackedItemsResult",
 ]

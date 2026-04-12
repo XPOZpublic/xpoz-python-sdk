@@ -13,6 +13,7 @@ from xpoz.namespaces.twitter import TwitterNamespace
 from xpoz.namespaces.instagram import InstagramNamespace
 from xpoz.namespaces.reddit import RedditNamespace
 from xpoz.namespaces.tiktok import TiktokNamespace
+from xpoz.namespaces.tracking import TrackingNamespace
 
 
 class XpozClient:
@@ -40,6 +41,7 @@ class XpozClient:
         self.instagram = InstagramNamespace(self._transport.call_tool, self._timeout)
         self.reddit = RedditNamespace(self._transport.call_tool, self._timeout)
         self.tiktok = TiktokNamespace(self._transport.call_tool, self._timeout)
+        self.tracking = TrackingNamespace(self._transport.call_tool, self._timeout)
 
         if check_update:
             threading.Thread(target=check_for_update, daemon=True, name="xpoz-update-check").start()
