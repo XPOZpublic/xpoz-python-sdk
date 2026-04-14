@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/xpoz)](https://pypi.org/project/xpoz/)
 
-Python SDK for the [Xpoz](https://xpoz.ai) social media intelligence platform. Query Twitter/X, Instagram, and Reddit data through a simple, Pythonic interface.
+Python SDK for the [Xpoz](https://xpoz.ai) social media intelligence platform. Query Twitter/X, Instagram, Reddit, and TikTok data through a simple, Pythonic interface.
 
 ## Installation
 
@@ -24,13 +24,13 @@ export XPOZ_API_KEY=your-token-here
 
 ## What is Xpoz?
 
-Xpoz provides unified access to social media data across Twitter/X, Instagram, and Reddit. The platform indexes billions of posts, user profiles, and engagement metrics — making it possible to search, analyze, and export social media data at scale.
+Xpoz provides unified access to social media data across Twitter/X, Instagram, Reddit, and TikTok. The platform indexes billions of posts, user profiles, and engagement metrics — making it possible to search, analyze, and export social media data at scale.
 
 The SDK wraps Xpoz's [MCP](https://modelcontextprotocol.io) server, abstracting away transport, authentication, operation polling, and pagination into a clean developer-friendly API.
 
 ## Features
 
-- **30 data methods** across Twitter, Instagram, and Reddit
+- **37 data methods** across Twitter, Instagram, Reddit, and TikTok
 - **Sync and async clients** — `XpozClient` and `AsyncXpozClient`
 - **Automatic operation polling** — long-running queries are abstracted away
 - **Response modes** — `ResponseType.FAST` for quick limited results, `PAGING` for full pagination, `CSV` for export
@@ -38,7 +38,7 @@ The SDK wraps Xpoz's [MCP](https://modelcontextprotocol.io) server, abstracting 
 - **CSV export** — `export_csv()` on any paginated result
 - **Field selection** — request only the fields you need in Pythonic snake_case
 - **Pydantic v2 models** — fully typed results with autocomplete support
-- **Namespaced API** — `client.twitter.*`, `client.instagram.*`, `client.reddit.*`
+- **Namespaced API** — `client.twitter.*`, `client.instagram.*`, `client.reddit.*`, `client.tiktok.*`
 
 ## Quick Start
 
@@ -179,6 +179,9 @@ csv_url = results.export_csv()
 | Instagram | `get_posts_by_user`     |
 | Instagram | `get_users_by_keywords` |
 | Reddit    | `search_posts`          |
+| TikTok    | `search_posts`          |
+| TikTok    | `get_posts_by_user`     |
+| TikTok    | `get_users_by_keywords` |
 
 ## Field Selection
 
@@ -523,6 +526,66 @@ subs = client.reddit.get_subreddits_by_keywords("cryptocurrency")
 
 ---
 
+### TikTok — `client.tiktok`
+
+#### `get_user(identifier, identifier_type="username", *, fields) -> TiktokUser`
+
+```python
+user = client.tiktok.get_user("charlidamelio")
+print(f"{user.nickname} — {user.follower_count:,} followers")
+
+# By numeric ID
+user = client.tiktok.get_user("123456789", identifier_type="id")
+```
+
+#### `search_users(name, *, limit=None, fields) -> list[TiktokUser]`
+
+```python
+users = client.tiktok.search_users("charli")
+top_five = client.tiktok.search_users("charli", limit=5)
+```
+
+#### `get_users_by_keywords(query, *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[TiktokUser]`
+
+```python
+users = client.tiktok.get_users_by_keywords(
+    '"machine learning"',
+    response_type=ResponseType.FAST,
+    limit=20,
+)
+```
+
+#### `get_posts_by_ids(post_ids, *, fields, force_latest) -> list[TiktokPost]`
+
+```python
+posts = client.tiktok.get_posts_by_ids(["7123456789012345678"])
+```
+
+#### `get_posts_by_user(identifier, identifier_type="username", *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[TiktokPost]`
+
+```python
+results = client.tiktok.get_posts_by_user("charlidamelio", start_date="2025-01-01")
+```
+
+#### `search_posts(query, *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[TiktokPost]`
+
+```python
+results = client.tiktok.search_posts(
+    "travel vlog",
+    start_date="2025-01-01",
+    response_type=ResponseType.FAST,
+    limit=30,
+)
+```
+
+#### `get_comments(post_id, *, fields, start_date, end_date, force_latest) -> PaginatedResult[TiktokComment]`
+
+```python
+comments = client.tiktok.get_comments("7123456789012345678")
+```
+
+---
+
 ## Type Models
 
 All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown fields are preserved, not rejected). All fields are optional and default to `None`.
@@ -679,6 +742,61 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `active_user_count`  | `int`  | Active users      |
 | `over18`             | `bool` | NSFW flag         |
 | `created_at_date`    | `str`  | Creation date     |
+
+### TiktokPost
+
+| Field                          | Type    | Description                |
+| ------------------------------ | ------- | -------------------------- |
+| `id`                           | `str`   | Post ID                    |
+| `description`                  | `str`   | Post caption/description   |
+| `description_language`         | `str`   | Language of description    |
+| `user_id`                      | `str`   | Author user ID             |
+| `username`                     | `str`   | Author username            |
+| `nickname`                     | `str`   | Author display name        |
+| `like_count`                   | `int`   | Number of likes            |
+| `comment_count`                | `int`   | Number of comments         |
+| `play_count`                   | `int`   | Video play count           |
+| `collect_count`                | `int`   | Number of collects/saves   |
+| `download_count`               | `int`   | Number of downloads        |
+| `forward_count`                | `int`   | Number of forwards/shares  |
+| `video_thumbnail`              | `str`   | Thumbnail URL              |
+| `post_type`                    | `int`   | Post type code             |
+| `is_private`                   | `bool`  | Private post flag          |
+| `created_at`                   | `str`   | Creation timestamp         |
+| `created_at_date`              | `str`   | Creation date (YYYY-MM-DD) |
+
+### TiktokUser
+
+| Field             | Type    | Description           |
+| ----------------- | ------- | --------------------- |
+| `id`              | `str`   | User ID               |
+| `username`        | `str`   | Username              |
+| `nickname`        | `str`   | Display name          |
+| `signature`       | `str`   | Bio text              |
+| `sec_uid`         | `str`   | Secure user ID        |
+| `avatar`          | `str`   | Profile picture URL   |
+| `is_private`      | `bool`  | Private account       |
+| `is_verified`     | `bool`  | Verified status       |
+| `follower_count`  | `int`   | Number of followers   |
+| `following_count` | `int`   | Number of following   |
+| `like_count`      | `int`   | Total likes received  |
+| `post_count`      | `int`   | Total posts           |
+| `language`        | `str`   | Profile language      |
+| `region`          | `str`   | Account region        |
+| `created_at`      | `str`   | Account creation date |
+
+### TiktokComment
+
+| Field             | Type  | Description                |
+| ----------------- | ----- | -------------------------- |
+| `id`              | `str` | Comment ID                 |
+| `post_id`         | `str` | Parent post ID             |
+| `user_id`         | `str` | Author user ID             |
+| `username`        | `str` | Author username            |
+| `text`            | `str` | Comment text               |
+| `like_count`      | `int` | Number of likes            |
+| `created_at`      | `str` | Creation timestamp         |
+| `created_at_date` | `str` | Creation date (YYYY-MM-DD) |
 
 ### Composite Types
 
