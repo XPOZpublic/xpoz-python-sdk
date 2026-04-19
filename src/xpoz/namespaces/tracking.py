@@ -11,7 +11,7 @@ from xpoz._config import _tools
 class TrackingNamespace(BaseNamespace):
     def get_tracked_items(self) -> list[TrackedItem]:
         result = self._call_tool(_tools.GET_TRACKED_ITEMS, {})
-        return _parse_items(TrackedItem, result.get("data", []))
+        return _parse_items(TrackedItem, result.get("results", []))
 
     def add_tracked_items(
         self,
@@ -37,7 +37,7 @@ class TrackingNamespace(BaseNamespace):
 class AsyncTrackingNamespace(AsyncBaseNamespace):
     async def get_tracked_items(self) -> list[TrackedItem]:
         result = await self._call_tool(_tools.GET_TRACKED_ITEMS, {})
-        return _parse_items(TrackedItem, result.get("data", []))
+        return _parse_items(TrackedItem, result.get("results", []))
 
     async def add_tracked_items(
         self,
