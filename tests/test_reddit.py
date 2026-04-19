@@ -115,8 +115,8 @@ class TestRedditSubreddits:
         assert result.subreddit.display_name is not None
         assert isinstance(result.posts, list)
 
-    def test_get_subreddits_by_keywords(self, client, seven_days_ago):
-        result = client.reddit.get_subreddits_by_keywords("programming", start_date=seven_days_ago)
+    def test_get_subreddits_by_keywords(self, client):
+        result = client.reddit.get_subreddits_by_keywords("programming")
         assert isinstance(result, PaginatedResult)
         assert len(result.data) > 0
         for s in result.data:
