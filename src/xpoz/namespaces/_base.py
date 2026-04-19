@@ -47,9 +47,7 @@ class BaseNamespace:
         self._call_tool = call_tool
         self._timeout = timeout
 
-    def _call_and_maybe_poll(
-        self, tool_name: str, arguments: dict[str, Any]
-    ) -> dict[str, Any]:
+    def _call_and_maybe_poll(self, tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         result = self._call_tool(tool_name, arguments)
         if "results" in result:
             return result
@@ -111,9 +109,7 @@ class AsyncBaseNamespace:
         self._call_tool = call_tool
         self._timeout = timeout
 
-    async def _call_and_maybe_poll(
-        self, tool_name: str, arguments: dict[str, Any]
-    ) -> dict[str, Any]:
+    async def _call_and_maybe_poll(self, tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         result = await self._call_tool(tool_name, arguments)
         if "results" in result:
             return result
@@ -134,9 +130,7 @@ class AsyncBaseNamespace:
         table_name = pagination.table_name
         export_op_id = _extract_export_op_id(raw)
 
-        async def fetch_page(
-            page_number: int, tbl: str | None
-        ) -> AsyncPaginatedResult[T]:
+        async def fetch_page(page_number: int, tbl: str | None) -> AsyncPaginatedResult[T]:
             args = {**base_args, "pageNumber": page_number}
             if tbl:
                 args["tableName"] = tbl

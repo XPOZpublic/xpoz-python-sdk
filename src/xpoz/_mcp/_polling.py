@@ -34,7 +34,12 @@ async def wait_for_result(
         if status == "cancelled":
             raise OperationCancelledError(operation_id)
 
-        if status == "completed" or "results" in result or "downloadUrl" in result:
+        if (
+            status == "completed"
+            or status == "no_data"
+            or "results" in result
+            or "downloadUrl" in result
+        ):
             return result
 
         elapsed = anyio.current_time() - start
@@ -63,7 +68,12 @@ def wait_for_result_sync(
         if status == "cancelled":
             raise OperationCancelledError(operation_id)
 
-        if status == "completed" or "results" in result or "downloadUrl" in result:
+        if (
+            status == "completed"
+            or status == "no_data"
+            or "results" in result
+            or "downloadUrl" in result
+        ):
             return result
 
         elapsed = time.monotonic() - start
