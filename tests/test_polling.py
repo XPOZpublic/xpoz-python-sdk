@@ -76,12 +76,12 @@ class TestInterpretStatus:
         raw = {"downloadUrl": "https://example.com/export.csv"}
         assert interpret_status(raw) is raw
 
-    def test_in_progress_returns_none(self) -> None:
-        raw = {"status": "in_progress", "progress": 0.5}
+    def test_running_returns_none(self) -> None:
+        raw = {"status": "running", "progress": 0.5}
         assert interpret_status(raw) is None
 
     def test_unknown_status_returns_none(self) -> None:
-        raw = {"status": "running"}
+        raw = {"status": "pending"}
         assert interpret_status(raw) is None
 
 
@@ -110,8 +110,8 @@ class TestWaitForResultSync:
         monkeypatch.setattr(polling_mod.time, "sleep", lambda _s: None)
         stub = _CallToolStub(
             [
-                {"status": "in_progress"},
-                {"status": "in_progress"},
+                {"status": "running"},
+                {"status": "running"},
                 {"status": "success", "results": [{"id": 1}]},
             ]
         )
@@ -138,7 +138,7 @@ class TestWaitForResultSync:
         times = iter([0.0, 0.0, 100.0])
         monkeypatch.setattr(polling_mod.time, "monotonic", lambda: next(times))
         stub = _CallToolStub(
-            [{"status": "in_progress"}, {"status": "in_progress"}]
+            [{"status": "running"}, {"status": "running"}]
         )
         with pytest.raises(OperationTimeoutError):
             wait_for_result_sync(stub, "op_xxx", timeout=10)
@@ -190,8 +190,8 @@ class TestCallAndMaybePoll:
         monkeypatch.setattr(polling_mod.time, "sleep", lambda _s: None)
         stub = _CallToolStub(
             [
-                {"operationId": "op_xxx", "status": "in_progress"},
-                {"status": "in_progress"},
+                {"operationId": "op_xxx", "status": "running"},
+                {"status": "running"},
                 {"status": "success", "results": [{"id": 42}]},
             ]
         )
