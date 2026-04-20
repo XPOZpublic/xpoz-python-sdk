@@ -4,6 +4,7 @@ from typing import Any
 
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
+from xpoz._results import NoDataResult
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
 from xpoz._config import _tools
 from xpoz._config._constants import ResponseType
@@ -36,7 +37,7 @@ class InstagramNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[InstagramPost]:
+    ) -> PaginatedResult[InstagramPost] | NoDataResult:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
@@ -62,7 +63,7 @@ class InstagramNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[InstagramPost]:
+    ) -> PaginatedResult[InstagramPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -85,7 +86,7 @@ class InstagramNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[InstagramComment]:
+    ) -> PaginatedResult[InstagramComment] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -138,7 +139,7 @@ class InstagramNamespace(BaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[InstagramUser]:
+    ) -> PaginatedResult[InstagramUser] | NoDataResult:
         args = self._build_args(
             username=username,
             connectionType=connection_type,
@@ -157,7 +158,7 @@ class InstagramNamespace(BaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[InstagramUser]:
+    ) -> PaginatedResult[InstagramUser] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             interactionType=interaction_type,
@@ -179,7 +180,7 @@ class InstagramNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[InstagramUser]:
+    ) -> PaginatedResult[InstagramUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -222,7 +223,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[InstagramPost]:
+    ) -> AsyncPaginatedResult[InstagramPost] | NoDataResult:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
@@ -248,7 +249,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[InstagramPost]:
+    ) -> AsyncPaginatedResult[InstagramPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -271,7 +272,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[InstagramComment]:
+    ) -> AsyncPaginatedResult[InstagramComment] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -324,7 +325,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[InstagramUser]:
+    ) -> AsyncPaginatedResult[InstagramUser] | NoDataResult:
         args = self._build_args(
             username=username,
             connectionType=connection_type,
@@ -343,7 +344,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[InstagramUser]:
+    ) -> AsyncPaginatedResult[InstagramUser] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             interactionType=interaction_type,
@@ -365,7 +366,7 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[InstagramUser]:
+    ) -> AsyncPaginatedResult[InstagramUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),

@@ -14,6 +14,40 @@ from xpoz._exceptions import (
 POLL_INTERVAL_SECONDS = 5
 DEFAULT_TIMEOUT_SECONDS = 300
 
+RESPONSE_STATUS_SUCCESS = "success"
+RESPONSE_STATUS_ERROR = "error"
+RESPONSE_STATUS_NO_DATA = "no_data"
+RESPONSE_STATUS_IN_PROGRESS = "in_progress"
+RESPONSE_STATUS_CANCELLED = "cancelled"
+
+
+def interpret_status(
+    raw: dict[str, Any],
+    operation_id: str | None = None,
+) -> dict[str, Any] | None:
+    status = raw.get("status")
+
+    if status == RESPONSE_STATUS_ERROR:
+        raise OperationFailedError(
+            error=str(raw.get("error", "Unknown error")),
+            operation_id=operation_id,
+            message=raw.get("message"),
+            category=raw.get("category"),
+        )
+
+    if status == RESPONSE_STATUS_CANCELLED:
+        raise OperationCancelledError(operation_id)
+
+    if (
+        status == RESPONSE_STATUS_SUCCESS
+        or status == RESPONSE_STATUS_NO_DATA
+        or "results" in raw
+        or "downloadUrl" in raw
+    ):
+        return raw
+
+    return None
+
 
 async def wait_for_result(
     call_tool: Callable[[str, dict[str, Any]], Awaitable[dict[str, Any]]],
@@ -25,22 +59,10 @@ async def wait_for_result(
         result: dict[str, Any] = await call_tool(
             "checkOperationStatus", {"operationId": operation_id}
         )
-        status = result.get("status")
 
-        if status == "failed":
-            error = result.get("error", "Unknown error")
-            raise OperationFailedError(operation_id, str(error))
-
-        if status == "cancelled":
-            raise OperationCancelledError(operation_id)
-
-        if (
-            status == "completed"
-            or status == "no_data"
-            or "results" in result
-            or "downloadUrl" in result
-        ):
-            return result
+        terminal = interpret_status(result, operation_id)
+        if terminal is not None:
+            return terminal
 
         elapsed = anyio.current_time() - start
         if elapsed >= timeout:
@@ -59,22 +81,10 @@ def wait_for_result_sync(
         result: dict[str, Any] = call_tool(
             "checkOperationStatus", {"operationId": operation_id}
         )
-        status = result.get("status")
 
-        if status == "failed":
-            error = result.get("error", "Unknown error")
-            raise OperationFailedError(operation_id, str(error))
-
-        if status == "cancelled":
-            raise OperationCancelledError(operation_id)
-
-        if (
-            status == "completed"
-            or status == "no_data"
-            or "results" in result
-            or "downloadUrl" in result
-        ):
-            return result
+        terminal = interpret_status(result, operation_id)
+        if terminal is not None:
+            return terminal
 
         elapsed = time.monotonic() - start
         if elapsed >= timeout:

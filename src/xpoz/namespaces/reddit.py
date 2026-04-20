@@ -11,6 +11,7 @@ from xpoz.namespaces._base import (
     _extract_results,
 )
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
+from xpoz._results import NoDataResult
 from xpoz._mcp._polling import wait_for_result_sync, wait_for_result
 from xpoz.types.reddit import (
     RedditPost,
@@ -39,7 +40,7 @@ class RedditNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[RedditPost]:
+    ) -> PaginatedResult[RedditPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -82,7 +83,7 @@ class RedditNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         subreddit: str | None = None,
-    ) -> PaginatedResult[RedditComment]:
+    ) -> PaginatedResult[RedditComment] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -135,7 +136,7 @@ class RedditNamespace(BaseNamespace):
         end_date: str | None = None,
         subreddit: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[RedditUser]:
+    ) -> PaginatedResult[RedditUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -189,7 +190,7 @@ class RedditNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[RedditSubreddit]:
+    ) -> PaginatedResult[RedditSubreddit] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -249,7 +250,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[RedditPost]:
+    ) -> AsyncPaginatedResult[RedditPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -292,7 +293,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         subreddit: str | None = None,
-    ) -> AsyncPaginatedResult[RedditComment]:
+    ) -> AsyncPaginatedResult[RedditComment] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -345,7 +346,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
         end_date: str | None = None,
         subreddit: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[RedditUser]:
+    ) -> AsyncPaginatedResult[RedditUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -399,7 +400,7 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[RedditSubreddit]:
+    ) -> AsyncPaginatedResult[RedditSubreddit] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),

@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import TypeVar, Any, Callable, Awaitable, Type
+from typing import TypeVar, Any, Callable, Awaitable, Type, Union
 
 from pydantic import BaseModel
 
 from xpoz._transform._field_mapping import map_fields_to_camel, map_dict_keys_to_snake
-from xpoz._mcp._polling import wait_for_result, wait_for_result_sync
+from xpoz._mcp._polling import interpret_status, wait_for_result, wait_for_result_sync
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
+from xpoz._results import NoDataResult
 from xpoz.types.common import PaginationInfo
 
 T = TypeVar("T", bound=BaseModel)
@@ -49,8 +50,9 @@ class BaseNamespace:
 
     def _call_and_maybe_poll(self, tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         result = self._call_tool(tool_name, arguments)
-        if "results" in result:
-            return result
+        terminal = interpret_status(result)
+        if terminal is not None:
+            return terminal
         operation_id = result.get("operationId")
         if operation_id:
             return wait_for_result_sync(self._call_tool, operation_id, self._timeout)
@@ -62,13 +64,18 @@ class BaseNamespace:
         model: Type[T],
         tool_name: str,
         base_args: dict[str, Any],
-    ) -> PaginatedResult[T]:
+    ) -> Union[PaginatedResult[T], NoDataResult]:
+        if raw.get("status") == "no_data":
+            return NoDataResult(message=str(raw.get("message", "")))
+
         items = _parse_items(model, _extract_results(raw))
         pagination = _extract_pagination(raw)
         table_name = pagination.table_name
         export_op_id = _extract_export_op_id(raw)
 
-        def fetch_page(page_number: int, tbl: str | None) -> PaginatedResult[T]:
+        def fetch_page(
+            page_number: int, tbl: str | None
+        ) -> Union[PaginatedResult[T], NoDataResult]:
             args = {**base_args, "pageNumber": page_number}
             if tbl:
                 args["tableName"] = tbl
@@ -111,8 +118,9 @@ class AsyncBaseNamespace:
 
     async def _call_and_maybe_poll(self, tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         result = await self._call_tool(tool_name, arguments)
-        if "results" in result:
-            return result
+        terminal = interpret_status(result)
+        if terminal is not None:
+            return terminal
         operation_id = result.get("operationId")
         if operation_id:
             return await wait_for_result(self._call_tool, operation_id, self._timeout)
@@ -124,13 +132,18 @@ class AsyncBaseNamespace:
         model: Type[T],
         tool_name: str,
         base_args: dict[str, Any],
-    ) -> AsyncPaginatedResult[T]:
+    ) -> Union[AsyncPaginatedResult[T], NoDataResult]:
+        if raw.get("status") == "no_data":
+            return NoDataResult(message=str(raw.get("message", "")))
+
         items = _parse_items(model, _extract_results(raw))
         pagination = _extract_pagination(raw)
         table_name = pagination.table_name
         export_op_id = _extract_export_op_id(raw)
 
-        async def fetch_page(page_number: int, tbl: str | None) -> AsyncPaginatedResult[T]:
+        async def fetch_page(
+            page_number: int, tbl: str | None
+        ) -> Union[AsyncPaginatedResult[T], NoDataResult]:
             args = {**base_args, "pageNumber": page_number}
             if tbl:
                 args["tableName"] = tbl

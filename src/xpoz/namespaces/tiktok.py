@@ -4,6 +4,7 @@ from typing import Any
 
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
+from xpoz._results import NoDataResult
 from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
 from xpoz._config import _tools
 from xpoz._config._constants import ResponseType
@@ -36,7 +37,7 @@ class TiktokNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[TiktokPost]:
+    ) -> PaginatedResult[TiktokPost] | NoDataResult:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
@@ -62,7 +63,7 @@ class TiktokNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[TiktokPost]:
+    ) -> PaginatedResult[TiktokPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -85,7 +86,7 @@ class TiktokNamespace(BaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[TiktokComment]:
+    ) -> PaginatedResult[TiktokComment] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -141,7 +142,7 @@ class TiktokNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[TiktokUser]:
+    ) -> PaginatedResult[TiktokUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -184,7 +185,7 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[TiktokPost]:
+    ) -> AsyncPaginatedResult[TiktokPost] | NoDataResult:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
@@ -210,7 +211,7 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[TiktokPost]:
+    ) -> AsyncPaginatedResult[TiktokPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -233,7 +234,7 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         start_date: str | None = None,
         end_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[TiktokComment]:
+    ) -> AsyncPaginatedResult[TiktokComment] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -289,7 +290,7 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[TiktokUser]:
+    ) -> AsyncPaginatedResult[TiktokUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),

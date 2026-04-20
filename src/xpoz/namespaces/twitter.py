@@ -4,6 +4,7 @@ from typing import Any
 
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
+from xpoz._results import NoDataResult
 from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz._config import _tools
 from xpoz._config._constants import ResponseType
@@ -35,7 +36,7 @@ class TwitterNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[TwitterPost]:
+    ) -> PaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             username=identifier,
             fields=self._convert_fields(fields),
@@ -62,7 +63,7 @@ class TwitterNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[TwitterPost]:
+    ) -> PaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -93,7 +94,7 @@ class TwitterNamespace(BaseNamespace):
         *,
         fields: list[str] | None = None,
         start_date: str | None = None,
-    ) -> PaginatedResult[TwitterPost]:
+    ) -> PaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -109,7 +110,7 @@ class TwitterNamespace(BaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[TwitterPost]:
+    ) -> PaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -126,7 +127,7 @@ class TwitterNamespace(BaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[TwitterPost]:
+    ) -> PaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -143,7 +144,7 @@ class TwitterNamespace(BaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[TwitterUser]:
+    ) -> PaginatedResult[TwitterUser] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             interactionType=interaction_type,
@@ -233,7 +234,7 @@ class TwitterNamespace(BaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> PaginatedResult[TwitterUser]:
+    ) -> PaginatedResult[TwitterUser] | NoDataResult:
         args = self._build_args(
             username=username,
             connectionType=connection_type,
@@ -254,7 +255,7 @@ class TwitterNamespace(BaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> PaginatedResult[TwitterUser]:
+    ) -> PaginatedResult[TwitterUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -295,7 +296,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[TwitterPost]:
+    ) -> AsyncPaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             username=identifier,
             fields=self._convert_fields(fields),
@@ -322,7 +323,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[TwitterPost]:
+    ) -> AsyncPaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),
@@ -353,7 +354,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         *,
         fields: list[str] | None = None,
         start_date: str | None = None,
-    ) -> AsyncPaginatedResult[TwitterPost]:
+    ) -> AsyncPaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -369,7 +370,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[TwitterPost]:
+    ) -> AsyncPaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -386,7 +387,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         start_date: str | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[TwitterPost]:
+    ) -> AsyncPaginatedResult[TwitterPost] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             fields=self._convert_fields(fields),
@@ -403,7 +404,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[TwitterUser]:
+    ) -> AsyncPaginatedResult[TwitterUser] | NoDataResult:
         args = self._build_args(
             postId=post_id,
             interactionType=interaction_type,
@@ -493,7 +494,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         *,
         fields: list[str] | None = None,
         force_latest: bool | None = None,
-    ) -> AsyncPaginatedResult[TwitterUser]:
+    ) -> AsyncPaginatedResult[TwitterUser] | NoDataResult:
         args = self._build_args(
             username=username,
             connectionType=connection_type,
@@ -514,7 +515,7 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         force_latest: bool | None = None,
         response_type: ResponseType | None = None,
         limit: int | None = None,
-    ) -> AsyncPaginatedResult[TwitterUser]:
+    ) -> AsyncPaginatedResult[TwitterUser] | NoDataResult:
         args = self._build_args(
             query=query,
             fields=self._convert_fields(fields),

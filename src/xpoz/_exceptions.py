@@ -20,16 +20,27 @@ class OperationTimeoutError(XpozError):
 
 
 class OperationFailedError(XpozError):
-    def __init__(self, operation_id: str, error: str):
+    def __init__(
+        self,
+        error: str,
+        *,
+        operation_id: str | None = None,
+        message: str | None = None,
+        category: str | None = None,
+    ):
         self.operation_id = operation_id
         self.error = error
-        super().__init__(f"Operation {operation_id} failed: {error}")
+        self.message = message
+        self.category = category
+        prefix = f"Operation {operation_id}" if operation_id else "Operation"
+        super().__init__(f"{prefix} failed: {error}")
 
 
 class OperationCancelledError(XpozError):
-    def __init__(self, operation_id: str):
+    def __init__(self, operation_id: str | None = None):
         self.operation_id = operation_id
-        super().__init__(f"Operation {operation_id} was cancelled")
+        target = f"Operation {operation_id}" if operation_id else "Operation"
+        super().__init__(f"{target} was cancelled")
 
 
 class NotFoundError(XpozError):
