@@ -4,6 +4,7 @@ from typing import TypeVar, Any, Callable, Awaitable, Type
 
 from pydantic import BaseModel
 
+from xpoz._exceptions import OperationFailedError
 from xpoz._transform._field_mapping import map_fields_to_camel, map_dict_keys_to_snake
 from xpoz._mcp._polling import wait_for_result, wait_for_result_sync
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
@@ -49,7 +50,9 @@ class BaseNamespace:
 
     def _call_and_maybe_poll(self, tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         result = self._call_tool(tool_name, arguments)
-        if "results" in result:
+        if result.get("status") == "error":
+            raise OperationFailedError("", str(result.get("error") or "Unknown error"))
+        if result.get("status") == "success" or "results" in result:
             return result
         operation_id = result.get("operationId")
         if operation_id:
@@ -111,7 +114,9 @@ class AsyncBaseNamespace:
 
     async def _call_and_maybe_poll(self, tool_name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         result = await self._call_tool(tool_name, arguments)
-        if "results" in result:
+        if result.get("status") == "error":
+            raise OperationFailedError("", str(result.get("error") or "Unknown error"))
+        if result.get("status") == "success" or "results" in result:
             return result
         operation_id = result.get("operationId")
         if operation_id:

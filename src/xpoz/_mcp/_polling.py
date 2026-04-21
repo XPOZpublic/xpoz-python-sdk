@@ -27,7 +27,7 @@ async def wait_for_result(
         )
         status = result.get("status")
 
-        if status == "failed":
+        if status == "error":
             error = result.get("error", "Unknown error")
             raise OperationFailedError(operation_id, str(error))
 
@@ -35,7 +35,7 @@ async def wait_for_result(
             raise OperationCancelledError(operation_id)
 
         if (
-            status == "completed"
+            status == "success"
             or status == "no_data"
             or "results" in result
             or "downloadUrl" in result
@@ -61,7 +61,7 @@ def wait_for_result_sync(
         )
         status = result.get("status")
 
-        if status == "failed":
+        if status == "error":
             error = result.get("error", "Unknown error")
             raise OperationFailedError(operation_id, str(error))
 
@@ -69,7 +69,7 @@ def wait_for_result_sync(
             raise OperationCancelledError(operation_id)
 
         if (
-            status == "completed"
+            status == "success"
             or status == "no_data"
             or "results" in result
             or "downloadUrl" in result
