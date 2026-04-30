@@ -29,13 +29,6 @@ class TiktokPost(BaseModel, extra="allow"):
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
-    agg_relevance: float | None = None
-    relevant_posts_count: int | None = None
-    relevant_posts_likes_sum: int | None = None
-    relevant_posts_comments_sum: int | None = None
-    relevant_posts_plays_sum: int | None = None
-    relevant_posts_forwards_sum: int | None = None
-
 
 class TiktokUser(BaseModel, extra="allow"):
     id: str | None = None

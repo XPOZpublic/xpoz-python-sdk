@@ -608,15 +608,15 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `hashtags`           | `list[str]` | Hashtags in tweet          |
 | `mentions`           | `list[str]` | Mentioned usernames        |
 | `media_urls`         | `list[str]` | Media attachment URLs      |
-| `urls`               | `list[str]` | URLs in tweet              |
 | `country`            | `str`       | Country (if geo-tagged)    |
 | `created_at`         | `str`       | Creation timestamp         |
 | `created_at_date`    | `str`       | Creation date (YYYY-MM-DD) |
 | `conversation_id`    | `str`       | Thread conversation ID     |
 | `quoted_tweet_id`    | `str`       | ID of quoted tweet         |
 | `reply_to_tweet_id`  | `str`       | ID of parent tweet         |
-| `is_retweet`         | `bool`      | Whether this is a retweet  |
 | `possibly_sensitive` | `bool`      | Sensitive content flag     |
+| `is_retweet`         | `bool`      | Whether this is a retweet  |
+| `has_birdwatch_notes`| `bool`      | Has community notes        |
 
 ### TwitterUser
 
@@ -654,8 +654,10 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `video_play_count` | `int` | Video play count           |
 | `media_type`       | `str` | Media type                 |
 | `image_url`        | `str` | Image URL                  |
-| `video_url`        | `str` | Video URL                  |
-| `created_at_date`  | `str` | Creation date              |
+| `video_url`                           | `str`  | Video URL                         |
+| `created_at_date`                     | `str`  | Creation date                     |
+| `gen_ai_chat_with_ai_cta_info`        | `str`  | Gen AI chat CTA info              |
+| `has_high_risk_gen_ai_inform_treatment`| `bool` | High risk Gen AI treatment flag   |
 
 ### InstagramUser
 

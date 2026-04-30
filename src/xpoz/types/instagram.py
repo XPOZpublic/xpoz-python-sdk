@@ -28,6 +28,8 @@ class InstagramPost(BaseModel, extra="allow"):
     video_play_count: int | None = None
 
     location: str | None = None
+    gen_ai_chat_with_ai_cta_info: str | None = None
+    has_high_risk_gen_ai_inform_treatment: bool | None = None
 
     created_at: str | None = None
     created_at_timestamp: int | None = None
