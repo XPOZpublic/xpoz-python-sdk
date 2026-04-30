@@ -24,7 +24,14 @@ class AsyncXpozClient:
         server_url: str | None = None,
         timeout: float = DEFAULT_TIMEOUT_SECONDS,
         check_update: bool = True,
+        _user_agent_suffix: str | None = None,
     ):
+        """
+        _user_agent_suffix: Private API — reserved for first-party Xpoz clients
+        (CLI, IDE plugins, etc.) to tag their requests for server-side telemetry.
+        Not part of the public API; may change or be removed without notice.
+        Public users should not pass this parameter.
+        """
         self._api_key = api_key or os.environ.get(ENV_API_KEY)
         if not self._api_key:
             raise AuthenticationError(
@@ -34,7 +41,11 @@ class AsyncXpozClient:
 
         self._server_url = server_url or os.environ.get(ENV_SERVER_URL) or DEFAULT_SERVER_URL
         self._timeout = timeout
-        self._transport = McpTransport(self._server_url, self._api_key)
+        self._transport = McpTransport(
+            self._server_url,
+            self._api_key,
+            _user_agent_suffix=_user_agent_suffix,
+        )
         self._connected = False
         self._check_update = check_update
 

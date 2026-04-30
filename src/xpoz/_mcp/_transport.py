@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 
 import anyio
@@ -11,7 +12,20 @@ from mcp.client.streamable_http import streamable_http_client
 from xpoz._transform._response_parser import parse_response_text
 from xpoz._version import __version__
 
-_USER_AGENT = f"xpoz-python-sdk/{__version__}"
+_BASE_USER_AGENT = f"xpoz-python-sdk/{__version__}"
+
+_SAFE_SUFFIX_RE = re.compile(r"\A[\x21-\x7e](?:[\x20-\x7e]*[\x21-\x7e])?\Z")
+
+
+def _build_user_agent(suffix: str | None) -> str:
+    if not suffix:
+        return _BASE_USER_AGENT
+    if not _SAFE_SUFFIX_RE.match(suffix):
+        raise ValueError(
+            "_user_agent_suffix must be non-empty printable ASCII "
+            "(no CR, LF, NUL, or other control characters)"
+        )
+    return f"{_BASE_USER_AGENT} {suffix}"
 
 
 def _parse_tool_result(tool_name: str, result: Any) -> dict[str, Any]:
@@ -31,14 +45,21 @@ def _parse_tool_result(tool_name: str, result: Any) -> dict[str, Any]:
 
 
 class McpTransport:
-    def __init__(self, server_url: str, api_key: str | None = None):
+    def __init__(
+        self,
+        server_url: str,
+        api_key: str | None = None,
+        *,
+        _user_agent_suffix: str | None = None,
+    ):
         self._server_url = server_url
         self._api_key = api_key
+        self._user_agent = _build_user_agent(_user_agent_suffix)
         self._session: ClientSession | None = None
         self._context_stack: list[Any] = []
 
     async def connect(self) -> None:
-        headers: dict[str, str] = {"User-Agent": _USER_AGENT}
+        headers: dict[str, str] = {"User-Agent": self._user_agent}
         if self._api_key:
             headers["Authorization"] = f"Bearer {self._api_key}"
 
@@ -75,9 +96,16 @@ class McpTransport:
 
 
 class SyncTransport:
-    def __init__(self, server_url: str, api_key: str | None = None):
+    def __init__(
+        self,
+        server_url: str,
+        api_key: str | None = None,
+        *,
+        _user_agent_suffix: str | None = None,
+    ):
         self._server_url = server_url
         self._api_key = api_key
+        self._user_agent = _build_user_agent(_user_agent_suffix)
         self._session: ClientSession | None = None
         self._portal_cm: Any = None
         self._portal: BlockingPortal | None = None
@@ -102,7 +130,7 @@ class SyncTransport:
         shutdown: anyio.Event,
     ) -> None:
         try:
-            headers: dict[str, str] = {"User-Agent": _USER_AGENT}
+            headers: dict[str, str] = {"User-Agent": self._user_agent}
             if self._api_key:
                 headers["Authorization"] = f"Bearer {self._api_key}"
 
