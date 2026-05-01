@@ -77,6 +77,18 @@ Tests hit the live Xpoz API and must run in a **single sequential process** — 
 
 The pytest timeout (660s in `pyproject.toml`) is intentionally higher than the client polling timeout (600s in `conftest.py`) so the SDK raises a clean `OperationTimeoutError` instead of pytest killing the process via signal (which breaks the shared client and cascades failures to all subsequent tests).
 
+## Releases
+
+**Never bump `src/xpoz/_version.py` or the `version` field in `pyproject.toml` in a feature PR.** The release workflow (`.github/workflows/release.yml`, manually dispatched) owns versioning end-to-end:
+
+1. Reads the current version from source.
+2. Bumps it (patch/minor/major/custom) and commits `release: vX.Y.Z` directly to `main`.
+3. Tags `vX.Y.Z`, builds, publishes to PyPI, and creates the GitHub release page using `vX.Y.Z-1` as the previous tag.
+
+Bumping the version in a PR breaks step 3 of the *next* release: the workflow's "previous tag" reference points to a version that was set in source but never tagged, and the GitHub Release step fails with `HTTP 400: Invalid previous_tag parameter` (PyPI publish itself still succeeds — the failure is cosmetic). Recovery requires a manual `gh release create vX.Y.Z --notes-start-tag <last-existing-tag>`.
+
+Feature PRs should leave version files untouched; the release workflow does the bump.
+
 ## Architecture
 
 ### Transport Layer (`_transport.py`)
