@@ -109,6 +109,15 @@ class TestTwitterUsers:
             assert isinstance(u, TwitterUser)
             assert u.username is not None
 
+    @pytest.mark.xfail(
+        strict=True,
+        reason=(
+            "Tracked in https://github.com/XPOZpublic/xpoz-mcp/issues/3 — "
+            "getTwitterUserConnections returns items but does not populate "
+            "pagination.total_rows / total_pages / tableName. Remove this "
+            "marker once the server-side fix lands."
+        ),
+    )
     def test_get_user_connections(self, client):
         result = client.twitter.get_user_connections("elonmusk", "followers")
         assert isinstance(result, PaginatedResult)
