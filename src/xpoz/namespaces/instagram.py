@@ -379,3 +379,22 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         return await self._build_paginated_result(
             result, InstagramUser, _tools.GET_INSTAGRAM_USERS_BY_KEYWORDS, args
         )
+
+
+from xpoz._config import _allowed_fields as _af
+from xpoz.namespaces._base import _attach_allowed_fields
+
+_INSTAGRAM_FIELD_METADATA: dict[str, dict[str, frozenset[str]]] = {
+    "get_user":                   {"fields": _af.GET_INSTAGRAM_USER_FIELDS},
+    "search_users":               {"fields": _af.SEARCH_INSTAGRAM_USERS_FIELDS},
+    "get_users_by_keywords":      {"fields": _af.GET_INSTAGRAM_USERS_BY_KEYWORDS_FIELDS},
+    "get_user_connections":       {"fields": _af.GET_INSTAGRAM_USER_CONNECTIONS_FIELDS},
+    "search_posts":               {"fields": _af.SEARCH_INSTAGRAM_POSTS_FIELDS},
+    "get_posts_by_user":          {"fields": _af.GET_INSTAGRAM_POSTS_BY_USER_FIELDS},
+    "get_posts_by_ids":           {"fields": _af.GET_INSTAGRAM_POSTS_BY_IDS_FIELDS},
+    "get_comments":               {"fields": _af.GET_INSTAGRAM_COMMENTS_FIELDS},
+    "get_post_interacting_users": {"fields": _af.GET_INSTAGRAM_POST_INTERACTING_USERS_FIELDS},
+}
+
+_attach_allowed_fields(InstagramNamespace, _INSTAGRAM_FIELD_METADATA)
+_attach_allowed_fields(AsyncInstagramNamespace, _INSTAGRAM_FIELD_METADATA)
