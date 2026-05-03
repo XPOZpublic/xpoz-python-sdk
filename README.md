@@ -608,6 +608,7 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `hashtags`           | `list[str]` | Hashtags in tweet          |
 | `mentions`           | `list[str]` | Mentioned usernames        |
 | `media_urls`         | `list[str]` | Media attachment URLs      |
+| `urls`               | `list[str]` | URLs in tweet text         |
 | `country`            | `str`       | Country (if geo-tagged)    |
 | `created_at`         | `str`       | Creation timestamp         |
 | `created_at_date`    | `str`       | Creation date (YYYY-MM-DD) |
@@ -617,6 +618,10 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `possibly_sensitive` | `bool`      | Sensitive content flag     |
 | `is_retweet`         | `bool`      | Whether this is a retweet  |
 | `has_birdwatch_notes`| `bool`      | Has community notes        |
+| `birdwatch_notes_id` | `str`       | Birdwatch note ID          |
+| `birdwatch_notes_text`| `str`      | Birdwatch note text        |
+| `birdwatch_notes_url`| `str`       | Birdwatch note URL         |
+| `status`             | `str`       | Tweet status               |
 
 ### TwitterUser
 

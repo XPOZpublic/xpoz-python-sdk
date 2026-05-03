@@ -18,6 +18,10 @@ class TwitterPost(BaseModel, extra="allow"):
     possibly_sensitive: bool | None = None
     is_retweet: bool | None = None
     has_birdwatch_notes: bool | None = None
+    birdwatch_notes_id: str | None = None
+    birdwatch_notes_text: str | None = None
+    birdwatch_notes_url: str | None = None
+    status: str | None = None
 
     like_count: int | None = None
     retweet_count: int | None = None
@@ -37,6 +41,7 @@ class TwitterPost(BaseModel, extra="allow"):
     hashtags: list[str] | None = None
     mentions: list[str] | None = None
     media_urls: list[str] | None = None
+    urls: list[str] | None = None
     grok_generated_content: list[dict[str, Any]] | None = None
 
     country: str | None = None
