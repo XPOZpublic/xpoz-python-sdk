@@ -13,11 +13,11 @@ class TwitterPost(BaseModel, extra="allow"):
     conversation_id: str | None = None
     lang: str | None = None
     source: str | None = None
-    status: str | None = None
     deleted: bool | None = None
     suspended: bool | None = None
     possibly_sensitive: bool | None = None
     is_retweet: bool | None = None
+    has_birdwatch_notes: bool | None = None
 
     like_count: int | None = None
     retweet_count: int | None = None
@@ -33,26 +33,18 @@ class TwitterPost(BaseModel, extra="allow"):
     reply_to_username: str | None = None
     original_tweet_id: str | None = None
     edited_tweets: list[str] | None = None
-    reply_settings: str | None = None
 
     hashtags: list[str] | None = None
     mentions: list[str] | None = None
     media_urls: list[str] | None = None
     grok_generated_content: list[dict[str, Any]] | None = None
-    urls: list[str] | None = None
 
     country: str | None = None
     region: str | None = None
     city: str | None = None
 
-    has_birdwatch_notes: bool | None = None
-    birdwatch_notes_id: str | None = None
-    birdwatch_notes_text: str | None = None
-    birdwatch_notes_url: str | None = None
-
     created_at: str | None = None
     created_at_date: str | None = None
-    x_fetched_at: str | None = None
 
 
 class TwitterUser(BaseModel, extra="allow"):
@@ -110,7 +102,6 @@ class TwitterUser(BaseModel, extra="allow"):
     last_username_change_datetime: str | None = None
 
     created_at: str | None = None
-    created_at_date: str | None = None
     x_fetched_at: str | None = None
     modified_at: str | None = None
     x_modified_at: str | None = None
