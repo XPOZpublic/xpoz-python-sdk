@@ -31,10 +31,10 @@ class InstagramPost(BaseModel, extra="allow"):
     gen_ai_chat_with_ai_cta_info: str | None = None
     has_high_risk_gen_ai_inform_treatment: bool | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
@@ -57,7 +57,7 @@ class InstagramUser(BaseModel, extra="allow"):
     external_url: str | None = None
     has_anonymous_profile_picture: bool | None = None
 
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
@@ -88,9 +88,9 @@ class InstagramComment(BaseModel, extra="allow"):
     is_spam: bool | None = None
     has_translation: bool | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
