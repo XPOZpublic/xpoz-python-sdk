@@ -527,3 +527,25 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         )
         result = await self._call_and_maybe_poll(_tools.GET_TWITTER_USERS_BY_KEYWORDS, args)
         return await self._build_paginated_result(result, TwitterUser, _tools.GET_TWITTER_USERS_BY_KEYWORDS, args)
+
+
+from xpoz._config import _allowed_fields as _af
+from xpoz.namespaces._base import _attach_allowed_fields
+
+_TWITTER_FIELD_METADATA: dict[str, dict[str, frozenset[str]]] = {
+    "get_user":                   {"fields": _af.GET_TWITTER_USER_FIELDS},
+    "get_users":                  {"fields": _af.GET_TWITTER_USERS_FIELDS},
+    "search_users":               {"fields": _af.SEARCH_TWITTER_USERS_FIELDS},
+    "get_users_by_keywords":      {"fields": _af.GET_TWITTER_USERS_BY_KEYWORDS_FIELDS},
+    "get_user_connections":       {"fields": _af.GET_TWITTER_USER_CONNECTIONS_FIELDS},
+    "search_posts":               {"fields": _af.SEARCH_TWITTER_POSTS_FIELDS},
+    "get_posts_by_author":        {"fields": _af.GET_TWITTER_POSTS_BY_AUTHOR_FIELDS},
+    "get_posts_by_ids":           {"fields": _af.GET_TWITTER_POSTS_BY_IDS_FIELDS},
+    "get_comments":               {"fields": _af.GET_TWITTER_COMMENTS_FIELDS},
+    "get_quotes":                 {"fields": _af.GET_TWITTER_QUOTES_FIELDS},
+    "get_retweets":                {"fields": _af.GET_TWITTER_RETWEETS_FIELDS},
+    "get_post_interacting_users": {"fields": _af.GET_TWITTER_POST_INTERACTING_USERS_FIELDS},
+}
+
+_attach_allowed_fields(TwitterNamespace, _TWITTER_FIELD_METADATA)
+_attach_allowed_fields(AsyncTwitterNamespace, _TWITTER_FIELD_METADATA)

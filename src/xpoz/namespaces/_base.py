@@ -43,6 +43,24 @@ def _extract_export_op_id(raw: dict[str, Any]) -> str | None:
     return val
 
 
+def _attach_allowed_fields(
+    cls: type,
+    mapping: dict[str, dict[str, frozenset[str]]],
+) -> None:
+    """Attach `allowed_fields` metadata to namespace methods.
+
+    For every (method_name, {param_name: frozenset[str]}) pair, set the method
+    function's `.allowed_fields` attribute to the inner dict. Used by
+    consumers (e.g., xpoz-cli) to know which `fields=` values the API will
+    accept on each method without making a probe call.
+    """
+    for method_name, meta in mapping.items():
+        method = getattr(cls, method_name, None)
+        if method is None:
+            continue
+        method.allowed_fields = meta
+
+
 class BaseNamespace:
     def __init__(self, call_tool: Callable[[str, dict[str, Any]], dict[str, Any]], timeout: float):
         self._call_tool = call_tool

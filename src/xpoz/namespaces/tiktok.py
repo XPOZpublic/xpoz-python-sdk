@@ -303,3 +303,20 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         return await self._build_paginated_result(
             result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_KEYWORDS, args
         )
+
+
+from xpoz._config import _allowed_fields as _af
+from xpoz.namespaces._base import _attach_allowed_fields
+
+_TIKTOK_FIELD_METADATA: dict[str, dict[str, frozenset[str]]] = {
+    "get_user":              {"fields": _af.GET_TIKTOK_USER_FIELDS},
+    "search_users":          {"fields": _af.SEARCH_TIKTOK_USERS_FIELDS},
+    "get_users_by_keywords": {"fields": _af.GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS},
+    "search_posts":          {"fields": _af.SEARCH_TIKTOK_POSTS_FIELDS},
+    "get_posts_by_user":     {"fields": _af.GET_TIKTOK_POSTS_BY_USER_FIELDS},
+    "get_posts_by_ids":      {"fields": _af.GET_TIKTOK_POSTS_BY_IDS_FIELDS},
+    "get_comments":          {"fields": _af.GET_TIKTOK_COMMENTS_FIELDS},
+}
+
+_attach_allowed_fields(TiktokNamespace, _TIKTOK_FIELD_METADATA)
+_attach_allowed_fields(AsyncTiktokNamespace, _TIKTOK_FIELD_METADATA)

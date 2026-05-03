@@ -443,3 +443,28 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             posts_pagination=pagination if pagination.total_pages > 0 else None,
             posts_table_name=pagination.table_name,
         )
+
+
+from xpoz._config import _allowed_fields as _af
+from xpoz.namespaces._base import _attach_allowed_fields
+
+_REDDIT_FIELD_METADATA: dict[str, dict[str, frozenset[str]]] = {
+    "get_user":                  {"fields": _af.GET_REDDIT_USER_FIELDS},
+    "search_users":              {"fields": _af.SEARCH_REDDIT_USERS_FIELDS},
+    "get_users_by_keywords":     {"fields": _af.GET_REDDIT_USERS_BY_KEYWORDS_FIELDS},
+    "search_posts":              {"fields": _af.SEARCH_REDDIT_POSTS_FIELDS},
+    "search_comments":           {"fields": _af.SEARCH_REDDIT_COMMENTS_FIELDS},
+    "search_subreddits":         {"fields": _af.SEARCH_REDDIT_SUBREDDITS_FIELDS},
+    "get_subreddits_by_keywords": {"fields": _af.GET_REDDIT_SUBREDDITS_BY_KEYWORDS_FIELDS},
+    "get_post_with_comments": {
+        "post_fields":    _af.GET_REDDIT_POST_WITH_COMMENTS_POST_FIELDS,
+        "comment_fields": _af.GET_REDDIT_POST_WITH_COMMENTS_COMMENT_FIELDS,
+    },
+    "get_subreddit_with_posts": {
+        "subreddit_fields": _af.GET_REDDIT_SUBREDDIT_WITH_POSTS_SUBREDDIT_FIELDS,
+        "post_fields":      _af.GET_REDDIT_SUBREDDIT_WITH_POSTS_POST_FIELDS,
+    },
+}
+
+_attach_allowed_fields(RedditNamespace, _REDDIT_FIELD_METADATA)
+_attach_allowed_fields(AsyncRedditNamespace, _REDDIT_FIELD_METADATA)
