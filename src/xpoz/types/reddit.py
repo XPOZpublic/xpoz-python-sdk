@@ -41,10 +41,10 @@ class RedditPost(BaseModel, extra="allow"):
     domain: str | None = None
     crosspost_parent: str | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
@@ -78,10 +78,10 @@ class RedditUser(BaseModel, extra="allow"):
     profile_banner_url: str | None = None
     profile_title: str | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
@@ -115,10 +115,10 @@ class RedditComment(BaseModel, extra="allow"):
     edited: bool | None = None
     distinguished: str | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
@@ -144,10 +144,10 @@ class RedditSubreddit(BaseModel, extra="allow"):
     header_img: str | None = None
     community_icon: str | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 

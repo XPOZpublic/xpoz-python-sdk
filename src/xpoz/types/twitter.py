@@ -103,10 +103,12 @@ class TwitterUser(BaseModel, extra="allow"):
     is_inauthentic_calculated_at: str | None = None
 
     verified_since_datetime: str | None = None
-    username_changes: list[str] | None = None
+    username_changes: int | None = None
     last_username_change_datetime: str | None = None
 
-    created_at: str | None = None
+    # created_at varies by method: search_users / get_users_by_keywords return
+    # Unix epoch (int); get_user_connections returns ISO string. Accept both.
+    created_at: int | str | None = None
     x_fetched_at: str | None = None
     modified_at: str | None = None
     x_modified_at: str | None = None

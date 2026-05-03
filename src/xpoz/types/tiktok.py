@@ -22,10 +22,10 @@ class TiktokPost(BaseModel, extra="allow"):
     forward_count: int | None = None
     play_count: int | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
@@ -51,7 +51,7 @@ class TiktokUser(BaseModel, extra="allow"):
 
     created_at: str | None = None
     username_modify_time: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
 
@@ -72,9 +72,9 @@ class TiktokComment(BaseModel, extra="allow"):
 
     like_count: int | None = None
 
-    created_at: str | None = None
-    created_at_timestamp: int | None = None
+    created_at: int | None = None
+    created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: str | None = None
+    last_fetch: int | None = None
     last_fetch_datetime: str | None = None
     x_last_updated: str | None = None
