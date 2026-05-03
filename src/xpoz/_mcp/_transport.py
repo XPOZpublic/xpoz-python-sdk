@@ -12,20 +12,20 @@ from mcp.client.streamable_http import streamable_http_client
 from xpoz._transform._response_parser import parse_response_text
 from xpoz._version import __version__
 
-_BASE_USER_AGENT = f"xpoz-python-sdk/{__version__}"
+_DEFAULT_USER_AGENT = f"xpoz-python-sdk/{__version__}"
 
-_SAFE_SUFFIX_RE = re.compile(r"\A[\x21-\x7e](?:[\x20-\x7e]*[\x21-\x7e])?\Z")
+_SAFE_UA_RE = re.compile(r"\A[\x21-\x7e](?:[\x20-\x7e]*[\x21-\x7e])?\Z")
 
 
-def _build_user_agent(suffix: str | None) -> str:
-    if not suffix:
-        return _BASE_USER_AGENT
-    if not _SAFE_SUFFIX_RE.match(suffix):
+def _resolve_user_agent(override: str | None) -> str:
+    if not override:
+        return _DEFAULT_USER_AGENT
+    if not _SAFE_UA_RE.match(override):
         raise ValueError(
-            "_user_agent_suffix must be non-empty printable ASCII "
+            "_user_agent must be non-empty printable ASCII "
             "(no CR, LF, NUL, or other control characters)"
         )
-    return f"{_BASE_USER_AGENT} {suffix}"
+    return override
 
 
 def _parse_tool_result(tool_name: str, result: Any) -> dict[str, Any]:
@@ -50,11 +50,11 @@ class McpTransport:
         server_url: str,
         api_key: str | None = None,
         *,
-        _user_agent_suffix: str | None = None,
+        _user_agent: str | None = None,
     ):
         self._server_url = server_url
         self._api_key = api_key
-        self._user_agent = _build_user_agent(_user_agent_suffix)
+        self._user_agent = _resolve_user_agent(_user_agent)
         self._session: ClientSession | None = None
         self._context_stack: list[Any] = []
 
@@ -101,11 +101,11 @@ class SyncTransport:
         server_url: str,
         api_key: str | None = None,
         *,
-        _user_agent_suffix: str | None = None,
+        _user_agent: str | None = None,
     ):
         self._server_url = server_url
         self._api_key = api_key
-        self._user_agent = _build_user_agent(_user_agent_suffix)
+        self._user_agent = _resolve_user_agent(_user_agent)
         self._session: ClientSession | None = None
         self._portal_cm: Any = None
         self._portal: BlockingPortal | None = None
