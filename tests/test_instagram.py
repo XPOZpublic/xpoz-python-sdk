@@ -70,6 +70,16 @@ class TestInstagramUsers:
         for u in users:
             assert isinstance(u, InstagramUser)
 
+    @pytest.mark.xfail(
+        strict=True,
+        reason=(
+            "getInstagramUserConnections occasionally returns items where "
+            "fullName is a non-string value (e.g. integer 1), which fails "
+            "Pydantic validation against InstagramUser.full_name (str | "
+            "None). Server-side data sanitization needed. Remove this "
+            "marker once the server-side fix lands."
+        ),
+    )
     def test_get_user_connections(self, client):
         result = client.instagram.get_user_connections("instagram", "followers")
         assert isinstance(result, PaginatedResult)
