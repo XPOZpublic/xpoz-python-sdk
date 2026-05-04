@@ -70,7 +70,7 @@ class BaseNamespace:
         result = self._call_tool(tool_name, arguments)
         if result.get("status") == "error":
             raise OperationFailedError("", str(result.get("error") or "Unknown error"))
-        if result.get("status") == "success" or "results" in result:
+        if result.get("status") == "success" or result.get("status") == "no_data" or "results" in result:
             return result
         operation_id = result.get("operationId")
         if operation_id:
@@ -134,7 +134,7 @@ class AsyncBaseNamespace:
         result = await self._call_tool(tool_name, arguments)
         if result.get("status") == "error":
             raise OperationFailedError("", str(result.get("error") or "Unknown error"))
-        if result.get("status") == "success" or "results" in result:
+        if result.get("status") == "success" or result.get("status") == "no_data" or "results" in result:
             return result
         operation_id = result.get("operationId")
         if operation_id:
