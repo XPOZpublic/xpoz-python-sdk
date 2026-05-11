@@ -11,7 +11,6 @@ from __future__ import annotations
 
 from types import SimpleNamespace
 
-
 GET_INSTAGRAM_COMMENTS_FIELDS: frozenset[str] = frozenset({
     "child_comment_count",
     "created_at",
@@ -21,8 +20,6 @@ GET_INSTAGRAM_COMMENTS_FIELDS: frozenset[str] = frozenset({
     "has_translation",
     "id",
     "is_spam",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "parent_comment_id",
     "parent_post_id",
@@ -33,7 +30,6 @@ GET_INSTAGRAM_COMMENTS_FIELDS: frozenset[str] = frozenset({
     "type",
     "user_id",
     "username",
-    "x_last_updated",
 })
 
 GET_INSTAGRAM_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
@@ -49,8 +45,6 @@ GET_INSTAGRAM_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
     "has_high_risk_gen_ai_inform_treatment",
     "id",
     "image_url",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "location",
     "media_type",
@@ -64,7 +58,6 @@ GET_INSTAGRAM_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
     "video_play_count",
     "video_subtitles_uri",
     "video_url",
-    "x_last_updated",
 })
 
 GET_INSTAGRAM_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
@@ -80,8 +73,6 @@ GET_INSTAGRAM_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
     "has_high_risk_gen_ai_inform_treatment",
     "id",
     "image_url",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "location",
     "media_type",
@@ -95,7 +86,6 @@ GET_INSTAGRAM_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
     "video_play_count",
     "video_subtitles_uri",
     "video_url",
-    "x_last_updated",
 })
 
 GET_INSTAGRAM_POST_INTERACTING_USERS_FIELDS: frozenset[str] = frozenset({
@@ -109,8 +99,6 @@ GET_INSTAGRAM_POST_INTERACTING_USERS_FIELDS: frozenset[str] = frozenset({
     "id",
     "is_private",
     "is_verified",
-    "last_fetch",
-    "last_fetch_datetime",
     "media_count",
     "profile_pic_id",
     "profile_pic_url",
@@ -121,7 +109,6 @@ GET_INSTAGRAM_POST_INTERACTING_USERS_FIELDS: frozenset[str] = frozenset({
     "relevant_posts_reshares_sum",
     "relevant_posts_video_plays_sum",
     "username",
-    "x_last_updated",
 })
 
 GET_INSTAGRAM_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
@@ -135,8 +122,6 @@ GET_INSTAGRAM_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "id",
     "is_private",
     "is_verified",
-    "last_fetch",
-    "last_fetch_datetime",
     "media_count",
     "profile_pic_id",
     "profile_pic_url",
@@ -147,7 +132,6 @@ GET_INSTAGRAM_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "relevant_posts_reshares_sum",
     "relevant_posts_video_plays_sum",
     "username",
-    "x_last_updated",
 })
 
 GET_INSTAGRAM_USER_CONNECTIONS_FIELDS: frozenset[str] = frozenset({
@@ -161,8 +145,6 @@ GET_INSTAGRAM_USER_CONNECTIONS_FIELDS: frozenset[str] = frozenset({
     "id",
     "is_private",
     "is_verified",
-    "last_fetch",
-    "last_fetch_datetime",
     "media_count",
     "profile_pic_id",
     "profile_pic_url",
@@ -173,7 +155,6 @@ GET_INSTAGRAM_USER_CONNECTIONS_FIELDS: frozenset[str] = frozenset({
     "relevant_posts_reshares_sum",
     "relevant_posts_video_plays_sum",
     "username",
-    "x_last_updated",
 })
 
 GET_INSTAGRAM_USER_FIELDS: frozenset[str] = frozenset({
@@ -187,8 +168,6 @@ GET_INSTAGRAM_USER_FIELDS: frozenset[str] = frozenset({
     "id",
     "is_private",
     "is_verified",
-    "last_fetch",
-    "last_fetch_datetime",
     "media_count",
     "profile_pic_id",
     "profile_pic_url",
@@ -199,7 +178,6 @@ GET_INSTAGRAM_USER_FIELDS: frozenset[str] = frozenset({
     "relevant_posts_reshares_sum",
     "relevant_posts_video_plays_sum",
     "username",
-    "x_last_updated",
 })
 
 GET_REDDIT_POST_WITH_COMMENTS_COMMENT_FIELDS: frozenset[str] = frozenset({
@@ -217,8 +195,6 @@ GET_REDDIT_POST_WITH_COMMENTS_COMMENT_FIELDS: frozenset[str] = frozenset({
     "edited",
     "id",
     "is_submitter",
-    "last_fetch",
-    "last_fetch_datetime",
     "parent_id",
     "parent_post_id",
     "post_subreddit_id",
@@ -226,7 +202,6 @@ GET_REDDIT_POST_WITH_COMMENTS_COMMENT_FIELDS: frozenset[str] = frozenset({
     "score",
     "stickied",
     "upvotes",
-    "x_last_updated",
 })
 
 GET_REDDIT_POST_WITH_COMMENTS_POST_FIELDS: frozenset[str] = frozenset({
@@ -245,8 +220,6 @@ GET_REDDIT_POST_WITH_COMMENTS_POST_FIELDS: frozenset[str] = frozenset({
     "is_original_content",
     "is_self",
     "is_video",
-    "last_fetch",
-    "last_fetch_datetime",
     "link_flair_text",
     "locked",
     "over18",
@@ -264,7 +237,6 @@ GET_REDDIT_POST_WITH_COMMENTS_POST_FIELDS: frozenset[str] = frozenset({
     "upvote_ratio",
     "upvotes",
     "url",
-    "x_last_updated",
 })
 
 GET_REDDIT_SUBREDDITS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
@@ -281,8 +253,6 @@ GET_REDDIT_SUBREDDITS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "icon_img",
     "id",
     "lang",
-    "last_fetch",
-    "last_fetch_datetime",
     "over18",
     "public_description",
     "relevant_posts_comments_count_sum",
@@ -293,7 +263,6 @@ GET_REDDIT_SUBREDDITS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "subscribers_count",
     "title",
     "url",
-    "x_last_updated",
 })
 
 GET_REDDIT_SUBREDDIT_WITH_POSTS_POST_FIELDS: frozenset[str] = frozenset({
@@ -312,8 +281,6 @@ GET_REDDIT_SUBREDDIT_WITH_POSTS_POST_FIELDS: frozenset[str] = frozenset({
     "is_original_content",
     "is_self",
     "is_video",
-    "last_fetch",
-    "last_fetch_datetime",
     "link_flair_text",
     "locked",
     "over18",
@@ -331,7 +298,6 @@ GET_REDDIT_SUBREDDIT_WITH_POSTS_POST_FIELDS: frozenset[str] = frozenset({
     "upvote_ratio",
     "upvotes",
     "url",
-    "x_last_updated",
 })
 
 GET_REDDIT_SUBREDDIT_WITH_POSTS_SUBREDDIT_FIELDS: frozenset[str] = frozenset({
@@ -348,8 +314,6 @@ GET_REDDIT_SUBREDDIT_WITH_POSTS_SUBREDDIT_FIELDS: frozenset[str] = frozenset({
     "icon_img",
     "id",
     "lang",
-    "last_fetch",
-    "last_fetch_datetime",
     "over18",
     "public_description",
     "relevant_posts_comments_count_sum",
@@ -360,7 +324,6 @@ GET_REDDIT_SUBREDDIT_WITH_POSTS_SUBREDDIT_FIELDS: frozenset[str] = frozenset({
     "subscribers_count",
     "title",
     "url",
-    "x_last_updated",
 })
 
 GET_REDDIT_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
@@ -381,8 +344,6 @@ GET_REDDIT_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "is_gold",
     "is_mod",
     "is_suspended",
-    "last_fetch",
-    "last_fetch_datetime",
     "link_karma",
     "pref_show_snoovatar",
     "profile_banner_url",
@@ -397,7 +358,6 @@ GET_REDDIT_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "total_karma",
     "username",
     "verified",
-    "x_last_updated",
 })
 
 GET_REDDIT_USER_FIELDS: frozenset[str] = frozenset({
@@ -418,8 +378,6 @@ GET_REDDIT_USER_FIELDS: frozenset[str] = frozenset({
     "is_gold",
     "is_mod",
     "is_suspended",
-    "last_fetch",
-    "last_fetch_datetime",
     "link_karma",
     "pref_show_snoovatar",
     "profile_banner_url",
@@ -434,7 +392,6 @@ GET_REDDIT_USER_FIELDS: frozenset[str] = frozenset({
     "total_karma",
     "username",
     "verified",
-    "x_last_updated",
 })
 
 GET_TIKTOK_COMMENTS_FIELDS: frozenset[str] = frozenset({
@@ -442,14 +399,11 @@ GET_TIKTOK_COMMENTS_FIELDS: frozenset[str] = frozenset({
     "created_at_date",
     "created_at_timestamp",
     "id",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "post_id",
     "text",
     "user_id",
     "username",
-    "x_last_updated",
 })
 
 GET_TIKTOK_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
@@ -464,8 +418,6 @@ GET_TIKTOK_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
     "forward_count",
     "id",
     "is_private",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "nickname",
     "play_count",
@@ -473,7 +425,6 @@ GET_TIKTOK_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
     "user_id",
     "username",
     "video_thumbnail",
-    "x_last_updated",
 })
 
 GET_TIKTOK_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
@@ -488,8 +439,6 @@ GET_TIKTOK_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
     "forward_count",
     "id",
     "is_private",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "nickname",
     "play_count",
@@ -497,7 +446,6 @@ GET_TIKTOK_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
     "user_id",
     "username",
     "video_thumbnail",
-    "x_last_updated",
 })
 
 GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
@@ -510,8 +458,6 @@ GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "is_private",
     "is_verified",
     "language",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "nickname",
     "post_count",
@@ -525,7 +471,6 @@ GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "signature",
     "username",
     "username_modify_time",
-    "x_last_updated",
 })
 
 GET_TIKTOK_USER_FIELDS: frozenset[str] = frozenset({
@@ -537,8 +482,6 @@ GET_TIKTOK_USER_FIELDS: frozenset[str] = frozenset({
     "is_private",
     "is_verified",
     "language",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "nickname",
     "post_count",
@@ -547,7 +490,6 @@ GET_TIKTOK_USER_FIELDS: frozenset[str] = frozenset({
     "signature",
     "username",
     "username_modify_time",
-    "x_last_updated",
 })
 
 GET_TWITTER_COMMENTS_FIELDS: frozenset[str] = frozenset({
@@ -679,20 +621,11 @@ GET_TWITTER_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
 GET_TWITTER_POST_INTERACTING_USERS_FIELDS: frozenset[str] = frozenset({
     "account_based_in",
     "agg_relevance",
-    "avg_tweets_per_day_last_month",
-    "collected_followers_count",
-    "collected_followers_coverage",
-    "collected_following_count",
-    "collected_following_coverage",
     "created_at",
     "description",
     "followers_count",
     "following_count",
     "id",
-    "inauthentic_type",
-    "is_inauthentic",
-    "is_inauthentic_calculated_at",
-    "is_inauthentic_prob_score",
     "is_verified",
     "label",
     "label_type",
@@ -725,8 +658,6 @@ GET_TWITTER_POST_INTERACTING_USERS_FIELDS: frozenset[str] = frozenset({
     "verified",
     "verified_since_datetime",
     "verified_type",
-    "x_fetched_at",
-    "x_modified_at",
 })
 
 GET_TWITTER_QUOTES_FIELDS: frozenset[str] = frozenset({
@@ -816,20 +747,11 @@ GET_TWITTER_RETWEETS_FIELDS: frozenset[str] = frozenset({
 GET_TWITTER_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "account_based_in",
     "agg_relevance",
-    "avg_tweets_per_day_last_month",
-    "collected_followers_count",
-    "collected_followers_coverage",
-    "collected_following_count",
-    "collected_following_coverage",
     "created_at",
     "description",
     "followers_count",
     "following_count",
     "id",
-    "inauthentic_type",
-    "is_inauthentic",
-    "is_inauthentic_calculated_at",
-    "is_inauthentic_prob_score",
     "is_verified",
     "label",
     "label_type",
@@ -862,26 +784,15 @@ GET_TWITTER_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
     "verified",
     "verified_since_datetime",
     "verified_type",
-    "x_fetched_at",
-    "x_modified_at",
 })
 
 GET_TWITTER_USERS_FIELDS: frozenset[str] = frozenset({
     "account_based_in",
-    "avg_tweets_per_day_last_month",
-    "collected_followers_count",
-    "collected_followers_coverage",
-    "collected_following_count",
-    "collected_following_coverage",
     "created_at",
     "description",
     "followers_count",
     "following_count",
     "id",
-    "inauthentic_type",
-    "is_inauthentic",
-    "is_inauthentic_calculated_at",
-    "is_inauthentic_prob_score",
     "is_verified",
     "label",
     "label_type",
@@ -908,27 +819,16 @@ GET_TWITTER_USERS_FIELDS: frozenset[str] = frozenset({
     "verified",
     "verified_since_datetime",
     "verified_type",
-    "x_fetched_at",
-    "x_modified_at",
 })
 
 GET_TWITTER_USER_CONNECTIONS_FIELDS: frozenset[str] = frozenset({
     "account_based_in",
     "agg_relevance",
-    "avg_tweets_per_day_last_month",
-    "collected_followers_count",
-    "collected_followers_coverage",
-    "collected_following_count",
-    "collected_following_coverage",
     "created_at",
     "description",
     "followers_count",
     "following_count",
     "id",
-    "inauthentic_type",
-    "is_inauthentic",
-    "is_inauthentic_calculated_at",
-    "is_inauthentic_prob_score",
     "is_verified",
     "label",
     "label_type",
@@ -961,26 +861,15 @@ GET_TWITTER_USER_CONNECTIONS_FIELDS: frozenset[str] = frozenset({
     "verified",
     "verified_since_datetime",
     "verified_type",
-    "x_fetched_at",
-    "x_modified_at",
 })
 
 GET_TWITTER_USER_FIELDS: frozenset[str] = frozenset({
     "account_based_in",
-    "avg_tweets_per_day_last_month",
-    "collected_followers_count",
-    "collected_followers_coverage",
-    "collected_following_count",
-    "collected_following_coverage",
     "created_at",
     "description",
     "followers_count",
     "following_count",
     "id",
-    "inauthentic_type",
-    "is_inauthentic",
-    "is_inauthentic_calculated_at",
-    "is_inauthentic_prob_score",
     "is_verified",
     "label",
     "label_type",
@@ -1007,8 +896,6 @@ GET_TWITTER_USER_FIELDS: frozenset[str] = frozenset({
     "verified",
     "verified_since_datetime",
     "verified_type",
-    "x_fetched_at",
-    "x_modified_at",
 })
 
 SEARCH_INSTAGRAM_POSTS_FIELDS: frozenset[str] = frozenset({
@@ -1024,8 +911,6 @@ SEARCH_INSTAGRAM_POSTS_FIELDS: frozenset[str] = frozenset({
     "has_high_risk_gen_ai_inform_treatment",
     "id",
     "image_url",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "location",
     "media_type",
@@ -1039,7 +924,6 @@ SEARCH_INSTAGRAM_POSTS_FIELDS: frozenset[str] = frozenset({
     "video_play_count",
     "video_subtitles_uri",
     "video_url",
-    "x_last_updated",
 })
 
 SEARCH_INSTAGRAM_USERS_FIELDS: frozenset[str] = frozenset({
@@ -1053,8 +937,6 @@ SEARCH_INSTAGRAM_USERS_FIELDS: frozenset[str] = frozenset({
     "id",
     "is_private",
     "is_verified",
-    "last_fetch",
-    "last_fetch_datetime",
     "media_count",
     "profile_pic_id",
     "profile_pic_url",
@@ -1065,7 +947,6 @@ SEARCH_INSTAGRAM_USERS_FIELDS: frozenset[str] = frozenset({
     "relevant_posts_reshares_sum",
     "relevant_posts_video_plays_sum",
     "username",
-    "x_last_updated",
 })
 
 SEARCH_REDDIT_COMMENTS_FIELDS: frozenset[str] = frozenset({
@@ -1083,8 +964,6 @@ SEARCH_REDDIT_COMMENTS_FIELDS: frozenset[str] = frozenset({
     "edited",
     "id",
     "is_submitter",
-    "last_fetch",
-    "last_fetch_datetime",
     "parent_id",
     "parent_post_id",
     "post_subreddit_id",
@@ -1092,7 +971,6 @@ SEARCH_REDDIT_COMMENTS_FIELDS: frozenset[str] = frozenset({
     "score",
     "stickied",
     "upvotes",
-    "x_last_updated",
 })
 
 SEARCH_REDDIT_POSTS_FIELDS: frozenset[str] = frozenset({
@@ -1111,8 +989,6 @@ SEARCH_REDDIT_POSTS_FIELDS: frozenset[str] = frozenset({
     "is_original_content",
     "is_self",
     "is_video",
-    "last_fetch",
-    "last_fetch_datetime",
     "link_flair_text",
     "locked",
     "over18",
@@ -1130,7 +1006,6 @@ SEARCH_REDDIT_POSTS_FIELDS: frozenset[str] = frozenset({
     "upvote_ratio",
     "upvotes",
     "url",
-    "x_last_updated",
 })
 
 SEARCH_REDDIT_SUBREDDITS_FIELDS: frozenset[str] = frozenset({
@@ -1147,8 +1022,6 @@ SEARCH_REDDIT_SUBREDDITS_FIELDS: frozenset[str] = frozenset({
     "icon_img",
     "id",
     "lang",
-    "last_fetch",
-    "last_fetch_datetime",
     "over18",
     "public_description",
     "relevant_posts_comments_count_sum",
@@ -1159,7 +1032,6 @@ SEARCH_REDDIT_SUBREDDITS_FIELDS: frozenset[str] = frozenset({
     "subscribers_count",
     "title",
     "url",
-    "x_last_updated",
 })
 
 SEARCH_REDDIT_USERS_FIELDS: frozenset[str] = frozenset({
@@ -1180,8 +1052,6 @@ SEARCH_REDDIT_USERS_FIELDS: frozenset[str] = frozenset({
     "is_gold",
     "is_mod",
     "is_suspended",
-    "last_fetch",
-    "last_fetch_datetime",
     "link_karma",
     "pref_show_snoovatar",
     "profile_banner_url",
@@ -1196,7 +1066,6 @@ SEARCH_REDDIT_USERS_FIELDS: frozenset[str] = frozenset({
     "total_karma",
     "username",
     "verified",
-    "x_last_updated",
 })
 
 SEARCH_TIKTOK_POSTS_FIELDS: frozenset[str] = frozenset({
@@ -1211,8 +1080,6 @@ SEARCH_TIKTOK_POSTS_FIELDS: frozenset[str] = frozenset({
     "forward_count",
     "id",
     "is_private",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "nickname",
     "play_count",
@@ -1220,7 +1087,6 @@ SEARCH_TIKTOK_POSTS_FIELDS: frozenset[str] = frozenset({
     "user_id",
     "username",
     "video_thumbnail",
-    "x_last_updated",
 })
 
 SEARCH_TIKTOK_USERS_FIELDS: frozenset[str] = frozenset({
@@ -1233,8 +1099,6 @@ SEARCH_TIKTOK_USERS_FIELDS: frozenset[str] = frozenset({
     "is_private",
     "is_verified",
     "language",
-    "last_fetch",
-    "last_fetch_datetime",
     "like_count",
     "nickname",
     "post_count",
@@ -1248,7 +1112,6 @@ SEARCH_TIKTOK_USERS_FIELDS: frozenset[str] = frozenset({
     "signature",
     "username",
     "username_modify_time",
-    "x_last_updated",
 })
 
 SEARCH_TWITTER_POSTS_FIELDS: frozenset[str] = frozenset({
@@ -1296,20 +1159,11 @@ SEARCH_TWITTER_POSTS_FIELDS: frozenset[str] = frozenset({
 SEARCH_TWITTER_USERS_FIELDS: frozenset[str] = frozenset({
     "account_based_in",
     "agg_relevance",
-    "avg_tweets_per_day_last_month",
-    "collected_followers_count",
-    "collected_followers_coverage",
-    "collected_following_count",
-    "collected_following_coverage",
     "created_at",
     "description",
     "followers_count",
     "following_count",
     "id",
-    "inauthentic_type",
-    "is_inauthentic",
-    "is_inauthentic_calculated_at",
-    "is_inauthentic_prob_score",
     "is_verified",
     "label",
     "label_type",
@@ -1342,10 +1196,7 @@ SEARCH_TWITTER_USERS_FIELDS: frozenset[str] = frozenset({
     "verified",
     "verified_since_datetime",
     "verified_type",
-    "x_fetched_at",
-    "x_modified_at",
 })
-
 
 ALLOWED_FIELDS = SimpleNamespace(
     GET_INSTAGRAM_COMMENTS_FIELDS=GET_INSTAGRAM_COMMENTS_FIELDS,

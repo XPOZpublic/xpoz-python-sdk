@@ -1,7 +1,7 @@
 import pytest
 
 from xpoz import PaginatedResult, ResponseType
-from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
+from xpoz.types.instagram import InstagramPost, InstagramUser
 from xpoz.types.common import PaginationInfo
 from .schema_validators import assert_has_fields, assert_pagination_structure
 
@@ -9,39 +9,57 @@ from .schema_validators import assert_has_fields, assert_pagination_structure
 @pytest.fixture(scope="module")
 def instagram_posts_fast_result(client, seven_days_ago):
     return client.instagram.get_posts_by_user(
-        "instagram", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
+        "instagram",
+        fields=["id", "caption", "like_count"],
+        start_date=seven_days_ago,
+        response_type=ResponseType.FAST,
+        limit=10,
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_posts_paging_result(client, seven_days_ago):
     return client.instagram.get_posts_by_user(
-        "instagram", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
+        "instagram",
+        fields=["id", "caption", "like_count"],
+        start_date=seven_days_ago,
+        response_type=ResponseType.PAGING,
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_search_fast_result(client, seven_days_ago):
     return client.instagram.search_posts(
-        "travel", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.FAST, limit=10
+        "travel",
+        fields=["id", "caption", "like_count"],
+        start_date=seven_days_ago,
+        response_type=ResponseType.FAST,
+        limit=10,
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_search_paging_result(client, seven_days_ago):
     return client.instagram.search_posts(
-        "travel", fields=["id", "caption", "like_count"], start_date=seven_days_ago, response_type=ResponseType.PAGING
+        "travel",
+        fields=["id", "caption", "like_count"],
+        start_date=seven_days_ago,
+        response_type=ResponseType.PAGING,
     )
 
 
 @pytest.fixture(scope="module")
 def instagram_users_by_keywords_fast(client, seven_days_ago):
-    return client.instagram.get_users_by_keywords("fashion", start_date=seven_days_ago, response_type="fast", limit=10)
+    return client.instagram.get_users_by_keywords(
+        "fashion", start_date=seven_days_ago, response_type="fast", limit=10
+    )
 
 
 @pytest.fixture(scope="module")
 def instagram_users_by_keywords_paging(client, seven_days_ago):
-    return client.instagram.get_users_by_keywords("fashion", start_date=seven_days_ago, response_type="paging")
+    return client.instagram.get_users_by_keywords(
+        "fashion", start_date=seven_days_ago, response_type="paging"
+    )
 
 
 @pytest.fixture(scope="module")
@@ -57,7 +75,9 @@ class TestInstagramUsers:
         assert_has_fields(user, ["id", "username", "full_name"], "InstagramUser")
 
     def test_get_user_with_fields(self, client):
-        user = client.instagram.get_user("instagram", fields=["id", "username", "follower_count"])
+        user = client.instagram.get_user(
+            "instagram", fields=["id", "username", "follower_count"]
+        )
         assert isinstance(user, InstagramUser)
         assert user.id is not None
         assert user.username is not None
@@ -70,18 +90,8 @@ class TestInstagramUsers:
         for u in users:
             assert isinstance(u, InstagramUser)
 
-    @pytest.mark.xfail(
-        strict=True,
-        reason=(
-            "getInstagramUserConnections occasionally returns items where "
-            "fullName is a non-string value (e.g. integer 1), which fails "
-            "Pydantic validation against InstagramUser.full_name (str | "
-            "None). Server-side data sanitization needed. Remove this "
-            "marker once the server-side fix lands."
-        ),
-    )
     def test_get_user_connections(self, client):
-        result = client.instagram.get_user_connections("instagram", "followers")
+        result = client.instagram.get_user_connections("atyachin", "followers")
         assert isinstance(result, PaginatedResult)
         assert isinstance(result.pagination, PaginationInfo)
         assert len(result.data) > 0
@@ -140,5 +150,7 @@ class TestInstagramPosts:
         assert isinstance(result, PaginatedResult)
 
     def test_get_post_interacting_users(self, client, instagram_post_id):
-        result = client.instagram.get_post_interacting_users(instagram_post_id, "commenters")
+        result = client.instagram.get_post_interacting_users(
+            instagram_post_id, "commenters"
+        )
         assert isinstance(result, PaginatedResult)

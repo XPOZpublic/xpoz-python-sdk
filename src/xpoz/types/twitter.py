@@ -4,7 +4,6 @@ from typing import Any
 
 from pydantic import BaseModel, field_validator
 
-
 class TwitterPost(BaseModel, extra="allow"):
     id: str | None = None
     text: str | None = None
@@ -51,7 +50,6 @@ class TwitterPost(BaseModel, extra="allow"):
     created_at: str | None = None
     created_at_date: str | None = None
 
-
 class TwitterUser(BaseModel, extra="allow"):
     id: str | None = None
     username: str | None = None
@@ -89,18 +87,8 @@ class TwitterUser(BaseModel, extra="allow"):
     label: str | None = None
     label_type: str | None = None
 
-    collected_following_count: int | None = None
-    collected_followers_count: int | None = None
-    collected_followers_coverage: float | None = None
-    collected_following_coverage: float | None = None
-    avg_tweets_per_day_last_month: float | None = None
-
     n_lang: int | None = None
     n_langs_filtered: int | None = None
-    inauthentic_type: str | None = None
-    is_inauthentic: bool | None = None
-    is_inauthentic_prob_score: float | None = None
-    is_inauthentic_calculated_at: str | None = None
 
     verified_since_datetime: str | None = None
     username_changes: int | None = None
@@ -109,9 +97,7 @@ class TwitterUser(BaseModel, extra="allow"):
     # created_at varies by method: search_users / get_users_by_keywords return
     # Unix epoch (int); get_user_connections returns ISO string. Accept both.
     created_at: int | str | None = None
-    x_fetched_at: str | None = None
     modified_at: str | None = None
-    x_modified_at: str | None = None
 
     agg_relevance: float | None = None
     relevant_tweets_count: int | None = None

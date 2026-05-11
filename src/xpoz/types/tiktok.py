@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-
 class TiktokPost(BaseModel, extra="allow"):
     id: str | None = None
     post_type: int | None = None
@@ -25,10 +24,6 @@ class TiktokPost(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
-
 
 class TiktokUser(BaseModel, extra="allow"):
     id: str | None = None
@@ -51,9 +46,6 @@ class TiktokUser(BaseModel, extra="allow"):
 
     created_at: str | None = None
     username_modify_time: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
 
     agg_relevance: float | None = None
     relevant_posts_count: int | None = None
@@ -61,7 +53,6 @@ class TiktokUser(BaseModel, extra="allow"):
     relevant_posts_comments_sum: int | None = None
     relevant_posts_plays_sum: int | None = None
     relevant_posts_forwards_sum: int | None = None
-
 
 class TiktokComment(BaseModel, extra="allow"):
     id: str | None = None
@@ -75,6 +66,3 @@ class TiktokComment(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None

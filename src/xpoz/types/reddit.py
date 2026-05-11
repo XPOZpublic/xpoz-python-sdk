@@ -4,7 +4,6 @@ from pydantic import BaseModel
 
 from xpoz.types.common import PaginationInfo
 
-
 class RedditPost(BaseModel, extra="allow"):
     id: str | None = None
     title: str | None = None
@@ -44,10 +43,6 @@ class RedditPost(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
-
 
 class RedditUser(BaseModel, extra="allow"):
     id: str | None = None
@@ -81,15 +76,11 @@ class RedditUser(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
 
     agg_relevance: float | None = None
     relevant_posts_count: int | None = None
     relevant_posts_upvotes_sum: int | None = None
     relevant_posts_comments_count_sum: int | None = None
-
 
 class RedditComment(BaseModel, extra="allow"):
     id: str | None = None
@@ -118,10 +109,6 @@ class RedditComment(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
-
 
 class RedditSubreddit(BaseModel, extra="allow"):
     id: str | None = None
@@ -147,22 +134,17 @@ class RedditSubreddit(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
 
     agg_relevance: float | None = None
     relevant_posts_count: int | None = None
     relevant_posts_upvotes_sum: int | None = None
     relevant_posts_comments_count_sum: int | None = None
 
-
 class RedditPostWithComments(BaseModel, extra="allow"):
     post: RedditPost | None = None
     comments: list[RedditComment] | None = None
     comments_pagination: PaginationInfo | None = None
     comments_table_name: str | None = None
-
 
 class SubredditWithPosts(BaseModel, extra="allow"):
     subreddit: RedditSubreddit | None = None
