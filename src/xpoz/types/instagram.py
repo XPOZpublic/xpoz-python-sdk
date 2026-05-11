@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pydantic import BaseModel
 
-
 class InstagramPost(BaseModel, extra="allow"):
     id: str | None = None
     post_type: str | None = None
@@ -34,10 +33,6 @@ class InstagramPost(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
-
 
 class InstagramUser(BaseModel, extra="allow"):
     id: str | None = None
@@ -57,17 +52,12 @@ class InstagramUser(BaseModel, extra="allow"):
     external_url: str | None = None
     has_anonymous_profile_picture: bool | None = None
 
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None
-
     agg_relevance: float | None = None
     relevant_posts_count: int | None = None
     relevant_posts_likes_sum: int | None = None
     relevant_posts_comments_sum: int | None = None
     relevant_posts_reshares_sum: int | None = None
     relevant_posts_video_plays_sum: int | None = None
-
 
 class InstagramComment(BaseModel, extra="allow"):
     id: str | None = None
@@ -91,6 +81,3 @@ class InstagramComment(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
-    last_fetch: int | None = None
-    last_fetch_datetime: str | None = None
-    x_last_updated: str | None = None

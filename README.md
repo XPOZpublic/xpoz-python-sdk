@@ -641,9 +641,6 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `profile_image_url`             | `str`   | Profile picture URL        |
 | `created_at`                    | `str`   | Account creation timestamp |
 | `account_based_in`              | `str`   | Account location           |
-| `is_inauthentic`                | `bool`  | Inauthenticity flag        |
-| `is_inauthentic_prob_score`     | `float` | Inauthenticity probability |
-| `avg_tweets_per_day_last_month` | `float` | Tweeting frequency         |
 
 ### InstagramPost
 
