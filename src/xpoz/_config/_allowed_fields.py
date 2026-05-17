@@ -415,7 +415,9 @@ GET_TIKTOK_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
     "description",
     "description_language",
     "download_count",
+    "duration",
     "forward_count",
+    "hashtags",
     "id",
     "is_private",
     "like_count",
@@ -425,6 +427,7 @@ GET_TIKTOK_POSTS_BY_IDS_FIELDS: frozenset[str] = frozenset({
     "user_id",
     "username",
     "video_thumbnail",
+    "video_url",
 })
 
 GET_TIKTOK_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
@@ -436,7 +439,9 @@ GET_TIKTOK_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
     "description",
     "description_language",
     "download_count",
+    "duration",
     "forward_count",
+    "hashtags",
     "id",
     "is_private",
     "like_count",
@@ -446,6 +451,7 @@ GET_TIKTOK_POSTS_BY_USER_FIELDS: frozenset[str] = frozenset({
     "user_id",
     "username",
     "video_thumbnail",
+    "video_url",
 })
 
 GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS: frozenset[str] = frozenset({
@@ -1077,7 +1083,9 @@ SEARCH_TIKTOK_POSTS_FIELDS: frozenset[str] = frozenset({
     "description",
     "description_language",
     "download_count",
+    "duration",
     "forward_count",
+    "hashtags",
     "id",
     "is_private",
     "like_count",
@@ -1087,7 +1095,12 @@ SEARCH_TIKTOK_POSTS_FIELDS: frozenset[str] = frozenset({
     "user_id",
     "username",
     "video_thumbnail",
+    "video_url",
 })
+
+GET_TIKTOK_POSTS_BY_HASHTAGS_FIELDS: frozenset[str] = SEARCH_TIKTOK_POSTS_FIELDS
+
+GET_TIKTOK_USERS_BY_HASHTAGS_FIELDS: frozenset[str] = GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS
 
 SEARCH_TIKTOK_USERS_FIELDS: frozenset[str] = frozenset({
     "agg_relevance",
@@ -1216,7 +1229,9 @@ ALLOWED_FIELDS = SimpleNamespace(
     GET_TIKTOK_COMMENTS_FIELDS=GET_TIKTOK_COMMENTS_FIELDS,
     GET_TIKTOK_POSTS_BY_IDS_FIELDS=GET_TIKTOK_POSTS_BY_IDS_FIELDS,
     GET_TIKTOK_POSTS_BY_USER_FIELDS=GET_TIKTOK_POSTS_BY_USER_FIELDS,
+    GET_TIKTOK_POSTS_BY_HASHTAGS_FIELDS=GET_TIKTOK_POSTS_BY_HASHTAGS_FIELDS,
     GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS=GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS,
+    GET_TIKTOK_USERS_BY_HASHTAGS_FIELDS=GET_TIKTOK_USERS_BY_HASHTAGS_FIELDS,
     GET_TIKTOK_USER_FIELDS=GET_TIKTOK_USER_FIELDS,
     GET_TWITTER_COMMENTS_FIELDS=GET_TWITTER_COMMENTS_FIELDS,
     GET_TWITTER_POSTS_BY_AUTHOR_FIELDS=GET_TWITTER_POSTS_BY_AUTHOR_FIELDS,

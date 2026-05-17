@@ -578,6 +578,30 @@ results = client.tiktok.search_posts(
 )
 ```
 
+#### `get_posts_by_hashtags(hashtags, *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[TiktokPost]`
+
+Search posts by hashtags via the indexed `hashtags` column. Pass bare alphanumeric tags (no leading `#`). Max 5 hashtags per request; OR semantics across the list.
+
+```python
+results = client.tiktok.get_posts_by_hashtags(
+    ["dance", "fyp"],
+    response_type=ResponseType.FAST,
+    limit=50,
+)
+```
+
+#### `get_users_by_hashtags(hashtags, *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[TiktokUser]`
+
+Find users who authored posts tagged with the given hashtags. Same input rules as `get_posts_by_hashtags`.
+
+```python
+users = client.tiktok.get_users_by_hashtags(
+    ["sustainable_fashion"],
+    response_type=ResponseType.FAST,
+    limit=20,
+)
+```
+
 #### `get_comments(post_id, *, fields, start_date, end_date, force_latest) -> PaginatedResult[TiktokComment]`
 
 ```python
@@ -764,6 +788,9 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `download_count`               | `int`   | Number of downloads        |
 | `forward_count`                | `int`   | Number of forwards/shares  |
 | `video_thumbnail`              | `str`   | Thumbnail URL              |
+| `video_url`                    | `list[str]` | Array of video URLs    |
+| `duration`                     | `int`   | Video duration in seconds  |
+| `hashtags`                     | `list[str]` | Hashtags in the post   |
 | `post_type`                    | `int`   | Post type code             |
 | `is_private`                   | `bool`  | Private post flag          |
 | `created_at`                   | `str`   | Creation timestamp         |
