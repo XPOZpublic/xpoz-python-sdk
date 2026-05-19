@@ -21,6 +21,10 @@ class TiktokPost(BaseModel, extra="allow"):
     forward_count: int | None = None
     play_count: int | None = None
 
+    hashtags: list[str] | None = None
+    duration: int | None = None
+    video_url: list[str] | None = None
+
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None

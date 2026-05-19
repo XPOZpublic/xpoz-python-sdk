@@ -156,6 +156,56 @@ class TiktokNamespace(BaseNamespace):
             result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_KEYWORDS, args
         )
 
+    def get_posts_by_hashtags(
+        self,
+        hashtags: list[str],
+        *,
+        fields: list[str] | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
+    ) -> PaginatedResult[TiktokPost]:
+        args = self._build_args(
+            hashtags=hashtags,
+            fields=self._convert_fields(fields),
+            startDate=start_date,
+            endDate=end_date,
+            forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
+        )
+        result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args)
+        return self._build_paginated_result(
+            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args
+        )
+
+    def get_users_by_hashtags(
+        self,
+        hashtags: list[str],
+        *,
+        fields: list[str] | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
+    ) -> PaginatedResult[TiktokUser]:
+        args = self._build_args(
+            hashtags=hashtags,
+            fields=self._convert_fields(fields),
+            startDate=start_date,
+            endDate=end_date,
+            forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
+        )
+        result = self._call_and_maybe_poll(_tools.GET_TIKTOK_USERS_BY_HASHTAGS, args)
+        return self._build_paginated_result(
+            result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_HASHTAGS, args
+        )
+
 
 class AsyncTiktokNamespace(AsyncBaseNamespace):
     async def get_posts_by_ids(
@@ -304,6 +354,56 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
             result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_KEYWORDS, args
         )
 
+    async def get_posts_by_hashtags(
+        self,
+        hashtags: list[str],
+        *,
+        fields: list[str] | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
+    ) -> AsyncPaginatedResult[TiktokPost]:
+        args = self._build_args(
+            hashtags=hashtags,
+            fields=self._convert_fields(fields),
+            startDate=start_date,
+            endDate=end_date,
+            forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
+        )
+        result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args)
+        return await self._build_paginated_result(
+            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args
+        )
+
+    async def get_users_by_hashtags(
+        self,
+        hashtags: list[str],
+        *,
+        fields: list[str] | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
+    ) -> AsyncPaginatedResult[TiktokUser]:
+        args = self._build_args(
+            hashtags=hashtags,
+            fields=self._convert_fields(fields),
+            startDate=start_date,
+            endDate=end_date,
+            forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
+        )
+        result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_USERS_BY_HASHTAGS, args)
+        return await self._build_paginated_result(
+            result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_HASHTAGS, args
+        )
+
 
 from xpoz._config import _allowed_fields as _af
 from xpoz.namespaces._base import _attach_allowed_fields
@@ -312,9 +412,11 @@ _TIKTOK_FIELD_METADATA: dict[str, dict[str, frozenset[str]]] = {
     "get_user":              {"fields": _af.GET_TIKTOK_USER_FIELDS},
     "search_users":          {"fields": _af.SEARCH_TIKTOK_USERS_FIELDS},
     "get_users_by_keywords": {"fields": _af.GET_TIKTOK_USERS_BY_KEYWORDS_FIELDS},
+    "get_users_by_hashtags": {"fields": _af.GET_TIKTOK_USERS_BY_HASHTAGS_FIELDS},
     "search_posts":          {"fields": _af.SEARCH_TIKTOK_POSTS_FIELDS},
     "get_posts_by_user":     {"fields": _af.GET_TIKTOK_POSTS_BY_USER_FIELDS},
     "get_posts_by_ids":      {"fields": _af.GET_TIKTOK_POSTS_BY_IDS_FIELDS},
+    "get_posts_by_hashtags": {"fields": _af.GET_TIKTOK_POSTS_BY_HASHTAGS_FIELDS},
     "get_comments":          {"fields": _af.GET_TIKTOK_COMMENTS_FIELDS},
 }
 
