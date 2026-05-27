@@ -3,6 +3,7 @@ from xpoz.namespaces.instagram import InstagramNamespace, AsyncInstagramNamespac
 from xpoz.namespaces.reddit import RedditNamespace, AsyncRedditNamespace
 from xpoz.namespaces.tiktok import TiktokNamespace, AsyncTiktokNamespace
 from xpoz.namespaces.tracking import TrackingNamespace, AsyncTrackingNamespace
+from xpoz.namespaces.account import AccountNamespace, AsyncAccountNamespace
 
 __all__ = [
     "TwitterNamespace",
@@ -15,4 +16,6 @@ __all__ = [
     "AsyncTiktokNamespace",
     "TrackingNamespace",
     "AsyncTrackingNamespace",
+    "AccountNamespace",
+    "AsyncAccountNamespace",
 ]
