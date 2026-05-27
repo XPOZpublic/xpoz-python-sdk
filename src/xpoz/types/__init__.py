@@ -11,6 +11,13 @@ from xpoz.types.reddit import (
 )
 from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
 from xpoz.types.tracking import TrackedItem, AddTrackedItemsResult, RemoveTrackedItemsResult
+from xpoz.types.account import (
+    AccountDetails,
+    AccountPlan,
+    AccountBilling,
+    AccountUsage,
+    PlanFeatures,
+)
 
 __all__ = [
     "PaginationInfo",
@@ -31,4 +38,9 @@ __all__ = [
     "TrackedItem",
     "AddTrackedItemsResult",
     "RemoveTrackedItemsResult",
+    "AccountDetails",
+    "AccountPlan",
+    "AccountBilling",
+    "AccountUsage",
+    "PlanFeatures",
 ]
