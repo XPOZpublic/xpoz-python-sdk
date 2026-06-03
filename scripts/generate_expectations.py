@@ -7,6 +7,8 @@ from xpoz._config._tools import (
     INSTAGRAM_TOOLS,
     REDDIT_TOOLS,
     TIKTOK_TOOLS,
+    TRACKING_TOOLS,
+    ACCOUNT_TOOLS,
 )
 from xpoz.types.twitter import TwitterUser, TwitterPost
 from xpoz.types.instagram import InstagramUser, InstagramPost, InstagramComment
@@ -40,7 +42,14 @@ def get_all_tool_names(tools_class) -> list[str]:
 
 
 tools = []
-for tool_class in [TWITTER_TOOLS, INSTAGRAM_TOOLS, REDDIT_TOOLS, TIKTOK_TOOLS]:
+for tool_class in [
+    TWITTER_TOOLS,
+    INSTAGRAM_TOOLS,
+    REDDIT_TOOLS,
+    TIKTOK_TOOLS,
+    TRACKING_TOOLS,
+    ACCOUNT_TOOLS,
+]:
     tools.extend(get_all_tool_names(tool_class))
 
 fields = {
