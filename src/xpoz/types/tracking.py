@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 class TrackedItem(BaseModel, extra="allow"):
     phrase: str | None = None
-    type: Literal["keyword", "user", "subreddit"] | None = None
+    type: Literal["keyword", "user", "subreddit", "hashtag"] | None = None
     platform: Literal["twitter", "instagram", "reddit", "tiktok"] | None = None
 
 
