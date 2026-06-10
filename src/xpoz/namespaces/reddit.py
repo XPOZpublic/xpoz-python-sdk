@@ -100,10 +100,12 @@ class RedditNamespace(BaseNamespace):
         username: str,
         *,
         fields: list[str] | None = None,
+        force_latest: bool | None = None,
     ) -> RedditUser:
         args = self._build_args(
             username=username,
             fields=self._convert_fields(fields),
+            forceLatest=force_latest,
         )
         result = self._call_and_maybe_poll(_tools.GET_REDDIT_USER, args)
         results = result.get("results", [])
@@ -310,10 +312,12 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
         username: str,
         *,
         fields: list[str] | None = None,
+        force_latest: bool | None = None,
     ) -> RedditUser:
         args = self._build_args(
             username=username,
             fields=self._convert_fields(fields),
+            forceLatest=force_latest,
         )
         result = await self._call_and_maybe_poll(_tools.GET_REDDIT_USER, args)
         results = result.get("results", [])
