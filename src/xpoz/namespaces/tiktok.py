@@ -104,11 +104,13 @@ class TiktokNamespace(BaseNamespace):
         identifier_type: str = "username",
         *,
         fields: list[str] | None = None,
+        force_latest: bool | None = None,
     ) -> TiktokUser:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
             fields=self._convert_fields(fields),
+            forceLatest=force_latest,
         )
         result = self._call_and_maybe_poll(_tools.GET_TIKTOK_USER, args)
         results = result.get("results", [])
@@ -302,11 +304,13 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         identifier_type: str = "username",
         *,
         fields: list[str] | None = None,
+        force_latest: bool | None = None,
     ) -> TiktokUser:
         args = self._build_args(
             identifier=identifier,
             identifierType=identifier_type,
             fields=self._convert_fields(fields),
+            forceLatest=force_latest,
         )
         result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_USER, args)
         results = result.get("results", [])
