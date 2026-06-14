@@ -24,6 +24,7 @@ class TiktokPost(BaseModel, extra="allow"):
     hashtags: list[str] | None = None
     duration: int | None = None
     video_url: list[str] | None = None
+    transcripts_json: dict[str, str] | None = None
 
     created_at: int | None = None
     created_at_timestamp: str | None = None
