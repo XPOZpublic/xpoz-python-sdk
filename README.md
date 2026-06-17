@@ -77,6 +77,25 @@ client = XpozClient("your-api-key", server_url="https://xpoz.ai/mcp")
 client = XpozClient("your-api-key", timeout=600)
 ```
 
+### Trial Access (No Sign-Up Required)
+
+Want to try the SDK before signing up? Use the public trial token as your API key:
+
+```python
+# Optional: try without your own account
+client = XpozClient("K3FG1WG8Hzxd5aAXG1fIpcb1KjArTNQMmh1vFpjd4g8ER6ecrSRkRs3LqlnMaNTZoy7MFT9")
+
+user = client.twitter.get_user("elonmusk")
+```
+
+The trial token is rate-limited and intentionally restricted:
+
+- **Read-only data tools only** — search and lookup methods across Twitter, Instagram, Reddit, and TikTok. Account, tracking, and operation-management methods are not available and return an upgrade prompt.
+- **Up to 5 results per call** — every response is capped at 5 items. `response_type` is forced to `fast`, so pagination (`PAGING`) and CSV export (`CSV`) are unavailable.
+- **Cached data only** — trial reads from the database and does not trigger live on-demand crawling, so the very latest posts may not appear.
+
+For full result limits, pagination, CSV export, and live data, [get your own API key](https://xpoz.ai/get-token).
+
 ## Context Manager
 
 ```python
