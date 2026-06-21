@@ -79,11 +79,18 @@ client = XpozClient("your-api-key", timeout=600)
 
 ### Trial Access (No Sign-Up Required)
 
-Want to try the SDK before signing up? Use the public trial token as your API key:
+Want to try the SDK before signing up? Mint a free trial token (no account needed, valid for 5 days):
+
+```bash
+curl -X POST https://api.xpoz.ai/api/trial/token
+# -> { "success": true, "data": { "accessKey": "TRIAL...", "expiresInSeconds": 432000 }, ... }
+```
+
+Then use the returned token (it starts with `TRIAL`) as your API key:
 
 ```python
 # Optional: try without your own account
-client = XpozClient("K3FG1WG8Hzxd5aAXG1fIpcb1KjArTNQMmh1vFpjd4g8ER6ecrSRkRs3LqlnMaNTZoy7MFT9")
+client = XpozClient("TRIAL...")  # the token from the curl response above
 
 user = client.twitter.get_user("elonmusk")
 ```
