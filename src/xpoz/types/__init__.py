@@ -17,6 +17,8 @@ from xpoz.types.account import (
     AccountBilling,
     AccountUsage,
     PlanFeatures,
+    CreditsUsageHistory,
+    UsageHistoryBucket,
 )
 
 __all__ = [
@@ -43,4 +45,6 @@ __all__ = [
     "AccountBilling",
     "AccountUsage",
     "PlanFeatures",
+    "CreditsUsageHistory",
+    "UsageHistoryBucket",
 ]
