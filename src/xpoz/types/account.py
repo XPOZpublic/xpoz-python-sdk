@@ -36,3 +36,19 @@ class AccountDetails(BaseModel, extra="allow"):
     plan: AccountPlan | None = None
     billing: AccountBilling | None = None
     usage: AccountUsage | None = None
+
+
+class UsageHistoryBucket(BaseModel, extra="allow"):
+    bucket: str | None = None
+    subscription_used: int | None = None
+    extra_used: int | None = None
+    total_used: int | None = None
+    extra_purchased: int | None = None
+
+
+class CreditsUsageHistory(BaseModel, extra="allow"):
+    range: str | None = None
+    granularity: str | None = None
+    generated_at: str | None = None
+    credits: list[UsageHistoryBucket] | None = None
+    export_rows: list[UsageHistoryBucket] | None = None
