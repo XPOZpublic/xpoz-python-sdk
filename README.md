@@ -30,7 +30,7 @@ The SDK wraps Xpoz's [MCP](https://modelcontextprotocol.io) server, abstracting 
 
 ## Features
 
-- **37 data methods** across Twitter, Instagram, Reddit, and TikTok
+- **42 data methods** across Twitter, Instagram, Reddit, and TikTok
 - **Sync and async clients** — `XpozClient` and `AsyncXpozClient`
 - **Automatic operation polling** — long-running queries are abstracted away
 - **Response modes** — `ResponseType.FAST` for quick limited results, `PAGING` for full pagination, `CSV` for export
@@ -208,6 +208,9 @@ csv_url = results.export_csv()
 | TikTok    | `search_posts`          |
 | TikTok    | `get_posts_by_user`     |
 | TikTok    | `get_users_by_keywords` |
+| TikTok    | `get_posts_by_hashtags` |
+| TikTok    | `get_users_by_hashtags` |
+| TikTok    | `get_posts_by_sound`    |
 
 ## Field Selection
 
@@ -628,10 +631,56 @@ users = client.tiktok.get_users_by_hashtags(
 )
 ```
 
+#### `search_sounds(keyword, *, limit=None, fields) -> list[TiktokSound]`
+
+Search sound/music objects by keyword (title or artist). Pass the returned `id` to `get_posts_by_sound`.
+
+```python
+sounds = client.tiktok.search_sounds("dance monkey")
+sound_id = sounds[0].id
+```
+
+#### `get_posts_by_sound(sound_id, *, fields, start_date, end_date, force_latest, response_type, limit) -> PaginatedResult[TiktokPost]`
+
+Find posts that use a specific sound via the indexed `music_id` column. Pass a single numeric `sound_id` from `search_sounds`.
+
+```python
+results = client.tiktok.get_posts_by_sound(
+    "7016548364456789012",
+    response_type=ResponseType.FAST,
+    limit=50,
+)
+```
+
 #### `get_comments(post_id, *, fields, start_date, end_date, force_latest) -> PaginatedResult[TiktokComment]`
 
 ```python
 comments = client.tiktok.get_comments("7123456789012345678")
+```
+
+---
+
+### Account — `client.account`
+
+Read-only account, plan, and usage information for the authenticated user.
+
+#### `get_account_details() -> AccountDetails`
+
+Returns the plan (name + feature limits), billing (period + next renewal; `billing` is `None` on the Free plan), and current usage (remaining subscription/extra credits, extra tracked items).
+
+```python
+details = client.account.get_account_details()
+print(details.plan.name, details.usage.subscription_credits_remaining)
+```
+
+#### `get_credits_usage_history(*, range=None, granularity=None) -> CreditsUsageHistory`
+
+Returns time-series usage for credits and export rows. `range` is one of `"today"`, `"7d"`, `"current_month"` (default), `"lifetime"`; `granularity` is `"hour"` or `"day"` (default). For current remaining balances, use `get_account_details()`.
+
+```python
+history = client.account.get_credits_usage_history(range="7d", granularity="day")
+for bucket in history.credits:
+    print(bucket.bucket, bucket.total_used)
 ```
 
 ---
@@ -854,6 +903,85 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `like_count`      | `int` | Number of likes            |
 | `created_at`      | `str` | Creation timestamp         |
 | `created_at_date` | `str` | Creation date (YYYY-MM-DD) |
+
+### TiktokSound
+
+| Field               | Type   | Description                       |
+| ------------------- | ------ | --------------------------------- |
+| `id`                | `str`  | Sound/music ID                    |
+| `title`             | `str`  | Sound title                       |
+| `author`            | `str`  | Sound artist/author               |
+| `album`             | `str`  | Album name                        |
+| `duration`          | `int`  | Duration in seconds               |
+| `user_count`        | `int`  | Number of posts using the sound   |
+| `is_original`       | `bool` | Whether the sound is original     |
+| `is_commerce_music` | `bool` | Whether the sound is commercial   |
+| `is_original_sound` | `bool` | Whether it is an original sound   |
+
+### AccountDetails
+
+Returned by `get_account_details()`. All fields are nested models and may be `None`.
+
+- `plan: AccountPlan | None`
+- `billing: AccountBilling | None` (`None` on the Free plan)
+- `usage: AccountUsage | None`
+
+### AccountPlan
+
+| Field      | Type                  | Description           |
+| ---------- | --------------------- | --------------------- |
+| `name`     | `str`                 | Plan name             |
+| `features` | `PlanFeatures \| None` | Plan feature limits   |
+
+### PlanFeatures
+
+| Field                      | Type    | Description                          |
+| -------------------------- | ------- | ------------------------------------ |
+| `credits`                  | `int`   | Subscription credits per period      |
+| `credit_reset_frequency`   | `str`   | How often credits reset              |
+| `extra_credit_price`       | `float` | Price per extra credit               |
+| `tracked_items`            | `int`   | Tracked-item allowance               |
+| `csv_row_export_limit`     | `int`   | CSV row export limit                 |
+| `extra_csv_row_price`      | `float` | Price per extra CSV row              |
+| `extra_tracked_item_price` | `float` | Price per extra tracked item         |
+| `max_rows_per_export`      | `int`   | Max rows per single export           |
+
+### AccountBilling
+
+| Field               | Type  | Description                          |
+| ------------------- | ----- | ------------------------------------ |
+| `billing_period`    | `str` | `"monthly"` or `"annual"`            |
+| `next_renewal_date` | `str` | Next renewal date                    |
+
+### AccountUsage
+
+| Field                            | Type  | Description                        |
+| -------------------------------- | ----- | ---------------------------------- |
+| `subscription_credits_remaining` | `int` | Subscription credits remaining     |
+| `extra_credits_remaining`        | `int` | Extra credits remaining            |
+| `extra_tracked_items`            | `int` | Extra tracked items purchased      |
+
+### CreditsUsageHistory
+
+Returned by `get_credits_usage_history()`.
+
+| Field          | Type                       | Description                              |
+| -------------- | -------------------------- | ---------------------------------------- |
+| `range`        | `str`                      | Requested range                          |
+| `granularity`  | `str`                      | Requested granularity                    |
+| `generated_at` | `str`                      | Timestamp the report was generated       |
+| `credits`      | `list[UsageHistoryBucket]` | Credit usage buckets over time           |
+| `export_rows`  | `list[UsageHistoryBucket]` | Export-rows usage buckets over time      |
+
+### UsageHistoryBucket
+
+| Field               | Type  | Description                            |
+| ------------------- | ----- | -------------------------------------- |
+| `bucket`            | `str` | Bucket timestamp (hour or day)         |
+| `subscription_used` | `int` | Subscription units used in the bucket  |
+| `extra_used`        | `int` | Extra units used in the bucket         |
+| `total_used`        | `int` | Total units used in the bucket         |
+| `extra_purchased`   | `int` | Extra units purchased in the bucket    |
 
 ### Composite Types
 
