@@ -4,7 +4,7 @@ from typing import Any
 
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
-from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
+from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment, TiktokSound
 from xpoz._config import _tools
 from xpoz._config._constants import ResponseType
 
@@ -208,6 +208,46 @@ class TiktokNamespace(BaseNamespace):
             result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_HASHTAGS, args
         )
 
+    def search_sounds(
+        self,
+        keyword: str,
+        *,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+    ) -> list[TiktokSound]:
+        args = self._build_args(
+            keyword=keyword,
+            limit=limit,
+            fields=self._convert_fields(fields),
+        )
+        result = self._call_and_maybe_poll(_tools.SEARCH_TIKTOK_SOUNDS, args)
+        return _parse_items(TiktokSound, result.get("results", []))
+
+    def get_posts_by_sound(
+        self,
+        sound_id: str,
+        *,
+        fields: list[str] | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
+    ) -> PaginatedResult[TiktokPost]:
+        args = self._build_args(
+            soundId=sound_id,
+            fields=self._convert_fields(fields),
+            startDate=start_date,
+            endDate=end_date,
+            forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
+        )
+        result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_SOUND, args)
+        return self._build_paginated_result(
+            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_SOUND, args
+        )
+
 
 class AsyncTiktokNamespace(AsyncBaseNamespace):
     async def get_posts_by_ids(
@@ -408,6 +448,46 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
             result, TiktokUser, _tools.GET_TIKTOK_USERS_BY_HASHTAGS, args
         )
 
+    async def search_sounds(
+        self,
+        keyword: str,
+        *,
+        limit: int | None = None,
+        fields: list[str] | None = None,
+    ) -> list[TiktokSound]:
+        args = self._build_args(
+            keyword=keyword,
+            limit=limit,
+            fields=self._convert_fields(fields),
+        )
+        result = await self._call_and_maybe_poll(_tools.SEARCH_TIKTOK_SOUNDS, args)
+        return _parse_items(TiktokSound, result.get("results", []))
+
+    async def get_posts_by_sound(
+        self,
+        sound_id: str,
+        *,
+        fields: list[str] | None = None,
+        start_date: str | None = None,
+        end_date: str | None = None,
+        force_latest: bool | None = None,
+        response_type: ResponseType | None = None,
+        limit: int | None = None,
+    ) -> AsyncPaginatedResult[TiktokPost]:
+        args = self._build_args(
+            soundId=sound_id,
+            fields=self._convert_fields(fields),
+            startDate=start_date,
+            endDate=end_date,
+            forceLatest=force_latest,
+            responseType=response_type,
+            limit=limit,
+        )
+        result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_SOUND, args)
+        return await self._build_paginated_result(
+            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_SOUND, args
+        )
+
 
 from xpoz._config import _allowed_fields as _af
 from xpoz.namespaces._base import _attach_allowed_fields
@@ -422,6 +502,8 @@ _TIKTOK_FIELD_METADATA: dict[str, dict[str, frozenset[str]]] = {
     "get_posts_by_ids":      {"fields": _af.GET_TIKTOK_POSTS_BY_IDS_FIELDS},
     "get_posts_by_hashtags": {"fields": _af.GET_TIKTOK_POSTS_BY_HASHTAGS_FIELDS},
     "get_comments":          {"fields": _af.GET_TIKTOK_COMMENTS_FIELDS},
+    "search_sounds":         {"fields": _af.SEARCH_TIKTOK_SOUNDS_FIELDS},
+    "get_posts_by_sound":    {"fields": _af.GET_TIKTOK_POSTS_BY_SOUND_FIELDS},
 }
 
 _attach_allowed_fields(TiktokNamespace, _TIKTOK_FIELD_METADATA)

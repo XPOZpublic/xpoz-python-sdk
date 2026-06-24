@@ -71,3 +71,14 @@ class TiktokComment(BaseModel, extra="allow"):
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
+
+class TiktokSound(BaseModel, extra="allow"):
+    id: str | None = None
+    title: str | None = None
+    author: str | None = None
+    album: str | None = None
+    duration: int | None = None
+    user_count: int | None = None
+    is_original: bool | None = None
+    is_commerce_music: bool | None = None
+    is_original_sound: bool | None = None
