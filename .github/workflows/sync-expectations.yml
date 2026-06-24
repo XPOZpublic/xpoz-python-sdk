@@ -27,7 +27,7 @@ jobs:
       - name: Checkout xpoz-mcp
         uses: actions/checkout@v4
         with:
-          repository: hossenco/xpoz-mcp
+          repository: XPOZpublic/xpoz-mcp
           path: xpoz-mcp
           token: ${{ secrets.CROSS_REPO_PAT }}
 
