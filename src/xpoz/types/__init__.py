@@ -9,7 +9,7 @@ from xpoz.types.reddit import (
     RedditPostWithComments,
     SubredditWithPosts,
 )
-from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment
+from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment, TiktokSound
 from xpoz.types.tracking import TrackedItem, AddTrackedItemsResult, RemoveTrackedItemsResult
 from xpoz.types.account import (
     AccountDetails,
@@ -37,6 +37,7 @@ __all__ = [
     "TiktokPost",
     "TiktokUser",
     "TiktokComment",
+    "TiktokSound",
     "TrackedItem",
     "AddTrackedItemsResult",
     "RemoveTrackedItemsResult",
