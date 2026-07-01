@@ -82,9 +82,13 @@ client = XpozClient("your-api-key", timeout=600)
 Want to try the SDK before signing up? Mint a free trial token (no account needed, valid for 5 days):
 
 ```bash
-curl -X POST https://api.xpoz.ai/api/trial/token
+curl -X POST https://api.xpoz.ai/api/trial/token \
+  -H "Content-Type: application/json" \
+  -d '{"source": "sdk"}'
 # -> { "success": true, "data": { "accessKey": "TRIAL...", "expiresInSeconds": 432000 }, ... }
 ```
+
+The `source` field is required — it identifies where the trial token request came from (e.g. `skills`, a specific page, `sdk`, `cli`).
 
 Then use the returned token (it starts with `TRIAL`) as your API key:
 
