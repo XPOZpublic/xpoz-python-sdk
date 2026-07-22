@@ -98,6 +98,19 @@ class TestRedditPosts:
         for c in result.data:
             assert isinstance(c, RedditComment)
 
+    def test_get_comment_by_id(self, client, seven_days_ago):
+        search = client.reddit.search_comments(
+            "python", start_date=seven_days_ago, fields=["id"]
+        )
+        if len(search.data) == 0:
+            pytest.skip("No comments found to fetch by id")
+        comment_id = search.data[0].id
+        comment = client.reddit.get_comment_by_id(
+            comment_id, fields=["id", "body", "rank", "top_level_rank", "removal"]
+        )
+        assert isinstance(comment, RedditComment)
+        assert comment.id == comment_id
+
 
 class TestRedditSubreddits:
     def test_search_subreddits(self, client):
