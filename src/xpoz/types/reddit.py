@@ -40,6 +40,10 @@ class RedditPost(BaseModel, extra="allow"):
     domain: str | None = None
     crosspost_parent: str | None = None
 
+    selftext_html: str | None = None
+    edited_at: str | None = None
+    removal: dict | None = None
+
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
@@ -106,6 +110,12 @@ class RedditComment(BaseModel, extra="allow"):
     edited: bool | None = None
     distinguished: str | None = None
 
+    rank: int | None = None
+    top_level_rank: int | None = None
+    collapsed_reason_code: str | None = None
+    collapsed_reason: str | None = None
+    removal: dict | None = None
+
     created_at: int | None = None
     created_at_timestamp: str | None = None
     created_at_date: str | None = None
@@ -121,6 +131,7 @@ class RedditSubreddit(BaseModel, extra="allow"):
     active_user_count: int | None = None
 
     subreddit_type: str | None = None
+    submission_type: str | None = None
     over18: bool | None = None
     lang: str | None = None
     url: str | None = None

@@ -194,6 +194,7 @@ When xpoz-mcp adds new fields or tools, the SDK should be updated to match.
 | `reddit.search_posts()` | `getRedditPostsByKeywords` |
 | `reddit.get_post_with_comments()` | `getRedditPostWithCommentsById` |
 | `reddit.search_comments()` | `getRedditCommentsByKeywords` |
+| `reddit.get_comment_by_id()` | `getRedditCommentById` |
 | `reddit.get_user()` | `getRedditUser` |
 | `reddit.search_users()` | `searchRedditUsers` |
 | `reddit.get_users_by_keywords()` | `getRedditUsersByKeywords` |

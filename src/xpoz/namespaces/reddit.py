@@ -95,6 +95,24 @@ class RedditNamespace(BaseNamespace):
             result, RedditComment, _tools.SEARCH_REDDIT_COMMENTS, args
         )
 
+    def get_comment_by_id(
+        self,
+        comment_id: str,
+        *,
+        fields: list[str] | None = None,
+        force_latest: bool | None = None,
+    ) -> RedditComment:
+        args = self._build_args(
+            commentId=comment_id,
+            fields=self._convert_fields(fields),
+            forceLatest=force_latest,
+        )
+        result = self._call_and_maybe_poll(_tools.GET_REDDIT_COMMENT_BY_ID, args)
+        results = result.get("results", [])
+        if isinstance(results, list) and len(results) > 0:
+            return _parse_item(RedditComment, results[0])
+        return _parse_item(RedditComment, result)
+
     def get_user(
         self,
         username: str,
@@ -307,6 +325,24 @@ class AsyncRedditNamespace(AsyncBaseNamespace):
             result, RedditComment, _tools.SEARCH_REDDIT_COMMENTS, args
         )
 
+    async def get_comment_by_id(
+        self,
+        comment_id: str,
+        *,
+        fields: list[str] | None = None,
+        force_latest: bool | None = None,
+    ) -> RedditComment:
+        args = self._build_args(
+            commentId=comment_id,
+            fields=self._convert_fields(fields),
+            forceLatest=force_latest,
+        )
+        result = await self._call_and_maybe_poll(_tools.GET_REDDIT_COMMENT_BY_ID, args)
+        results = result.get("results", [])
+        if isinstance(results, list) and len(results) > 0:
+            return _parse_item(RedditComment, results[0])
+        return _parse_item(RedditComment, result)
+
     async def get_user(
         self,
         username: str,
@@ -458,6 +494,7 @@ _REDDIT_FIELD_METADATA: dict[str, dict[str, frozenset[str]]] = {
     "get_users_by_keywords":     {"fields": _af.GET_REDDIT_USERS_BY_KEYWORDS_FIELDS},
     "search_posts":              {"fields": _af.SEARCH_REDDIT_POSTS_FIELDS},
     "search_comments":           {"fields": _af.SEARCH_REDDIT_COMMENTS_FIELDS},
+    "get_comment_by_id":         {"fields": _af.GET_REDDIT_COMMENT_BY_ID_FIELDS},
     "search_subreddits":         {"fields": _af.SEARCH_REDDIT_SUBREDDITS_FIELDS},
     "get_subreddits_by_keywords": {"fields": _af.GET_REDDIT_SUBREDDITS_BY_KEYWORDS_FIELDS},
     "get_post_with_comments": {

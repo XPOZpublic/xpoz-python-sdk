@@ -536,6 +536,14 @@ for comment in result.comments:
 comments = client.reddit.search_comments("helpful tip", subreddit="LifeProTips")
 ```
 
+#### `get_comment_by_id(comment_id, *, fields, force_latest) -> RedditComment`
+
+Fetch a single Reddit comment by its id (bare base36 or `t1_`-prefixed). Database-first with live API fallback when the comment is missing or stale.
+
+```python
+comment = client.reddit.get_comment_by_id("laz1ytq", fields=["id", "body", "rank", "removal"])
+```
+
 #### `search_subreddits(query, *, limit=None, fields) -> list[RedditSubreddit]`
 
 ```python
