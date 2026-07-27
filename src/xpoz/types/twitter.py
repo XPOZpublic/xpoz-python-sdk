@@ -43,9 +43,11 @@ class TwitterPost(BaseModel, extra="allow"):
     urls: list[str] | None = None
     grok_generated_content: list[dict[str, Any]] | None = None
 
-    country: str | None = None
-    region: str | None = None
-    city: str | None = None
+    place_name: str | None = None
+    place_country: str | None = None
+    place_country_code: str | None = None
+    place_bounding_box_coordinates: object | None = None
+    place_centroid: object | None = None
 
     created_at: str | None = None
     created_at_date: str | None = None

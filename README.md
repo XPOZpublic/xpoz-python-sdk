@@ -720,7 +720,11 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `mentions`           | `list[str]` | Mentioned usernames        |
 | `media_urls`         | `list[str]` | Media attachment URLs      |
 | `urls`               | `list[str]` | URLs in tweet text         |
-| `country`            | `str`       | Country (if geo-tagged)    |
+| `place_name`          | `str`       | Tagged place name          |
+| `place_country`       | `str`       | Tagged place country       |
+| `place_country_code`  | `str`       | Tagged place country code (ISO 3166-1 alpha-2) |
+| `place_bounding_box_coordinates` | `object` | Tagged place bounding box |
+| `place_centroid`      | `object`    | Tagged place centroid      |
 | `created_at`         | `str`       | Creation timestamp         |
 | `created_at_date`    | `str`       | Creation date (YYYY-MM-DD) |
 | `conversation_id`    | `str`       | Thread conversation ID     |
