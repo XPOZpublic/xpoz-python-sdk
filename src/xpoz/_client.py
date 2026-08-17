@@ -8,9 +8,12 @@ from xpoz._mcp._transport import SyncTransport
 from xpoz._mcp._polling import DEFAULT_TIMEOUT_SECONDS
 from xpoz._exceptions import AuthenticationError
 from xpoz._config._constants import DEFAULT_SERVER_URL, ENV_API_KEY, ENV_SERVER_URL
+from xpoz._config._routes import DEFAULT_API_URL, ENV_API_URL
+from xpoz._rest import RestTransport
 from xpoz._update_check import check_for_update
 from xpoz.namespaces.twitter import TwitterNamespace
 from xpoz.namespaces.instagram import InstagramNamespace
+from xpoz.namespaces.instagram_live import InstagramLiveNamespace
 from xpoz.namespaces.reddit import RedditNamespace
 from xpoz.namespaces.tiktok import TiktokNamespace
 from xpoz.namespaces.tracking import TrackingNamespace
@@ -25,6 +28,7 @@ class XpozClient:
         server_url: str | None = None,
         timeout: float = DEFAULT_TIMEOUT_SECONDS,
         check_update: bool = True,
+        api_url: str | None = None,
         _user_agent: str | None = None,
     ):
         """
@@ -42,6 +46,9 @@ class XpozClient:
             )
 
         self._server_url = server_url or os.environ.get(ENV_SERVER_URL) or DEFAULT_SERVER_URL
+        self._api_url = api_url or os.environ.get(ENV_API_URL) or DEFAULT_API_URL
+        self._user_agent_override = _user_agent
+        self._rest_transport: RestTransport | None = None
         self._timeout = timeout
         self._transport = SyncTransport(
             self._server_url,
@@ -60,7 +67,23 @@ class XpozClient:
         if check_update:
             threading.Thread(target=check_for_update, daemon=True, name="xpoz-update-check").start()
 
+    @property
+    def instagram_live(self) -> InstagramLiveNamespace:
+        return InstagramLiveNamespace(self._rest())
+
+    def _rest(self) -> RestTransport:
+        if self._rest_transport is None:
+            self._rest_transport = RestTransport(
+                self._api_url,
+                self._api_key,
+                _user_agent=self._user_agent_override,
+            )
+        return self._rest_transport
+
     def close(self) -> None:
+        if self._rest_transport is not None:
+            self._rest_transport.close()
+            self._rest_transport = None
         self._transport.close()
 
     def __enter__(self) -> XpozClient:

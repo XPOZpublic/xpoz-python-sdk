@@ -150,6 +150,44 @@ page5 = results.get_page(5)        # jump to specific page
 csv_url = results.export_csv()     # returns download URL
 ```
 
+## Live Data — `client.instagram_live`
+
+Instagram live methods bypass the database and fetch straight from the crawler API, so results are always current. They page with an opaque **cursor** rather than page numbers, and return a `CursorResult[T]`:
+
+```python
+page = client.instagram_live.search_posts("travel", fields=["id", "caption"])
+
+page.data                 # list[InstagramPost] — this page
+page.has_more             # bool — another page is available upstream
+page.next_page_cursor     # opaque token for the next call
+page.has_next_page()      # bool
+
+page = page.next_page()   # fetch the next page
+
+# Walk every page
+for post in page.iter_items():
+    ...
+```
+
+Cursor paging is forward-only: there is no `get_page(n)`, `total_pages`, or `total_rows`, because the upstream API does not report them. Drive iteration off `has_more` and the cursor — never off the item count, since a page can be short or empty while `has_more` is still true.
+
+These routes always trigger a live fetch, so they are **not available on trial access** and raise `AuthenticationError` (HTTP 403).
+
+| Method | Returns |
+|---|---|
+| `search_posts(query)` | `CursorResult[InstagramPost]` |
+| `get_posts_by_user(identifier)` | `CursorResult[InstagramPost]` |
+| `get_post(post_id)` | `InstagramPost \| None` |
+| `get_comments(post_id)` | `CursorResult[InstagramComment]` |
+| `get_post_interacting_users(post_id, interaction_type)` | `CursorResult[InstagramUser]` |
+| `search_users(name)` | `CursorResult[InstagramUser]` |
+| `get_user(identifier)` | `InstagramUser \| None` |
+| `get_user_connections(identifier, connection_type)` | `CursorResult[InstagramUser]` |
+
+`interaction_type` is `"commenters"` or `"likers"`; `connection_type` is `"followers"` or `"following"`.
+
+Live methods talk to the Xpoz REST API rather than the MCP server. Override the base URL with `XpozClient(api_url=...)` or the `XPOZ_API_URL` environment variable.
+
 ## Response Modes
 
 Methods that return `PaginatedResult` support a `response_type` parameter to control how results are fetched. Import the `ResponseType` enum:
