@@ -28,8 +28,19 @@ def _resolve_user_agent(override: str | None) -> str:
     return override
 
 
+def _unpack_streams(streams: Any) -> tuple[Any, Any]:
+    read_stream, write_stream = streams[0], streams[1]
+    return read_stream, write_stream
+
+
+def _is_error_result(result: Any) -> bool:
+    if hasattr(result, "is_error"):
+        return bool(result.is_error)
+    return bool(result.isError)
+
+
 def _parse_tool_result(tool_name: str, result: Any) -> dict[str, Any]:
-    if result.isError:
+    if _is_error_result(result):
         error_text = ""
         for block in result.content:
             if hasattr(block, "text"):
@@ -71,7 +82,7 @@ class McpTransport:
         streams = await ctx.__aenter__()
         self._context_stack.append(ctx)
 
-        read_stream, write_stream, _ = streams
+        read_stream, write_stream = _unpack_streams(streams)
         session_ctx = ClientSession(read_stream, write_stream)
         self._session = await session_ctx.__aenter__()
         self._context_stack.append(session_ctx)
@@ -139,7 +150,7 @@ class SyncTransport:
                 timeout=httpx.Timeout(30, read=None),
             )
             async with streamable_http_client(self._server_url, http_client=http_client) as streams:
-                read_stream, write_stream, _ = streams
+                read_stream, write_stream = _unpack_streams(streams)
                 async with ClientSession(read_stream, write_stream) as session:
                     await session.initialize()
                     self._session = session
