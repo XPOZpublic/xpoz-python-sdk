@@ -11,6 +11,7 @@ from xpoz._exceptions import (
     ValidationError,
 )
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
+from xpoz._cursor import CursorResult, AsyncCursorResult
 from xpoz._config._constants import ResponseType
 from xpoz._update_check import XpozUpdateWarning
 from xpoz._version import __version__
@@ -28,6 +29,8 @@ __all__ = [
     "ValidationError",
     "PaginatedResult",
     "AsyncPaginatedResult",
+    "CursorResult",
+    "AsyncCursorResult",
     "ResponseType",
     "XpozUpdateWarning",
     "__version__",

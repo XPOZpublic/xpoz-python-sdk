@@ -23,6 +23,10 @@ xpoz-python-sdk/
     │   ├── __init__.py
     │   ├── _transport.py    # MCP Streamable HTTP transport wrapper
     │   └── _polling.py      # Operation polling (5s interval, configurable timeout)
+    ├── _rest/               # REST layer for the live routes (xpoz-api, not MCP)
+    │   ├── __init__.py
+    │   └── _transport.py    # httpx sync/async client + HTTP error mapping
+    ├── _cursor.py           # CursorResult[T] + AsyncCursorResult[T]
     ├── _transform/          # Data translation
     │   ├── __init__.py
     │   ├── _field_mapping.py# snake_case <-> camelCase bidirectional mapping
@@ -43,6 +47,7 @@ xpoz-python-sdk/
         ├── _base.py         # BaseNamespace, AsyncBaseNamespace (shared logic)
         ├── twitter.py       # TwitterNamespace (12 methods)
         ├── instagram.py     # InstagramNamespace (9 methods)
+        ├── instagram_live.py # InstagramLiveNamespace (8 cursor-paged methods)
         ├── reddit.py        # RedditNamespace (9 methods)
         └── tiktok.py        # TiktokNamespace (7 methods)
 ```
@@ -134,6 +139,27 @@ Each platform (Twitter, Instagram, Reddit, TikTok) has sync + async namespace cl
 ## Type Models
 
 All Pydantic models use `extra="allow"` — unknown fields from the API are preserved, not rejected. All fields are `Optional` with `None` default (the API returns only requested fields).
+
+## Two Backends
+
+Most namespaces call **xpoz-mcp** over MCP protocol (`mcp.xpoz.ai`). The `instagram_live` namespace is different: it calls **xpoz-api** over plain HTTP (`api.xpoz.ai`, override with `XPOZ_API_URL`), because the `/live` routes exist only there and xpoz-mcp does not expose them as tools.
+
+Both share the same API key. The REST transport is created lazily on first use, so MCP-only users never open an HTTP client.
+
+Live routes bypass the database and page with an opaque cursor, so they return `CursorResult` rather than `PaginatedResult` — forward-only, no page numbers or totals. Drive iteration off `has_more` and the cursor, never the item count: upstream may return a short or empty page while `has_more` is true.
+
+`_parse_items` in `instagram_live.py` coerces integer `id`/`user_id`/`post_id` values to `str`, because `/v2/post/commenters` returns numeric ids while the models type them as strings.
+
+| Live route | Upstream (via xpoz-api) |
+|---|---|
+| `instagram_live.search_posts()` | `/v2/search` |
+| `instagram_live.get_posts_by_user()` | `/v2/user/posts` |
+| `instagram_live.get_post()` | `/v2/post` |
+| `instagram_live.get_comments()` | `/v2/post/comments` |
+| `instagram_live.get_post_interacting_users()` | `/v2/post/commenters`, `/v2/post/likers` |
+| `instagram_live.search_users()` | `/v2/search/users` |
+| `instagram_live.get_user()` | `/v2/user` |
+| `instagram_live.get_user_connections()` | `/v2/user/followers`, `/v2/user/following` |
 
 ## Relationship to xpoz-mcp
 
