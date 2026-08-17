@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -198,35 +199,39 @@ def test_integer_ids_are_coerced_to_strings(live):
     assert page.data[0].id == "223214544"
 
 
-@pytest.mark.asyncio
-async def test_async_namespace_pages_with_cursor(base_url):
+def test_async_namespace_pages_with_cursor(base_url):
     from xpoz._rest import AsyncRestTransport
     from xpoz.namespaces.instagram_live import AsyncInstagramLiveNamespace
 
-    transport = AsyncRestTransport(base_url, "test-key")
-    try:
-        live = AsyncInstagramLiveNamespace(transport)
-        first = await live.search_posts("travel")
-        assert first.data[0].id == "post-1"
-        assert first.has_next_page() is True
+    async def scenario():
+        transport = AsyncRestTransport(base_url, "test-key")
+        try:
+            live = AsyncInstagramLiveNamespace(transport)
+            first = await live.search_posts("travel")
+            assert first.data[0].id == "post-1"
+            assert first.has_next_page() is True
 
-        second = await first.next_page()
-        assert second.data[0].id == "post-2"
-        assert second.has_next_page() is False
-    finally:
-        await transport.close()
+            second = await first.next_page()
+            assert second.data[0].id == "post-2"
+            assert second.has_next_page() is False
+        finally:
+            await transport.close()
+
+    asyncio.run(scenario())
 
 
-@pytest.mark.asyncio
-async def test_async_iter_items_walks_every_page(base_url):
+def test_async_iter_items_walks_every_page(base_url):
     from xpoz._rest import AsyncRestTransport
     from xpoz.namespaces.instagram_live import AsyncInstagramLiveNamespace
 
-    transport = AsyncRestTransport(base_url, "test-key")
-    try:
-        live = AsyncInstagramLiveNamespace(transport)
-        page = await live.search_posts("travel")
-        ids = [post.id async for post in page.iter_items()]
-        assert ids == ["post-1", "post-2"]
-    finally:
-        await transport.close()
+    async def scenario():
+        transport = AsyncRestTransport(base_url, "test-key")
+        try:
+            live = AsyncInstagramLiveNamespace(transport)
+            page = await live.search_posts("travel")
+            ids = [post.id async for post in page.iter_items()]
+            assert ids == ["post-1", "post-2"]
+        finally:
+            await transport.close()
+
+    asyncio.run(scenario())
