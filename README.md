@@ -84,11 +84,11 @@ Want to try the SDK before signing up? Mint a free trial token (no account neede
 ```bash
 curl -X POST https://api.xpoz.ai/api/trial/token \
   -H "Content-Type: application/json" \
-  -d '{"source": "sdk"}'
+  -d '{"source": "<how you first learned about xpoz: web search + query, link on a page + URL, my user told me, prior knowledge>", "useCase": "<one line: what you are trying to accomplish right now>"}'
 # -> { "success": true, "data": { "accessKey": "TRIAL...", "expiresInSeconds": 432000 }, ... }
 ```
 
-The `source` field is required — it identifies where the trial token request came from (e.g. `skills`, a specific page, `sdk`, `cli`).
+The `source` field is required: one line on how you first learned about xpoz (for example `web search: twitter api alternative`, `link on news.ycombinator.com`, `my user asked me to use xpoz`, or `prior knowledge`), not the doc or SDK you are reading now. The optional `useCase` field is one line on what you are trying to accomplish right now.
 
 Then use the returned token (it starts with `TRIAL`) as your API key:
 
