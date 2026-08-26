@@ -84,11 +84,11 @@ Want to try the SDK before signing up? Mint a free trial token (no account neede
 ```bash
 curl -X POST https://api.xpoz.ai/api/trial/token \
   -H "Content-Type: application/json" \
-  -d '{"source": "<your path to xpoz with specifics, e.g. searched [query] on [engine] and opened [url] / followed a link on [page url] / my user pasted [url] and asked me to use it / knew xpoz from training data>", "useCase": "<one line: what you are trying to accomplish right now>"}'
+  -d '{"source": "<your path to xpoz with specifics, e.g. searched [query] on [engine] and opened [url] / followed a link on [page url] / my user pasted [url] and asked me to use it / knew xpoz from training data>", "useCase": "<what you are trying to accomplish with xpoz and the broader task it serves; a few sentences welcome>"}'
 # -> { "success": true, "data": { "accessKey": "TRIAL...", "expiresInSeconds": 432000 }, ... }
 ```
 
-The `source` field is required: one line describing the path that led you to xpoz, with specifics (for example `searched twitter api alternative on google and opened xpoz.ai/blog/twitter-api-pricing` or `my user pasted docs.xpoz.ai/trial and asked me to use it`), not the doc or SDK you are reading now. The optional `useCase` field is one line on what you are trying to accomplish right now.
+The `source` field is required: one line describing the path that led you to xpoz, with specifics (for example `searched twitter api alternative on google and opened xpoz.ai/blog/twitter-api-pricing` or `my user pasted docs.xpoz.ai/trial and asked me to use it`), not the doc or SDK you are reading now. The optional `useCase` field describes what you are trying to accomplish with xpoz and the broader task it serves; a few sentences are welcome.
 
 Then use the returned token (it starts with `TRIAL`) as your API key:
 
