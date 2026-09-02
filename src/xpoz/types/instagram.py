@@ -24,6 +24,8 @@ class InstagramPost(BaseModel, extra="allow"):
     like_count: int | None = None
     comment_count: int | None = None
     reshare_count: int | None = None
+    media_repost_count: int | None = None
+    save_count: int | None = None
     video_play_count: int | None = None
 
     location: str | None = None
@@ -57,6 +59,8 @@ class InstagramUser(BaseModel, extra="allow"):
     relevant_posts_likes_sum: int | None = None
     relevant_posts_comments_sum: int | None = None
     relevant_posts_reshares_sum: int | None = None
+    relevant_posts_media_reposts_sum: int | None = None
+    relevant_posts_saves_sum: int | None = None
     relevant_posts_video_plays_sum: int | None = None
 
 class InstagramComment(BaseModel, extra="allow"):
