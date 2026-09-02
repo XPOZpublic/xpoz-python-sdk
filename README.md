@@ -806,6 +806,8 @@ All models are Pydantic v2 `BaseModel` subclasses with `extra="allow"` (unknown 
 | `like_count`       | `int` | Number of likes            |
 | `comment_count`    | `int` | Number of comments         |
 | `reshare_count`    | `int` | Number of reshares         |
+| `media_repost_count` | `int` | Number of media reposts |
+| `save_count`       | `int` | Number of saves            |
 | `video_play_count` | `int` | Video play count           |
 | `media_type`       | `str` | Media type                 |
 | `image_url`        | `str` | Image URL                  |
