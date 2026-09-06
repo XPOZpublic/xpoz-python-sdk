@@ -14,6 +14,7 @@ from xpoz._update_check import check_for_update
 from xpoz.namespaces.twitter import TwitterNamespace
 from xpoz.namespaces.instagram import InstagramNamespace
 from xpoz.namespaces.instagram_live import InstagramLiveNamespace
+from xpoz.namespaces.twitter_live import TwitterLiveNamespace
 from xpoz.namespaces.reddit import RedditNamespace
 from xpoz.namespaces.tiktok import TiktokNamespace
 from xpoz.namespaces.tracking import TrackingNamespace
@@ -70,6 +71,10 @@ class XpozClient:
     @property
     def instagram_live(self) -> InstagramLiveNamespace:
         return InstagramLiveNamespace(self._rest())
+
+    @property
+    def twitter_live(self) -> TwitterLiveNamespace:
+        return TwitterLiveNamespace(self._rest())
 
     def _rest(self) -> RestTransport:
         if self._rest_transport is None:
