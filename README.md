@@ -150,9 +150,9 @@ page5 = results.get_page(5)        # jump to specific page
 csv_url = results.export_csv()     # returns download URL
 ```
 
-## Live Data — `client.instagram_live`
+## Live Data — `client.instagram_live` and `client.twitter_live`
 
-Instagram live methods bypass the database and fetch straight from the crawler API, so results are always current. They page with an opaque **cursor** rather than page numbers, and return a `CursorResult[T]`:
+Live methods bypass the database and fetch straight from the crawler API, so results are always current. They page with an opaque **cursor** rather than page numbers, and return a `CursorResult[T]`:
 
 ```python
 page = client.instagram_live.search_posts("travel", fields=["id", "caption"])
@@ -185,6 +185,36 @@ These routes always trigger a live fetch, so they are **not available on trial a
 | `get_user_connections(identifier, connection_type)` | `CursorResult[InstagramUser]` |
 
 `interaction_type` is `"commenters"` or `"likers"`; `connection_type` is `"followers"` or `"following"`.
+
+### `client.twitter_live`
+
+Same cursor paging, backed by the Twitter/X live routes:
+
+```python
+page = client.twitter_live.search_posts(
+    "open source",
+    since="2026-01-01",
+    sort_by="latest",
+    fields=["id", "text", "like_count"],
+)
+
+for tweet in page.iter_items():
+    print(tweet.text)
+```
+
+| Method | Returns |
+|---|---|
+| `search_posts(query)` | `CursorResult[TwitterPost]` |
+| `get_posts_by_user(username)` | `CursorResult[TwitterPost]` |
+| `get_post(post_id)` | `TwitterPost \| None` |
+| `get_comments(post_id)` | `CursorResult[TwitterPost]` |
+| `get_quotes(post_id)` | `CursorResult[TwitterPost]` |
+| `get_post_interacting_users(post_id, interaction_type)` | `CursorResult[TwitterUser]` |
+| `search_users(query)` | `CursorResult[TwitterUser]` |
+| `get_user(username)` | `TwitterUser \| None` |
+| `get_user_connections(username, connection_type)` | `CursorResult[TwitterUser]` |
+
+`search_posts` also accepts `since`, `until` (`YYYY-MM-DD`), `lang`, `country_code`, and `sort_by` (`"relevance"` or `"latest"`); `get_posts_by_user` accepts `since` and `until`. `interaction_type` is `"commenters"`, `"quoters"`, or `"retweeters"`; `connection_type` is `"followers"` or `"following"`. Retweets have no live route.
 
 Live methods talk to the Xpoz REST API rather than the MCP server. Override the base URL with `XpozClient(api_url=...)` or the `XPOZ_API_URL` environment variable.
 

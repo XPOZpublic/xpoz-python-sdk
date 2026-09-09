@@ -14,6 +14,7 @@ from xpoz._update_check import check_for_update
 from xpoz.namespaces.twitter import AsyncTwitterNamespace
 from xpoz.namespaces.instagram import AsyncInstagramNamespace
 from xpoz.namespaces.instagram_live import AsyncInstagramLiveNamespace
+from xpoz.namespaces.twitter_live import AsyncTwitterLiveNamespace
 from xpoz.namespaces.reddit import AsyncRedditNamespace
 from xpoz.namespaces.tiktok import AsyncTiktokNamespace
 from xpoz.namespaces.tracking import AsyncTrackingNamespace
@@ -83,6 +84,10 @@ class AsyncXpozClient:
     @property
     def instagram_live(self) -> AsyncInstagramLiveNamespace:
         return AsyncInstagramLiveNamespace(self._rest())
+
+    @property
+    def twitter_live(self) -> AsyncTwitterLiveNamespace:
+        return AsyncTwitterLiveNamespace(self._rest())
 
     def _rest(self) -> AsyncRestTransport:
         if self._rest_transport is None:
