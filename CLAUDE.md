@@ -82,6 +82,8 @@ XPOZ_API_KEY=... pytest tests/ -v
 
 Tests hit the live Xpoz API and must run in a **single sequential process** — do not run multiple pytest processes in parallel. The Xpoz API rate-limits concurrent connections, causing operations to queue beyond the timeout and cascade failures through the module-scoped client.
 
+`tests/conftest.py` paces every outbound HTTP request to at least 3.5s apart (`XPOZ_TEST_MIN_REQUEST_INTERVAL`, set to `0` to disable). An AWS WAF rate rule in front of `mcp.xpoz.ai` blocks a client for minutes once it exceeds roughly 100 requests in a 5-minute window, and the unpaced suite crosses that about two thirds of the way through `test_twitter.py`, which is why CI was red from 2026-08-17 (ENG-1765). Pacing keeps the suite under the limit at the cost of a roughly 10-minute run.
+
 The pytest timeout (660s in `pyproject.toml`) is intentionally higher than the client polling timeout (600s in `conftest.py`) so the SDK raises a clean `OperationTimeoutError` instead of pytest killing the process via signal (which breaks the shared client and cascades failures to all subsequent tests).
 
 ## Releases
