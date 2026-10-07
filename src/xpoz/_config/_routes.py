@@ -3,6 +3,8 @@ ENV_API_URL = "XPOZ_API_URL"
 
 INSTAGRAM_BASE = "/api/data/instagram"
 
+INSTAGRAM_USER = f"{INSTAGRAM_BASE}/users/{{identifier}}"
+
 INSTAGRAM_LIVE_POSTS = f"{INSTAGRAM_BASE}/posts/live"
 INSTAGRAM_LIVE_USER_POSTS = f"{INSTAGRAM_BASE}/posts/users/{{identifier}}/live"
 INSTAGRAM_LIVE_POST = f"{INSTAGRAM_BASE}/posts/{{post_id}}/live"

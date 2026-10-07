@@ -4,12 +4,53 @@ from typing import Any
 
 from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item, _parse_items
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
-from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
-from xpoz._config import _tools
+from xpoz._rest import RestTransport, AsyncRestTransport
+from xpoz.namespaces._live_base import _csv_fields, _parse_items as _live_parse_items
+from xpoz._config import _routes, _tools
 from xpoz._config._constants import ResponseType
+from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
+from xpoz.types.common import PaginationInfo
 
 
 class InstagramNamespace(BaseNamespace):
+    def __init__(self, call_tool, timeout, rest_transport: RestTransport):
+        super().__init__(call_tool, timeout)
+        self._rest = rest_transport
+
+    def _cursor_to_paginated_result(
+        self,
+        payload: dict[str, Any],
+        fetch_next: Any,
+        page_number: int = 1,
+    ) -> PaginatedResult[InstagramUser]:
+        items = _live_parse_items(InstagramUser, payload.get("results", []))
+        has_more = bool(payload.get("has_more"))
+        next_cursor = payload.get("next_page_cursor")
+
+        pagination = PaginationInfo(
+            table_name=None,
+            total_rows=0,
+            total_pages=page_number + 1 if has_more else page_number,
+            page_number=page_number,
+            page_size=len(items),
+            results_count=len(items),
+        )
+
+        def fetch_page(_page_number: int, _tbl: str | None) -> PaginatedResult[InstagramUser]:
+            if not next_cursor:
+                raise IndexError("No more pages available")
+            next_payload = fetch_next(next_cursor)
+            return self._cursor_to_paginated_result(next_payload, fetch_next, page_number + 1)
+
+        return PaginatedResult(
+            data=items,
+            pagination=pagination,
+            table_name=None,
+            export_operation_id=None,
+            fetch_page=fetch_page,
+            fetch_export=None,
+        )
+
     def get_posts_by_ids(
         self,
         post_ids: list[str],
@@ -106,17 +147,18 @@ class InstagramNamespace(BaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> InstagramUser:
-        args = self._build_args(
-            identifier=identifier,
-            identifierType=identifier_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
+        payload = self._rest.get(
+            _routes.INSTAGRAM_USER.format(identifier=identifier),
+            {
+                "identifierType": identifier_type,
+                "fields": _csv_fields(fields),
+                "forceLatest": "true",
+            },
         )
-        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER, args)
-        results = result.get("results", [])
-        if isinstance(results, list) and len(results) > 0:
+        results = payload.get("results", [])
+        if results:
             return _parse_item(InstagramUser, results[0])
-        return _parse_item(InstagramUser, result)
+        raise ValueError(f"User not found: {identifier}")
 
     def search_users(
         self,
@@ -125,13 +167,14 @@ class InstagramNamespace(BaseNamespace):
         limit: int | None = None,
         fields: list[str] | None = None,
     ) -> list[InstagramUser]:
-        args = self._build_args(
-            name=name,
-            limit=limit,
-            fields=self._convert_fields(fields),
+        payload = self._rest.get(
+            _routes.INSTAGRAM_LIVE_USERS,
+            {"name": name, "fields": _csv_fields(fields)},
         )
-        result = self._call_and_maybe_poll(_tools.SEARCH_INSTAGRAM_USERS, args)
-        return _parse_items(InstagramUser, result.get("results", []))
+        users = _live_parse_items(InstagramUser, payload.get("results", []))
+        if limit and limit > 0:
+            return users[:limit]
+        return users
 
     def get_user_connections(
         self,
@@ -141,16 +184,17 @@ class InstagramNamespace(BaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> PaginatedResult[InstagramUser]:
-        args = self._build_args(
-            username=username,
-            connectionType=connection_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER_CONNECTIONS, args)
-        return self._build_paginated_result(
-            result, InstagramUser, _tools.GET_INSTAGRAM_USER_CONNECTIONS, args
-        )
+        params: dict[str, Any] = {
+            "connectionType": connection_type,
+            "fields": _csv_fields(fields),
+        }
+        path = _routes.INSTAGRAM_LIVE_USER_CONNECTIONS.format(identifier=username)
+        payload = self._rest.get(path, params)
+
+        def fetch_next(cursor: str) -> dict[str, Any]:
+            return self._rest.get(path, {**params, "cursor": cursor})
+
+        return self._cursor_to_paginated_result(payload, fetch_next)
 
     def get_post_interacting_users(
         self,
@@ -160,16 +204,17 @@ class InstagramNamespace(BaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> PaginatedResult[InstagramUser]:
-        args = self._build_args(
-            postId=post_id,
-            interactionType=interaction_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args)
-        return self._build_paginated_result(
-            result, InstagramUser, _tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args
-        )
+        params: dict[str, Any] = {
+            "interactionType": interaction_type,
+            "fields": _csv_fields(fields),
+        }
+        path = _routes.INSTAGRAM_LIVE_POST_INTERACTING_USERS.format(post_id=post_id)
+        payload = self._rest.get(path, params)
+
+        def fetch_next(cursor: str) -> dict[str, Any]:
+            return self._rest.get(path, {**params, "cursor": cursor})
+
+        return self._cursor_to_paginated_result(payload, fetch_next)
 
     def get_users_by_keywords(
         self,
@@ -198,6 +243,44 @@ class InstagramNamespace(BaseNamespace):
 
 
 class AsyncInstagramNamespace(AsyncBaseNamespace):
+    def __init__(self, call_tool, timeout, rest_transport: AsyncRestTransport):
+        super().__init__(call_tool, timeout)
+        self._rest = rest_transport
+
+    async def _cursor_to_paginated_result(
+        self,
+        payload: dict[str, Any],
+        fetch_next: Any,
+        page_number: int = 1,
+    ) -> AsyncPaginatedResult[InstagramUser]:
+        items = _live_parse_items(InstagramUser, payload.get("results", []))
+        has_more = bool(payload.get("has_more"))
+        next_cursor = payload.get("next_page_cursor")
+
+        pagination = PaginationInfo(
+            table_name=None,
+            total_rows=0,
+            total_pages=page_number + 1 if has_more else page_number,
+            page_number=page_number,
+            page_size=len(items),
+            results_count=len(items),
+        )
+
+        async def fetch_page(_page_number: int, _tbl: str | None) -> AsyncPaginatedResult[InstagramUser]:
+            if not next_cursor:
+                raise IndexError("No more pages available")
+            next_payload = await fetch_next(next_cursor)
+            return await self._cursor_to_paginated_result(next_payload, fetch_next, page_number + 1)
+
+        return AsyncPaginatedResult(
+            data=items,
+            pagination=pagination,
+            table_name=None,
+            export_operation_id=None,
+            fetch_page=fetch_page,
+            fetch_export=None,
+        )
+
     async def get_posts_by_ids(
         self,
         post_ids: list[str],
@@ -294,17 +377,18 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> InstagramUser:
-        args = self._build_args(
-            identifier=identifier,
-            identifierType=identifier_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
+        payload = await self._rest.get(
+            _routes.INSTAGRAM_USER.format(identifier=identifier),
+            {
+                "identifierType": identifier_type,
+                "fields": _csv_fields(fields),
+                "forceLatest": "true",
+            },
         )
-        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER, args)
-        results = result.get("results", [])
-        if isinstance(results, list) and len(results) > 0:
+        results = payload.get("results", [])
+        if results:
             return _parse_item(InstagramUser, results[0])
-        return _parse_item(InstagramUser, result)
+        raise ValueError(f"User not found: {identifier}")
 
     async def search_users(
         self,
@@ -313,13 +397,14 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         limit: int | None = None,
         fields: list[str] | None = None,
     ) -> list[InstagramUser]:
-        args = self._build_args(
-            name=name,
-            limit=limit,
-            fields=self._convert_fields(fields),
+        payload = await self._rest.get(
+            _routes.INSTAGRAM_LIVE_USERS,
+            {"name": name, "fields": _csv_fields(fields)},
         )
-        result = await self._call_and_maybe_poll(_tools.SEARCH_INSTAGRAM_USERS, args)
-        return _parse_items(InstagramUser, result.get("results", []))
+        users = _live_parse_items(InstagramUser, payload.get("results", []))
+        if limit and limit > 0:
+            return users[:limit]
+        return users
 
     async def get_user_connections(
         self,
@@ -329,16 +414,17 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> AsyncPaginatedResult[InstagramUser]:
-        args = self._build_args(
-            username=username,
-            connectionType=connection_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_USER_CONNECTIONS, args)
-        return await self._build_paginated_result(
-            result, InstagramUser, _tools.GET_INSTAGRAM_USER_CONNECTIONS, args
-        )
+        params: dict[str, Any] = {
+            "connectionType": connection_type,
+            "fields": _csv_fields(fields),
+        }
+        path = _routes.INSTAGRAM_LIVE_USER_CONNECTIONS.format(identifier=username)
+        payload = await self._rest.get(path, params)
+
+        async def fetch_next(cursor: str) -> dict[str, Any]:
+            return await self._rest.get(path, {**params, "cursor": cursor})
+
+        return await self._cursor_to_paginated_result(payload, fetch_next)
 
     async def get_post_interacting_users(
         self,
@@ -348,16 +434,17 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> AsyncPaginatedResult[InstagramUser]:
-        args = self._build_args(
-            postId=post_id,
-            interactionType=interaction_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = await self._call_and_maybe_poll(_tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args)
-        return await self._build_paginated_result(
-            result, InstagramUser, _tools.GET_INSTAGRAM_POST_INTERACTING_USERS, args
-        )
+        params: dict[str, Any] = {
+            "interactionType": interaction_type,
+            "fields": _csv_fields(fields),
+        }
+        path = _routes.INSTAGRAM_LIVE_POST_INTERACTING_USERS.format(post_id=post_id)
+        payload = await self._rest.get(path, params)
+
+        async def fetch_next(cursor: str) -> dict[str, Any]:
+            return await self._rest.get(path, {**params, "cursor": cursor})
+
+        return await self._cursor_to_paginated_result(payload, fetch_next)
 
     async def get_users_by_keywords(
         self,
