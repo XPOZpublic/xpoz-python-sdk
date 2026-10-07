@@ -59,7 +59,7 @@ class XpozClient:
         self._transport.connect()
 
         self.twitter = TwitterNamespace(self._transport.call_tool, self._timeout)
-        self.instagram = InstagramNamespace(self._transport.call_tool, self._timeout)
+        self.instagram = InstagramNamespace(self._transport.call_tool, self._timeout, self._rest())
         self.reddit = RedditNamespace(self._transport.call_tool, self._timeout)
         self.tiktok = TiktokNamespace(self._transport.call_tool, self._timeout)
         self.tracking = TrackingNamespace(self._transport.call_tool, self._timeout)
