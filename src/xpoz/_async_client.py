@@ -71,7 +71,7 @@ class AsyncXpozClient:
         if not self._connected:
             await self._transport.connect()
             self._connected = True
-            self.twitter = AsyncTwitterNamespace(self._transport.call_tool, self._timeout)
+            self.twitter = AsyncTwitterNamespace(self._transport.call_tool, self._timeout, self._rest())
             self.instagram = AsyncInstagramNamespace(self._transport.call_tool, self._timeout, self._rest())
             self.reddit = AsyncRedditNamespace(self._transport.call_tool, self._timeout)
             self.tiktok = AsyncTiktokNamespace(self._transport.call_tool, self._timeout)
