@@ -6,6 +6,7 @@ from xpoz.namespaces._base import BaseNamespace, AsyncBaseNamespace, _parse_item
 from xpoz._pagination import PaginatedResult, AsyncPaginatedResult
 from xpoz._rest import RestTransport, AsyncRestTransport
 from xpoz.namespaces._live_base import _csv_fields, _parse_items as _live_parse_items
+from xpoz._concurrency import parallel_map, async_parallel_map
 from xpoz._config import _routes, _tools
 from xpoz._config._constants import ResponseType
 from xpoz.types.instagram import InstagramPost, InstagramUser, InstagramComment
@@ -59,15 +60,18 @@ class InstagramNamespace(BaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[InstagramPost]:
-        payload = self._rest.get(
-            _routes.INSTAGRAM_POSTS_BY_IDS,
-            {
-                "ids": ",".join(post_ids),
-                "fields": _csv_fields(fields),
-                "forceLatest": "true",
-            },
-        )
-        return _live_parse_items(InstagramPost, payload.get("results", []))
+        fields_csv = _csv_fields(fields)
+
+        def fetch_one(post_id: str) -> InstagramPost | None:
+            payload = self._rest.get(
+                _routes.INSTAGRAM_LIVE_POST.format(post_id=post_id),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(InstagramPost, payload.get("results", []))
+            return items[0] if items else None
+
+        results = parallel_map(post_ids, fetch_one)
+        return [p for p in results if p is not None]
 
     def get_posts_by_user(
         self,
@@ -308,15 +312,18 @@ class AsyncInstagramNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[InstagramPost]:
-        payload = await self._rest.get(
-            _routes.INSTAGRAM_POSTS_BY_IDS,
-            {
-                "ids": ",".join(post_ids),
-                "fields": _csv_fields(fields),
-                "forceLatest": "true",
-            },
-        )
-        return _live_parse_items(InstagramPost, payload.get("results", []))
+        fields_csv = _csv_fields(fields)
+
+        async def fetch_one(post_id: str) -> InstagramPost | None:
+            payload = await self._rest.get(
+                _routes.INSTAGRAM_LIVE_POST.format(post_id=post_id),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(InstagramPost, payload.get("results", []))
+            return items[0] if items else None
+
+        results = await async_parallel_map(post_ids, fetch_one)
+        return [p for p in results if p is not None]
 
     async def get_posts_by_user(
         self,
