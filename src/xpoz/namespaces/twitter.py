@@ -8,6 +8,7 @@ from xpoz._rest import RestTransport, AsyncRestTransport
 from xpoz.namespaces._live_base import _csv_fields, _parse_items as _live_parse_items
 from xpoz.types.twitter import TwitterPost, TwitterUser
 from xpoz.types.common import PaginationInfo
+from xpoz._concurrency import parallel_map, async_parallel_map
 from xpoz._config import _routes, _tools
 from xpoz._config._constants import ResponseType
 
@@ -59,13 +60,18 @@ class TwitterNamespace(BaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[TwitterPost]:
-        args = self._build_args(
-            postIds=post_ids,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_IDS, args)
-        return _parse_items(TwitterPost, result.get("results", []))
+        fields_csv = _csv_fields(fields)
+
+        def fetch_one(post_id: str) -> TwitterPost | None:
+            payload = self._rest.get(
+                _routes.TWITTER_LIVE_POST.format(post_id=post_id),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(TwitterPost, payload.get("results", []))
+            return items[0] if items else None
+
+        results = parallel_map(post_ids, fetch_one)
+        return [p for p in results if p is not None]
 
     def get_posts_by_author(
         self,
@@ -243,14 +249,28 @@ class TwitterNamespace(BaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[TwitterUser]:
-        args = self._build_args(
-            identifiers=identifiers,
-            identifierType=identifier_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = self._call_and_maybe_poll(_tools.GET_TWITTER_USERS, args)
-        return _parse_items(TwitterUser, result.get("results", []))
+        if identifier_type == "id":
+            args = self._build_args(
+                identifiers=identifiers,
+                identifierType="id",
+                fields=self._convert_fields(fields),
+                forceLatest=force_latest,
+            )
+            result = self._call_and_maybe_poll(_tools.GET_TWITTER_USERS, args)
+            return _parse_items(TwitterUser, result.get("results", []))
+
+        fields_csv = _csv_fields(fields)
+
+        def fetch_one(username: str) -> TwitterUser | None:
+            payload = self._rest.get(
+                _routes.TWITTER_LIVE_USER.format(username=username),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(TwitterUser, payload.get("results", []))
+            return items[0] if items else None
+
+        results = parallel_map(identifiers, fetch_one)
+        return [u for u in results if u is not None]
 
     def get_user(
         self,
@@ -391,13 +411,18 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[TwitterPost]:
-        args = self._build_args(
-            postIds=post_ids,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = await self._call_and_maybe_poll(_tools.GET_TWITTER_POSTS_BY_IDS, args)
-        return _parse_items(TwitterPost, result.get("results", []))
+        fields_csv = _csv_fields(fields)
+
+        async def fetch_one(post_id: str) -> TwitterPost | None:
+            payload = await self._rest.get(
+                _routes.TWITTER_LIVE_POST.format(post_id=post_id),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(TwitterPost, payload.get("results", []))
+            return items[0] if items else None
+
+        results = await async_parallel_map(post_ids, fetch_one)
+        return [p for p in results if p is not None]
 
     async def get_posts_by_author(
         self,
@@ -575,14 +600,28 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[TwitterUser]:
-        args = self._build_args(
-            identifiers=identifiers,
-            identifierType=identifier_type,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = await self._call_and_maybe_poll(_tools.GET_TWITTER_USERS, args)
-        return _parse_items(TwitterUser, result.get("results", []))
+        if identifier_type == "id":
+            args = self._build_args(
+                identifiers=identifiers,
+                identifierType="id",
+                fields=self._convert_fields(fields),
+                forceLatest=force_latest,
+            )
+            result = await self._call_and_maybe_poll(_tools.GET_TWITTER_USERS, args)
+            return _parse_items(TwitterUser, result.get("results", []))
+
+        fields_csv = _csv_fields(fields)
+
+        async def fetch_one(username: str) -> TwitterUser | None:
+            payload = await self._rest.get(
+                _routes.TWITTER_LIVE_USER.format(username=username),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(TwitterUser, payload.get("results", []))
+            return items[0] if items else None
+
+        results = await async_parallel_map(identifiers, fetch_one)
+        return [u for u in results if u is not None]
 
     async def get_user(
         self,
