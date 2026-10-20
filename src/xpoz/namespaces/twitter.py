@@ -125,20 +125,20 @@ class TwitterNamespace(BaseNamespace):
         response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[TwitterPost]:
-        args = self._build_args(
-            query=query,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            authorUsername=author_username,
-            authorId=author_id,
-            language=language,
-            filterOutRetweets=filter_out_retweets,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
-        )
-        if response_type == "csv":
+        if response_type == ResponseType.CSV:
+            args = self._build_args(
+                query=query,
+                fields=self._convert_fields(fields),
+                startDate=start_date,
+                endDate=end_date,
+                authorUsername=author_username,
+                authorId=author_id,
+                language=language,
+                filterOutRetweets=filter_out_retweets,
+                forceLatest=force_latest,
+                responseType=response_type,
+                limit=limit,
+            )
             raw = self._call_tool(_tools.SEARCH_TWITTER_POSTS, args)
             export_op_id = raw.get("operationId") or raw.get("dataDumpExportOperationId")
             csv_raw: dict[str, Any] = {
@@ -146,8 +146,21 @@ class TwitterNamespace(BaseNamespace):
                 "dataDumpExportOperationId": export_op_id,
             }
             return self._build_paginated_result(csv_raw, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args)
-        result = self._call_and_maybe_poll(_tools.SEARCH_TWITTER_POSTS, args)
-        return self._build_paginated_result(result, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args)
+
+        params: dict[str, Any] = {
+            "q": query,
+            "since": start_date,
+            "until": end_date,
+            "username": author_username,
+            "lang": language,
+            "fields": _csv_fields(fields),
+        }
+        payload = self._rest.get(_routes.TWITTER_LIVE_POSTS, params)
+
+        def fetch_next(cursor: str) -> dict[str, Any]:
+            return self._rest.get(_routes.TWITTER_LIVE_POSTS, {**params, "cursor": cursor})
+
+        return self._cursor_to_paginated_result(TwitterPost, payload, fetch_next)
 
     def get_retweets(
         self,
@@ -476,20 +489,20 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
         response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[TwitterPost]:
-        args = self._build_args(
-            query=query,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            authorUsername=author_username,
-            authorId=author_id,
-            language=language,
-            filterOutRetweets=filter_out_retweets,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
-        )
-        if response_type == "csv":
+        if response_type == ResponseType.CSV:
+            args = self._build_args(
+                query=query,
+                fields=self._convert_fields(fields),
+                startDate=start_date,
+                endDate=end_date,
+                authorUsername=author_username,
+                authorId=author_id,
+                language=language,
+                filterOutRetweets=filter_out_retweets,
+                forceLatest=force_latest,
+                responseType=response_type,
+                limit=limit,
+            )
             raw = await self._call_tool(_tools.SEARCH_TWITTER_POSTS, args)
             export_op_id = raw.get("operationId") or raw.get("dataDumpExportOperationId")
             csv_raw: dict[str, Any] = {
@@ -497,8 +510,21 @@ class AsyncTwitterNamespace(AsyncBaseNamespace):
                 "dataDumpExportOperationId": export_op_id,
             }
             return await self._build_paginated_result(csv_raw, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args)
-        result = await self._call_and_maybe_poll(_tools.SEARCH_TWITTER_POSTS, args)
-        return await self._build_paginated_result(result, TwitterPost, _tools.SEARCH_TWITTER_POSTS, args)
+
+        params: dict[str, Any] = {
+            "q": query,
+            "since": start_date,
+            "until": end_date,
+            "username": author_username,
+            "lang": language,
+            "fields": _csv_fields(fields),
+        }
+        payload = await self._rest.get(_routes.TWITTER_LIVE_POSTS, params)
+
+        async def fetch_next(cursor: str) -> dict[str, Any]:
+            return await self._rest.get(_routes.TWITTER_LIVE_POSTS, {**params, "cursor": cursor})
+
+        return await self._cursor_to_paginated_result(TwitterPost, payload, fetch_next)
 
     async def get_retweets(
         self,
