@@ -73,7 +73,7 @@ class AsyncXpozClient:
             self._connected = True
             self.twitter = AsyncTwitterNamespace(self._transport.call_tool, self._timeout, self._rest())
             self.instagram = AsyncInstagramNamespace(self._transport.call_tool, self._timeout, self._rest())
-            self.reddit = AsyncRedditNamespace(self._transport.call_tool, self._timeout)
+            self.reddit = AsyncRedditNamespace(self._transport.call_tool, self._timeout, self._rest())
             self.tiktok = AsyncTiktokNamespace(self._transport.call_tool, self._timeout)
             self.tracking = AsyncTrackingNamespace(self._transport.call_tool, self._timeout)
             self.account = AsyncAccountNamespace(self._transport.call_tool, self._timeout)
