@@ -32,3 +32,14 @@ TWITTER_LIVE_POST_INTERACTING_USERS = (
 TWITTER_LIVE_USERS = f"{TWITTER_BASE}/users/live"
 TWITTER_LIVE_USER = f"{TWITTER_BASE}/users/{{username}}/live"
 TWITTER_LIVE_USER_CONNECTIONS = f"{TWITTER_BASE}/users/{{username}}/connections/live"
+
+REDDIT_BASE = "/api/data/reddit"
+
+REDDIT_LIVE_POSTS = f"{REDDIT_BASE}/posts/live"
+REDDIT_LIVE_POST = f"{REDDIT_BASE}/posts/{{post_id}}/live"
+REDDIT_LIVE_POST_COMMENTS = f"{REDDIT_BASE}/posts/{{post_id}}/comments/live"
+REDDIT_LIVE_SUBREDDIT_POSTS = f"{REDDIT_BASE}/posts/subreddits/{{name}}/live"
+REDDIT_LIVE_USERS = f"{REDDIT_BASE}/users/live"
+REDDIT_LIVE_USER = f"{REDDIT_BASE}/users/{{username}}/live"
+REDDIT_LIVE_SUBREDDITS = f"{REDDIT_BASE}/subreddits/live"
+REDDIT_LIVE_SUBREDDIT = f"{REDDIT_BASE}/subreddits/{{name}}/live"
