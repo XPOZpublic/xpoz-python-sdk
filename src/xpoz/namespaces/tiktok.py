@@ -10,6 +10,7 @@ from xpoz.types.tiktok import TiktokPost, TiktokUser, TiktokComment, TiktokSound
 from xpoz.types.common import PaginationInfo
 from xpoz._config import _routes, _tools
 from xpoz._config._constants import ResponseType
+from xpoz._concurrency import parallel_map, async_parallel_map
 
 
 class TiktokNamespace(BaseNamespace):
@@ -46,13 +47,18 @@ class TiktokNamespace(BaseNamespace):
         fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[TiktokPost]:
-        args = self._build_args(
-            postIds=post_ids,
-            fields=self._convert_fields(fields),
-            forceLatest=force_latest,
-        )
-        result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_IDS, args)
-        return _parse_items(TiktokPost, result.get("results", []))
+        fields_csv = _csv_fields(fields)
+
+        def fetch_one(post_id: str) -> TiktokPost | None:
+            payload = self._rest.get(
+                _routes.TIKTOK_LIVE_POST.format(post_id=post_id),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(TiktokPost, payload.get("results", []))
+            return items[0] if items else None
+
+        results = parallel_map(post_ids, fetch_one)
+        return [r for r in results if r is not None]
 
     def get_posts_by_user(
         self, identifier: str, identifier_type: str = "username", *,
@@ -180,18 +186,43 @@ class TiktokNamespace(BaseNamespace):
         response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> PaginatedResult[TiktokPost]:
-        args = self._build_args(
-            hashtags=hashtags,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
+        if response_type == ResponseType.CSV:
+            args = self._build_args(
+                hashtags=hashtags, fields=self._convert_fields(fields),
+                startDate=start_date, endDate=end_date, forceLatest=force_latest,
+                responseType=response_type, limit=limit,
+            )
+            result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args)
+            return self._build_paginated_result(
+                result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args
+            )
+
+        fields_csv = _csv_fields(fields)
+
+        def fetch_hashtag(hashtag: str) -> list[TiktokPost]:
+            payload = self._rest.get(
+                _routes.TIKTOK_LIVE_POSTS_BY_HASHTAG.format(hashtag=hashtag),
+                {"fields": fields_csv},
+            )
+            return _live_parse_items(TiktokPost, payload.get("results", []))
+
+        per_hashtag = parallel_map(hashtags, fetch_hashtag)
+        seen: set[str] = set()
+        deduped: list[TiktokPost] = []
+        for posts in per_hashtag:
+            for post in posts:
+                pid = getattr(post, "id", None)
+                if pid and pid not in seen:
+                    seen.add(pid)
+                    deduped.append(post)
+
+        pagination = PaginationInfo(
+            table_name=None, total_rows=0, total_pages=1,
+            page_number=1, page_size=len(deduped), results_count=len(deduped),
         )
-        result = self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args)
-        return self._build_paginated_result(
-            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args
+        return PaginatedResult(
+            data=deduped, pagination=pagination, table_name=None,
+            export_operation_id=None, fetch_page=None, fetch_export=None,
         )
 
     def get_users_by_hashtags(
@@ -284,9 +315,18 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         self, post_ids: list[str], *, fields: list[str] | None = None,
         force_latest: bool | None = None,
     ) -> list[TiktokPost]:
-        args = self._build_args(postIds=post_ids, fields=self._convert_fields(fields), forceLatest=force_latest)
-        result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_IDS, args)
-        return _parse_items(TiktokPost, result.get("results", []))
+        fields_csv = _csv_fields(fields)
+
+        async def fetch_one(post_id: str) -> TiktokPost | None:
+            payload = await self._rest.get(
+                _routes.TIKTOK_LIVE_POST.format(post_id=post_id),
+                {"fields": fields_csv},
+            )
+            items = _live_parse_items(TiktokPost, payload.get("results", []))
+            return items[0] if items else None
+
+        results = await async_parallel_map(post_ids, fetch_one)
+        return [r for r in results if r is not None]
 
     async def get_posts_by_user(
         self, identifier: str, identifier_type: str = "username", *,
@@ -414,18 +454,43 @@ class AsyncTiktokNamespace(AsyncBaseNamespace):
         response_type: ResponseType | None = None,
         limit: int | None = None,
     ) -> AsyncPaginatedResult[TiktokPost]:
-        args = self._build_args(
-            hashtags=hashtags,
-            fields=self._convert_fields(fields),
-            startDate=start_date,
-            endDate=end_date,
-            forceLatest=force_latest,
-            responseType=response_type,
-            limit=limit,
+        if response_type == ResponseType.CSV:
+            args = self._build_args(
+                hashtags=hashtags, fields=self._convert_fields(fields),
+                startDate=start_date, endDate=end_date, forceLatest=force_latest,
+                responseType=response_type, limit=limit,
+            )
+            result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args)
+            return await self._build_paginated_result(
+                result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args
+            )
+
+        fields_csv = _csv_fields(fields)
+
+        async def fetch_hashtag(hashtag: str) -> list[TiktokPost]:
+            payload = await self._rest.get(
+                _routes.TIKTOK_LIVE_POSTS_BY_HASHTAG.format(hashtag=hashtag),
+                {"fields": fields_csv},
+            )
+            return _live_parse_items(TiktokPost, payload.get("results", []))
+
+        per_hashtag = await async_parallel_map(hashtags, fetch_hashtag)
+        seen: set[str] = set()
+        deduped: list[TiktokPost] = []
+        for posts in per_hashtag:
+            for post in posts:
+                pid = getattr(post, "id", None)
+                if pid and pid not in seen:
+                    seen.add(pid)
+                    deduped.append(post)
+
+        pagination = PaginationInfo(
+            table_name=None, total_rows=0, total_pages=1,
+            page_number=1, page_size=len(deduped), results_count=len(deduped),
         )
-        result = await self._call_and_maybe_poll(_tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args)
-        return await self._build_paginated_result(
-            result, TiktokPost, _tools.GET_TIKTOK_POSTS_BY_HASHTAGS, args
+        return AsyncPaginatedResult(
+            data=deduped, pagination=pagination, table_name=None,
+            export_operation_id=None, fetch_page=None, fetch_export=None,
         )
 
     async def get_users_by_hashtags(
